@@ -51,14 +51,18 @@ class Owl_Carousel_2_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+        $this->load_metaboxes();
 	}
 
-	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
+    private function load_metaboxes(){
+        $plugin_meta = new Owl_Carousel_2_Meta;
+    }
+    
+/**
+ * Register the stylesheets for the admin area.
+ *
+ * @since    1.0.0
+ */
 	public function enqueue_styles() {
 
 		/**
@@ -83,10 +87,25 @@ class Owl_Carousel_2_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/owl-carousel-2-admin.js', array( 'jquery' ), $this->version, false );
-
-	}
+        
+        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/owl-carousel-2-admin.js', array( 'jquery' ), $this->version, false );
+	
+    }
+    
+    public function enqueue_jqueryui() {
+        wp_enqueue_script( 'jquery-ui-core' );
+		wp_enqueue_script( 'jquery-ui-accordion' );
+		wp_enqueue_script( 'jquery-ui-tabs' );
+		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_script( 'jquery-ui-sortable' );
+		wp_enqueue_script( 'jquery-ui-draggable' );
+		wp_enqueue_script( 'jquery-ui-droppable' );
+		wp_enqueue_script( 'jquery-ui-resize' );
+		wp_enqueue_script( 'jquery-ui-dialog' );
+		wp_enqueue_script( 'jquery-ui-button' );
+		wp_enqueue_script( 'jquery-ui-tooltip' );
+		wp_enqueue_script( 'jquery-ui-spinner' );
+    }
     
     public static function add_carousel_cpt(){
         $labels = array(
@@ -125,5 +144,30 @@ class Owl_Carousel_2_Admin {
                     )
 	           );
         }
+    
+    public function owl_carousel_modify_columns($columns) {
+	// new columns to be added
+	$new_columns = array(
+		'shortcode' => 'Shortcode',
+		'css-id' => 'CSS ID'
+	);
+	$columns = array_slice($columns, 0, 2, true) + $new_columns + array_slice($columns, 2, NULL, true);
+	return $columns;
+    }
+    // DEFINE OUTPUT FOR EACH CUSTOM COLUMN DISPLAYED FOR THIS CUSTOM POST TYPE WITHIN THE DASHBOARD
+    public function owl_carousel_custom_column_content($column) {
+        // get post object for this row
+        global $post;
+
+        // output for the 'Shortcode' column
+        if ($column == 'shortcode') {
+            $shortcode = "[dd-owl-carousel id=&quot;".$post->ID."&quot;]";
+            echo esc_html($shortcode);
+        }
+        
+        if ($column == 'css-id'){
+            echo esc_html("#carousel-{$post->ID}");
+        }
+    }
 
 }

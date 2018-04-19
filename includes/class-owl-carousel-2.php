@@ -115,6 +115,7 @@ class Owl_Carousel_2 {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-owl-carousel-2-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-owl-carousel-2-meta.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -154,10 +155,12 @@ class Owl_Carousel_2 {
 
 		$plugin_admin = new Owl_Carousel_2_Admin( $this->get_plugin_name(), $this->get_version() );
 
+        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_jqueryui');
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' , 99);
 		$this->loader->add_action( 'init', $plugin_admin, 'add_carousel_cpt' );
-
+        $this->loader->add_filter( 'manage_owl-carousel_posts_columns', $plugin_admin, 'owl_carousel_modify_columns');
+        $this->loader->add_filter( 'manage_owl-carousel_posts_custom_column', $plugin_admin, 'owl_carousel_custom_column_content');
 	}
 
 	/**
@@ -173,7 +176,8 @@ class Owl_Carousel_2 {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_scripts' );
-
+        $this->loader->add_shortcode ('dd-owl-carousel', $plugin_public, 'dd_owl_carousel_two');
+    
 	}
 
 	/**
