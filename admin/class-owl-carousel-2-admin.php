@@ -161,8 +161,8 @@ class Owl_Carousel_2_Admin {
 
         // output for the 'Shortcode' column
         if ($column == 'shortcode') {
-            $shortcode = "[dd-owl-carousel id=&quot;".$post->ID."&quot;]";
-            echo esc_html($shortcode);
+            $shortcode = "<span class='shortcode'><input type='text' onfocus='this.select();' readonly='readonly' value='[dd-owl-carousel id=&quot;".$post->ID."&quot;]' class='large-text code'></span>";
+            echo ($shortcode);
         }
         
         if ($column == 'css-id'){
