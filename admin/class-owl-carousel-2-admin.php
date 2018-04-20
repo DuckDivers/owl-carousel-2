@@ -158,7 +158,9 @@ class Owl_Carousel_2_Admin {
     public function owl_carousel_custom_column_content($column) {
         // get post object for this row
         global $post;
-
+        
+        $dd_owl_css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
+        
         // output for the 'Shortcode' column
         if ($column == 'shortcode') {
             $shortcode = "<span class='shortcode'><input type='text' onfocus='this.select();' readonly='readonly' value='[dd-owl-carousel id=&quot;".$post->ID."&quot;]' class='large-text code'></span>";
@@ -166,7 +168,7 @@ class Owl_Carousel_2_Admin {
         }
         
         if ($column == 'css-id'){
-            echo esc_html("#carousel-{$post->ID}");
+            echo esc_html("#".$dd_owl_css_id);
         }
     }
 

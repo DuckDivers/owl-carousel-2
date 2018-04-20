@@ -71,14 +71,19 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_dots = get_post_meta( $post->ID, 'dd_owl_dots', true );
 		$dd_owl_thumbs = get_post_meta( $post->ID, 'dd_owl_thumbs', true );
 		$dd_owl_css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
+		$dd_owl_excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
+		$dd_owl_margin = get_post_meta( $post->ID, 'dd_owl_margin', true );
 
 		// Set default values.
 		if( empty( $dd_owl_post_type ) ) $dd_owl_post_type = '';
-		if( empty( $dd_owl_number_posts ) ) $dd_owl_number_posts = '';
+		if( empty( $dd_owl_number_posts ) ) $dd_owl_number_posts = '10';
         if( empty( $dd_owl_duration ) ) $dd_owl_duration = '2000';
 		if( empty( $dd_owl_transition ) ) $dd_owl_transition = '400';
 		if( empty( $dd_owl_orderby ) ) $dd_owl_orderby = '';
 		if( empty( $dd_owl_css_id ) ) $dd_owl_css_id = 'carousel-'.$post->ID;
+        if (empty ($dd_owl_excerpt_length)) $dd_owl_excerpt_length = '20';
+        if (empty ($dd_owl_margin)) $dd_owl_margin = '10';
+
 
 		// Form fields.
         
@@ -108,10 +113,20 @@ class Owl_Carousel_2_Meta {
 		echo '			<input type="text" id="dd_owl_css_id" name="dd_owl_css_id" class="dd_owl_css_id_field" placeholder="' . esc_attr__( 'carousel-'.$post->ID , 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_css_id ) . '">';
 		echo '			<p class="description">' . __( 'The ID for the element', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
+		echo '		<th><label for="dd_owl_excerpt_length" class="dd_owl_excerpt_length_label">' . __( 'Post Excerpt Length', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="text" id="dd_owl_excerpt_length" name="dd_owl_excerpt_length" class="dd_owl_excerpt_length_field" value="' . esc_attr( $dd_owl_excerpt_length ) . '">';
+		echo '			<p class="description">' . __( 'Number of words in the excerpt', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
 		echo '	</tr>';		
 		echo '		<th><label for="dd_owl_loop" class="dd_owl_loop_label">' . __( 'Loop', 'text_domain' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked( $dd_owl_loop, 'checked', false ) . '> ' . __( '', 'text_domain' ) . '</label>';
+		echo '		</td>';
+        echo '		<th><label for="dd_owl_margin" class="dd_owl_margin_label">' . __( 'Margins around Carousel Items', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="text" id="dd_owl_margin" name="dd_owl_margin" class="dd_owl_margin_field" value="' . esc_attr( $dd_owl_margin ) . '">';
+		echo '			<p class="description">' . __( 'Number of words in the excerpt', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
 		echo '	<tr>';
@@ -259,23 +274,7 @@ class Owl_Carousel_2_Meta {
         $allow_shortcodes = (metadata_exists('post', $post->ID, 'dd_owl_shortcodes')) ? get_post_meta($post->ID, 'dd_owl_shortcodes', true) : '1';
         $shortcode = '[dd-owl-carousel id="'.$post->ID.'"]';
         echo "<div id='dd_owl_shortcode'>".esc_html($shortcode)."</div>\n";
-        echo "<div id='dd_shortcode_copy' class='button button-secondary'>Copy to Clipboard</div>\n";
-        if (($post_status == 'publish') && ($allow_shortcodes != '1')) {
-            echo "<div id='dd_owl_preview_slider' class='button button-secondary' ";
-            echo "onClick='document.getElementById(\"dd_owl_preview_popup\").style.display = \"block\";'>Preview Carousel</div>\n";
-        }
-
-        if (($post_status == 'publish') && ($allow_shortcodes != '1')) {
-            // DISPLAY SLIDER PREVIEW POPUP
-            echo "<div id='dd_owl_preview_popup' style='display:none;'>\n";
-            echo "<div id='dd_owl_preview_wrapper'>\n";
-            echo "<div id='dd_owl_preview_close' title='Close Carousel Preview' ";
-            echo "onClick='document.getElementById(\"dd_owl_preview_popup\").style.display = \"none\";'>X</div>\n";
-            echo do_shortcode("[dd-owl-carousel id='".$post->ID."']");
-            echo "</div>\n";
-            echo "</div>\n";
-        }
-
+        echo "<div id='dd_shortcode_copy' class='button button-primary'>Copy to Clipboard</div>\n";
     }
     
 	public function save_metabox( $post_id, $post ) {
@@ -294,6 +293,8 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_new_dots = isset( $_POST[ 'dd_owl_dots' ] ) ? 'checked'  : '';
         $dd_owl_new_thumbs = isset( $_POST[ 'dd_owl_thumbs' ] ) ? 'checked'  : '';
 		$dd_owl_new_css_id = isset( $_POST[ 'dd_owl_css_id' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_css_id' ] ) : '';
+		$dd_owl_new_excerpt_length = isset( $_POST[ 'dd_owl_excerpt_length' ] ) ? floatval( $_POST[ 'dd_owl_excerpt_length' ] ) : '';
+		$dd_owl_new_margin = isset( $_POST[ 'dd_owl_margin' ] ) ? floatval( $_POST[ 'dd_owl_margin' ] ) : '';
         
         $dd_owl_new_items_width1 = isset( $_POST['dd_owl_items_width1']) ? abs(intval($_POST['dd_owl_items_width1'])) : '';
         $dd_owl_new_items_width2 = isset( $_POST['dd_owl_items_width2']) ? abs(intval($_POST['dd_owl_items_width2'])) : '';
@@ -315,6 +316,8 @@ class Owl_Carousel_2_Meta {
 		update_post_meta( $post_id, 'dd_owl_dots', $dd_owl_new_dots );
 		update_post_meta( $post_id, 'dd_owl_thumbs', $dd_owl_new_thumbs );
         update_post_meta( $post_id, 'dd_owl_css_id', $dd_owl_new_css_id );
+        update_post_meta( $post_id, 'dd_owl_excerpt_length', $dd_owl_new_excerpt_length );
+        update_post_meta( $post_id, 'dd_owl_margin', $dd_owl_new_margin );
         
         // Update Side Meta Fields
 		update_post_meta( $post_id, 'dd_owl_items_width1', $dd_owl_new_items_width1 );

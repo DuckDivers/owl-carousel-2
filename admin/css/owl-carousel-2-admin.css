@@ -6,3 +6,22 @@
 select#dd_owl_post_type {
     text-transform: capitalize;
 }
+span.shortcode input.large-text.code {
+    width: 300px;
+}
+.post-type-owl-carousel .notice.is-dismissible {
+    display: none !important;
+}
+.post-type-owl-carousel #preview-action {
+    display: none !important;
+}
+.inside #dd_owl_shortcode {
+    padding: 8px 15px;
+    background-color: #eee;
+    margin-bottom: 1em;
+}
+#items_displayed_metabox em + span {
+    min-width: 130px;
+    display: inline-block;
+    padding-left: 30px;
+}

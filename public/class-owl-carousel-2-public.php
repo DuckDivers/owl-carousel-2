@@ -104,7 +104,9 @@ class Owl_Carousel_2_Public {
     $post_type = get_post_meta($post->ID, 'dd_owl_post_type', true);
     $per_page = get_post_meta( $post->ID, 'dd_owl_number_posts', true );        
 	$thumbs = (get_post_meta( $post->ID, 'dd_owl_thumbs', true ) == 'checked') ? 'true' : 'false';
-            
+	$excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
+	$css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
+        
     // WP_Query arguments
     $args = array(
         'post_type'              => array( $post_type ),
@@ -115,11 +117,22 @@ class Owl_Carousel_2_Public {
         
     // The Query
     $query = new WP_Query( $args );
-    $output = '<div class="owl-wrapper"><div id="carousel-'.$post->ID.'" class="owl-carousel owl-theme">';
+    
+
+    $output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
-            $output .= '<div class="item">';
+           
+            $output .= '<div class="item"><div class="item-inner">'; 
+            
+            // Add Hook before start of Carousel Content 
+            ob_start();
+                do_action('dd-carousel-before-content');
+                $hooked_start = ob_get_contents();
+            ob_end_clean();
+            $output .= $hooked_start;
+            
             // Show Image if Checked
             if ($thumbs == 'true'){
                 $thumb = get_post_thumbnail_id();
@@ -131,14 +144,20 @@ class Owl_Carousel_2_Public {
             
             if (has_excerpt()){
                  $excerpt = strip_shortcodes(get_the_excerpt());
-                 $excerpt = wp_trim_words($excerpt, 40, '...');
+                 $excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
                  $output .= $excerpt;
                 } else {
                  $theContent = apply_filters('the_content', get_the_content()); 
                  $theContent = strip_shortcodes($theContent);
-                 $output .= wp_trim_words( $theContent, 10, '...' );
+                 $output .= wp_trim_words( $theContent, $excerpt_length, '...' );
                 }
-            
+            $output .='</div>';
+            // Add Hook After End of Carousel Content 
+            ob_start();
+                do_action('dd-carousel-after-content');
+                $hooked_end = ob_get_contents();
+            ob_end_clean();
+            $output .= $hooked_end;
             $output .= '</div>';
         }
     }
@@ -154,6 +173,7 @@ class Owl_Carousel_2_Public {
     $dd_owl_orderby = get_post_meta( $post->ID, 'dd_owl_orderby', true );
     $navs = (get_post_meta( $post->ID, 'dd_owl_navs', true ) === 'checked') ? 'true' : 'false';
     $dots = (get_post_meta( $post->ID, 'dd_owl_dots', true ) === 'checked') ? 'true' : 'false';
+	$margin = get_post_meta( $post->ID, 'dd_owl_margin', true );
 
     $items_width1 = intval(get_post_meta($post->ID, 'dd_owl_items_width1', true));
     $items_width2 = intval(get_post_meta($post->ID, 'dd_owl_items_width2', true));
@@ -165,7 +185,7 @@ class Owl_Carousel_2_Public {
     $output .="
        <script type='text/javascript'>
            jQuery(document).ready(function($){
-            $('#carousel-{$post->ID}').owlCarousel({
+            $('#{$css_id}').owlCarousel({
                 loop:{$loop},
                 autoplay : true,
                 autoplayTimeout : {$duration},
@@ -174,6 +194,7 @@ class Owl_Carousel_2_Public {
                 autoplaySpeed : {$transition},
                 navSpeed : {$transition},
                 dotsSpeed : {$transition},
+                margin: {$margin},
                 autoplayHoverPause : true,
                 nav : {$navs},
                 navText : ['&lt;','&gt;'],
@@ -197,6 +218,6 @@ class Owl_Carousel_2_Public {
         </script>";
 
     return $output;
-}
+    }
     
 }
