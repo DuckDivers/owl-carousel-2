@@ -4,7 +4,8 @@
     
         $('.dd_owl_tooltip').tooltip();
     
-    // ##### CLICK EVENT HANDLER FOR THE SHORTCODE 'Copy to Clipboard' BUTTON #####
+        //  Copy to Clipboard
+        
         $('#dd_shortcode_copy').click(function() {
             var shortcode = document.getElementById('dd_owl_shortcode').innerHTML;
             var aux = document.createElement("input"); // Create a "hidden" input
@@ -17,7 +18,43 @@
             document.getElementById('dd_owl_shortcode').innerHTML = "Copied!";
             setTimeout(function(){ document.getElementById('dd_owl_shortcode').innerHTML = shortcode; }, 1000);
         });
-	
+        
+        $('#dd_owl_thumbs').change(function(){
+            if ($(this).is(':checked')) {
+                $('#image-options').removeClass('hidden');
+            }
+            else {
+               $('#image-options').addClass('hidden');
+            }
+        });
+        
+        $('#dd_owl_show_cta').change(function(){
+            if ($(this).is(':checked')) {
+                $('#show-button').removeClass('hidden');
+            }
+            else {
+               $('#show-button').addClass('hidden');
+            }
+        });
+        $('#dd_owl_thumbs, #dd_owl_show_cta').trigger('change');    
+        
+        $('select#dd_owl_post_type').change(function(){
+            var postType = $(this).val();
+                console.log(postType);
+                $.ajax({
+                    url: ajaxurl,
+                    type: "POST",
+                    data: {
+                        posttype: postType,
+                        action: 'owl_carousel_tax',
+                    },
+                    success: function(data){
+                        $('#results').html(data);
+                    }
+                });
+            });
+        $('select#dd_owl_post_type').trigger('change');
     }); // Document Ready
+        
     
 })( jQuery );

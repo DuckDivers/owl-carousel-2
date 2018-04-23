@@ -25,3 +25,14 @@ span.shortcode input.large-text.code {
     display: inline-block;
     padding-left: 30px;
 }
+#Carousel_Data .inside h4 {
+    background: #ccc;
+    margin: 0 -12px;
+    padding: 10px;
+}
+.form-table tr.heading {
+    border-bottom: 2px solid black;
+}
+.form-table tr.heading > th, .form-table tr.heading > td {
+    border-bottom: 2px solid black;
+}

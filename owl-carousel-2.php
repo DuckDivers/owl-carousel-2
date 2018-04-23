@@ -51,7 +51,7 @@ register_deactivation_hook( __FILE__, 'deactivate_owl_carousel_2' );
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-owl-carousel-2.php';
-
+require_once plugin_dir_path(__FILE__) . 'admin/ajax-functions.php';
 /**
  * Begins execution of the plugin.
  *

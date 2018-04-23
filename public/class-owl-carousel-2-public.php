@@ -106,7 +106,10 @@ class Owl_Carousel_2_Public {
 	$thumbs = (get_post_meta( $post->ID, 'dd_owl_thumbs', true ) == 'checked') ? 'true' : 'false';
 	$excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
 	$css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
-        
+	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
+    $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
+	$show_cta = (get_post_meta( $post->ID, 'dd_owl_show_cta', true ) == 'checked') ? 'true' : 'false';
+
     // WP_Query arguments
     $args = array(
         'post_type'              => array( $post_type ),
@@ -151,6 +154,10 @@ class Owl_Carousel_2_Public {
                  $theContent = strip_shortcodes($theContent);
                  $output .= wp_trim_words( $theContent, $excerpt_length, '...' );
                 }
+            if ($show_cta == 'true'){
+                    $link = get_the_permalink();
+                    $output .= "<a href='{$link}' class='carousel-button {$btn_class}'>{$cta_text}</a>";
+                }
             $output .='</div>';
             // Add Hook After End of Carousel Content 
             ob_start();
@@ -163,7 +170,7 @@ class Owl_Carousel_2_Public {
     }
     $output .= '</div></div>';
     
-    // Get Owl Meta
+    // Get Owl Meta for Carousel Init
 	$loop = (get_post_meta( $post->ID, 'dd_owl_loop', true ) === 'checked') ? 'true' : 'false';
 	$center = (get_post_meta( $post->ID, 'dd_owl_center', true ) === 'checked') ? 'true' : 'false';
 	$mousedrag = get_post_meta( $post->ID, 'dd_owl_mousedrag', true );
@@ -173,7 +180,7 @@ class Owl_Carousel_2_Public {
     $dd_owl_orderby = get_post_meta( $post->ID, 'dd_owl_orderby', true );
     $navs = (get_post_meta( $post->ID, 'dd_owl_navs', true ) === 'checked') ? 'true' : 'false';
     $dots = (get_post_meta( $post->ID, 'dd_owl_dots', true ) === 'checked') ? 'true' : 'false';
-	$margin = get_post_meta( $post->ID, 'dd_owl_margin', true );
+	$margin = get_post_meta( $post->ID, 'dd_owl_margin', true );    
 
     $items_width1 = intval(get_post_meta($post->ID, 'dd_owl_items_width1', true));
     $items_width2 = intval(get_post_meta($post->ID, 'dd_owl_items_width2', true));
