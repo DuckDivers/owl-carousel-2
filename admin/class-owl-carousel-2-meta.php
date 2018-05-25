@@ -80,6 +80,8 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_featured_product = get_post_meta( $post->ID, 'dd_owl_featured_product', true );
 		$dd_owl_post_taxonomy = get_post_meta( $post->ID, 'dd_owl_post_taxonomy', true );
 		$dd_owl_by_tax = get_post_meta( $post->ID, 'dd_owl_by_tax', true );
+        $dd_owl_product_ids = get_post_meta( $post->ID, 'dd_owl_product_ids', true );
+
      
 		// Set default values.
 		if( empty( $dd_owl_post_type ) ) $dd_owl_post_type = '';
@@ -93,6 +95,7 @@ class Owl_Carousel_2_Meta {
         if (empty( $dd_owl_cta ) ) $dd_owl_cta = 'Read More';
         if (empty( $dd_owl_btn_class ) ) $dd_owl_btn_class = 'btn btn-primary';
         if( empty( $dd_owl_image_options ) ) $dd_owl_image_options = 'dd_owl_null';
+        if( empty( $dd_owl_product_ids ) ) $dd_owl_product_ids = '';
 
         /**
          * Choose Post Type and Options
@@ -121,11 +124,27 @@ class Owl_Carousel_2_Meta {
 		echo '			<label><input type="checkbox" id="dd_owl_by_tax" name="dd_owl_by_tax" class="dd_owl_by_tax_field" value="checked" ' . checked( $dd_owl_by_tax, 'checked', false ) . '> ' . __( 'If Checked, the carousel will display the selected post Category/Taxonomy', 'owl-carousel-2' ) . '</label>';
 		echo '		</td>';
 		echo '	</tr>';
-		echo '	<tr>';
+        echo '	<tr class="product-rows">';
+		echo '		<th><label for="dd_owl_featured_product" class="dd_owl_featured_product_label">' . __( 'Featured Products', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<label><input type="checkbox" id="dd_owl_featured_product" name="dd_owl_featured_product" class="dd_owl_featured_product_field" value="checked" ' . checked( $dd_owl_featured_product, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'If this is checked, it will override the Product IDs and Show only featured products', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '	</tr>';
+
+		echo '	<tr class="product-rows product-ids">';
+		echo '		<th><label for="dd_owl_product_ids" class="dd_owl_product_ids_label">' . __( 'Product ID&rsquo;s', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="text" id="dd_owl_product_ids" name="dd_owl_product_ids" class="dd_owl_product_ids_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_product_ids ) . '">';
+		echo '			<p class="description">' . __( 'Enter the WooCommerce Product ID&rsquo;s in a comma separated list.', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '	</tr>';
+
+		echo '	<tr id="category-row">';
 		echo '		<th><label for="dd_owl_post_taxonomy" class="dd_owl_post_taxonomy_label">' . __( 'Post Category', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-        if (metadata_exists('post', $post->ID, 'dd_owl_post_taxonomy')) $meta = get_post_meta( $post->ID, 'dd_owl_post_taxonomy', true ); echo $meta;
-        echo '      <div id="results"></div>';
+        if (metadata_exists('post', $post->ID, 'dd_owl_post_taxonomy')) $meta = get_post_meta( $post->ID, 'dd_owl_post_taxonomy', true );
+        echo '      <div id="taxonomy"></div>';
 		echo '			<p class="description">' . __( 'Category / Taxonomy of Post', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
@@ -379,7 +398,7 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_new_featured_product = isset( $_POST[ 'dd_owl_featured_product' ] ) ? 'checked'  : '';
 		$dd_owl_new_post_taxonomy = isset( $_POST[ 'dd_owl_post_taxonomy' ] ) ? $_POST[ 'dd_owl_post_taxonomy' ] : '';
 		$dd_owl_new_by_tax = isset( $_POST[ 'dd_owl_by_tax' ] ) ? 'checked'  : '';
-
+        $dd_owl_new_product_ids = isset( $_POST[ 'dd_owl_product_ids' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_product_ids' ] ) : '';
 
         $dd_owl_new_items_width1 = isset( $_POST['dd_owl_items_width1']) ? abs(intval($_POST['dd_owl_items_width1'])) : '';
         $dd_owl_new_items_width2 = isset( $_POST['dd_owl_items_width2']) ? abs(intval($_POST['dd_owl_items_width2'])) : '';
@@ -411,6 +430,7 @@ class Owl_Carousel_2_Meta {
 		update_post_meta( $post_id, 'dd_owl_featured_product', $dd_owl_new_featured_product );
 		update_post_meta( $post_id, 'dd_owl_post_taxonomy', $dd_owl_new_post_taxonomy );
 		update_post_meta( $post_id, 'dd_owl_by_tax', $dd_owl_new_by_tax );
+		update_post_meta( $post_id, 'dd_owl_product_ids', $dd_owl_new_product_ids );
         
         // Update Side Meta Fields
 		update_post_meta( $post_id, 'dd_owl_items_width1', $dd_owl_new_items_width1 );

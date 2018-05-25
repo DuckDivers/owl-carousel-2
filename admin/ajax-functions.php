@@ -4,10 +4,14 @@ add_action('wp_ajax_owl_carousel_tax', 'owl_carousel_tax');
 
 function owl_carousel_tax(){
     global $wpdb;
+
+    $html = '';    
+        
+    $html .= '<select id="dd_owl_post_taxonomy" name="dd_owl_post_taxonomy" class="dd_owl_post_taxonomy_field">';
+       
+        $tax_objects = get_object_taxonomies($_POST['posttype'], 'objects');
     
-    $html = '<select id="dd_owl_post_taxonomy" name="dd_owl_post_taxonomy" class="dd_owl_post_taxonomy_field">';
-       $tax_objects = get_object_taxonomies($_POST['posttype'], 'objects');
-    foreach ($tax_objects as $tax){
+        foreach ($tax_objects as $tax){
 
 		$html .= '<option value="dd_owl_'.$tax->name.'" ' . selected( $dd_owl_post_taxonomy, 'dd_owl_' .$tax->name, false ) . '> ' . __( $tax->labels->name, 'owl-carousel-2' ) . '</option>';
         }
@@ -16,10 +20,8 @@ function owl_carousel_tax(){
 
     echo $html;
         
-    wp_die();        
+    die();        
 }
-
-
 
 //        echo '<pre>'; print_r($tax_objects); echo '</pre>';
 //        

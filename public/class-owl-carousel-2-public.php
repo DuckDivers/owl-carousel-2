@@ -109,19 +109,47 @@ class Owl_Carousel_2_Public {
 	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
     $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
 	$show_cta = (get_post_meta( $post->ID, 'dd_owl_show_cta', true ) == 'checked') ? 'true' : 'false';
-
+    $featured_products = (get_post_meta($post->ID, 'dd_owl_featured_product', true) == 'checked') ? 'true' : 'false';
+        
+    $ids = 'false';
+    if (get_post_meta( $post->ID, 'dd_owl_product_ids', true ) !== '') {
+        $ids = 'true';
+        $dd_owl_product_ids = get_post_meta( $post->ID, 'dd_owl_product_ids', true );
+    }
+        
+    if ($post_type == 'product' && $ids == 'true'){
+        $products = explode(',', $dd_owl_product_ids);
+        $args = array(
+            'post_type' => 'product',
+            'post__in' => $products,
+            );
+        }
+    elseif ($featured_products == 'true'){
+        $tax_query[] = array(
+            'taxonomy' => 'product_visibility',
+            'field'    => 'name',
+            'terms'    => 'featured',
+            'operator' => 'IN',
+        );
+        $args = array(
+            'posts_per_page'	=> -1,
+            'post_status' 		=> 'publish',
+            'post_type' 		=> 'product',
+            'tax_query' 		=>  $tax_query
+	   );
+    }    
+    else {    
     // WP_Query arguments
     $args = array(
         'post_type'              => array( $post_type ),
         'post_status'            => array( 'publish' ),
         'posts_per_page'         => $per_page,
         'orderby'                => 'rand',
-    );
+        );
+    }
         
     // The Query
     $query = new WP_Query( $args );
-    
-
     $output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
