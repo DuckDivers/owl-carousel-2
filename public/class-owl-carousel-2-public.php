@@ -109,22 +109,35 @@ class Owl_Carousel_2_Public {
 	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
     $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
 	$show_cta = (get_post_meta( $post->ID, 'dd_owl_show_cta', true ) == 'checked') ? 'true' : 'false';
-    $featured_products = (get_post_meta($post->ID, 'dd_owl_featured_product', true) == 'checked') ? 'true' : 'false';
-        
-    $ids = 'false';
-    if (get_post_meta( $post->ID, 'dd_owl_product_ids', true ) !== '') {
-        $ids = 'true';
-        $dd_owl_product_ids = get_post_meta( $post->ID, 'dd_owl_product_ids', true );
+    $tax_options = get_post_meta( $post->ID, 'dd_owl_tax_options', true);
+    $postIDs = get_post_meta($post->ID, 'dd_owl_post_ids', true);
+	$orderby = get_post_meta( $post->ID, 'dd_owl_orderby', true );
+    $taxonomy = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_type', true );
+	$term = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_term', true );
+       
+    if ($orderby == 'menu'){
+        $order = 'ASC';
     }
+    else {
+        $new_order = explode('_', $orderby);
+        $orderby = $new_order['0'];
+        $order = $new_order['1'];
+    }    
+
+    /**
+     * Init WP Queries
+     *
+     * @since    1.0.0
+     */
         
-    if ($post_type == 'product' && $ids == 'true'){
-        $products = explode(',', $dd_owl_product_ids);
+    if ($tax_options == 'postID'){
+        $posts = explode(',', $postIDs);
         $args = array(
-            'post_type' => 'product',
-            'post__in' => $products,
+            'post_type' => $post_type,
+            'post__in' => $posts,
             );
         }
-    elseif ($featured_products == 'true'){
+    elseif ($tax_options == 'featured_product'){
         $tax_query[] = array(
             'taxonomy' => 'product_visibility',
             'field'    => 'name',
@@ -132,24 +145,50 @@ class Owl_Carousel_2_Public {
             'operator' => 'IN',
         );
         $args = array(
-            'posts_per_page'	=> -1,
             'post_status' 		=> 'publish',
             'post_type' 		=> 'product',
             'tax_query' 		=>  $tax_query
 	   );
+    }
+    elseif ($post_type == 'product' && $tax_options == 'taxonomy'){
+      $args = array(
+            'post_type'     => array( 'product' ),
+            'product_cat'   => $term,
+        );
+
+    }    
+    elseif ($post_type !== 'product' && $tax_options == 'taxonomy'){
+      $tax_query = array(
+            'taxonomy'  => $taxonomy,
+            'field'     => 'name',
+            'terms'     => $term,
+            'operator'  => 'IN'
+          );
+
+        $args = array(
+          'post_type'     => $post_type,
+          'tax_query'   => $tax_query,
+        );
+
     }    
     else {    
     // WP_Query arguments
     $args = array(
         'post_type'              => array( $post_type ),
         'post_status'            => array( 'publish' ),
-        'posts_per_page'         => $per_page,
-        'orderby'                => 'rand',
         );
     }
-        
+    $standard_args = array(
+        'orderby'        => $orderby,
+        'order'          => $order,
+        'posts_per_page' => $per_page
+    );
+    $args = array_merge( $args, $standard_args);
+    
+    echo '<pre>'; print_r($args); echo '</pre>';
+    
     // The Query
-    $query = new WP_Query( $args );
+    
     $output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {

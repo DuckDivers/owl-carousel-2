@@ -38,8 +38,8 @@
         });
 
         $('select#dd_owl_post_type').change(function(){
+            $('span.ajax-loader').css('display', 'block');
             var postType = $(this).val();
-                console.log(postType);
             if (postType === 'product'){
                  $('.product-rows').show();
                 }    
@@ -47,34 +47,72 @@
                 $('.product-rows').hide();
             }            
             // Select the product category
-            
+            var postID = $('input#post_ID').val();
             $.ajax({
                 url: ajaxurl,
                 type: "POST",
                 data: {
                     posttype: postType,
                     action: 'owl_carousel_tax',
+                    postid: postID,
                     },
                 success: function(data){
-                    $('#taxonomy').html(data);
-                    }
+                        $('#taxonomy').html(data);
+                        ajax_get_terms();
+                        }
                 });
                
             });
-        $('select#dd_owl_post_type').trigger('change');
+        $('select#dd_owl_post_type').trigger('change');        
         
-        $('#dd_owl_featured_product').change(function(){
-            if ($(this).is(':checked')) {
-                $('.product-rows.product-ids').hide();
+        $('input[name="dd_owl_tax_options"]').change(function(){
+            var ck = $('input[name="dd_owl_tax_options"]:checked').val();
+            if (ck === 'taxonomy'){
+                $('#category-row').removeClass('hidden').addClass('visible');
+                $('#choose-postids.visible').addClass('hidden').removeClass('visible');
+            }
+            else if (ck === 'postID'){
+                $('#choose-postids').removeClass('hidden').addClass('visible');
+                $('#category-row.visible').addClass('hidden').removeClass('visible');
             }
             else {
-               $('.product-rows.product-ids').show();
+                $('#category-row.visible').addClass('hidden').removeClass('visible');
+                $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }
         });
 
-        $('#dd_owl_thumbs, #dd_owl_show_cta, #dd_owl_featured_product').trigger('change');    // Trigger All Functions to Run on Load
-        
+        // Trigger All Functions to Run on Load
+        $('#dd_owl_thumbs, #dd_owl_show_cta, #dd_owl_featured_product, input[name="dd_owl_tax_options"]').trigger('change');        
+
     }); // Document Ready
+    
+    $(document).on('ajaxComplete', function(){
+        $('#dd_owl_post_taxonomy_type').change(function(){
+            ajax_get_terms(); 
+        });   
+    })
+    
+    function ajax_get_terms(){
+        $('span.ajax-loader').css('display', 'block');
+        var postType = $('#select#dd_owl_post_type').val();
+        var taxType = $('select#dd_owl_post_taxonomy_type').val();
+        var postID = $('input#post_ID').val();
+
+        $.ajax({
+                url: ajaxurl,
+                type: "POST",
+                data: {
+                        posttype: postType,
+                        taxtype: taxType,
+                        postid: postID,
+                        action: 'owl_carousel_terms',
+                    },
+                success: function(data){
+                    $('#taxterm').html(data);
+                    $('span.ajax-loader').css('display', 'none');
+                    }
+                });
         
+    }   
     
 })( jQuery );

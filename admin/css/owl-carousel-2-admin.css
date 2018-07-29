@@ -30,9 +30,30 @@ span.shortcode input.large-text.code {
     margin: 0 -12px;
     padding: 10px;
 }
-.form-table tr.heading {
+#Carousel_Data #postOptions{
+    position: relative;
+}
+#Carousel_Data .form-table tr.heading {
     border-bottom: 2px solid black;
 }
-.form-table tr.heading > th, .form-table tr.heading > td {
+#Carousel_Data .form-table tr.heading > th, .form-table tr.heading > td {
     border-bottom: 2px solid black;
+}
+span.no-cats {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+#Carousel_Data span.ajax-loader {
+    background: url('spinner-2x.gif') no-repeat;
+    background-size: 30px 30px;
+    vertical-align: middle;
+    opacity: .8;
+    filter: alpha(opacity=80);
+    width: 30px;
+    height: 30px;
+    margin: 15px 0 0;
+    top: 48%;
+    left: 280px;
+    position:absolute;
+    display:none;
 }

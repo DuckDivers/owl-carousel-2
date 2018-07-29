@@ -77,10 +77,10 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_cta = get_post_meta( $post->ID, 'dd_owl_cta', true );
 		$dd_owl_btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
         $dd_owl_image_options = get_post_meta( $post->ID, 'dd_owl_image_options', true );
-		$dd_owl_featured_product = get_post_meta( $post->ID, 'dd_owl_featured_product', true );
-		$dd_owl_post_taxonomy = get_post_meta( $post->ID, 'dd_owl_post_taxonomy', true );
-		$dd_owl_by_tax = get_post_meta( $post->ID, 'dd_owl_by_tax', true );
-        $dd_owl_product_ids = get_post_meta( $post->ID, 'dd_owl_product_ids', true );
+		$dd_owl_post_taxonomy_type = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_type', true );
+		$dd_owl_post_taxonomy_term = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_term', true );
+        $dd_owl_post_ids = get_post_meta( $post->ID, 'dd_owl_post_ids', true );
+        $dd_owl_tax_options = get_post_meta( $post->ID, 'dd_owl_tax_options', true );
 
      
 		// Set default values.
@@ -95,13 +95,15 @@ class Owl_Carousel_2_Meta {
         if (empty( $dd_owl_cta ) ) $dd_owl_cta = 'Read More';
         if (empty( $dd_owl_btn_class ) ) $dd_owl_btn_class = 'btn btn-primary';
         if( empty( $dd_owl_image_options ) ) $dd_owl_image_options = 'dd_owl_null';
-        if( empty( $dd_owl_product_ids ) ) $dd_owl_product_ids = '';
+        if( empty( $dd_owl_post_ids ) ) $dd_owl_post_ids = '';
+        if( empty( $dd_owl_tax_options ) ) $dd_owl_tax_options = 'null';
 
         /**
          * Choose Post Type and Options
          *
          * @since    1.0.0
          */
+        echo '<div id="postOptions"><span class="ajax-loader"></span>';
         echo '<h4>Post Type and Post Options</h4>';
         echo '<table class="form-table">';
 		echo '	<tr>';
@@ -109,43 +111,51 @@ class Owl_Carousel_2_Meta {
 		echo '		<td>';        
         echo '			<select id="dd_owl_post_type" name="dd_owl_post_type" class="dd_owl_post_type_field">';
                 foreach ( $post_types  as $post_type ) {
+                    if (!in_array($post_type->name, array('page', 'attachment')))    {
 		echo '			<option value="'.$post_type->name.'" ';
         echo ($post_type->name === $dd_owl_post_type) ? "selected" : '';
         echo    '> ' . __( $post_type->label, 'owl-carousel-2' ) . '</option>';
+                    }
                 }
 		echo '			</select>';
 		echo '			<p class="description">' . __( 'Type of Post', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
         
-        echo '	<tr>';
-		echo '		<th><label for="dd_owl_by_tax" class="dd_owl_by_tax_label">' . __( 'By Category', 'owl-carousel-2' ) . '</label></th>';
+        
+        echo '	<tr id="tax-options">';
+		echo '		<th><label for="dd_owl_tax_options" class="dd_owl_tax_options_label">' . __( 'Taxonomy Display Options', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-		echo '			<label><input type="checkbox" id="dd_owl_by_tax" name="dd_owl_by_tax" class="dd_owl_by_tax_field" value="checked" ' . checked( $dd_owl_by_tax, 'checked', false ) . '> ' . __( 'If Checked, the carousel will display the selected post Category/Taxonomy', 'owl-carousel-2' ) . '</label>';
-		echo '		</td>';
-		echo '	</tr>';
-        echo '	<tr class="product-rows">';
-		echo '		<th><label for="dd_owl_featured_product" class="dd_owl_featured_product_label">' . __( 'Featured Products', 'owl-carousel-2' ) . '</label></th>';
-		echo '		<td>';
-		echo '			<label><input type="checkbox" id="dd_owl_featured_product" name="dd_owl_featured_product" class="dd_owl_featured_product_field" value="checked" ' . checked( $dd_owl_featured_product, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
-		echo '			<p class="description">' . __( 'If this is checked, it will override the Product IDs and Show only featured products', 'owl-carousel-2' ) . '</p>';
+		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="null" ' . checked( $dd_owl_tax_options, 'null', false ) . '> ' . __( 'None - Show Latest Posts - set number of posts below', 'owl-carousel-2' ) . '</label><br>';
+		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="taxonomy" ' . checked( $dd_owl_tax_options, 'taxonomy', false ) . '> ' . __( 'By Taxonomy/Category - choose taxonomy below.', 'owl-carousel-2' ) . '</label><br>';
+		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="postID" ' . checked( $dd_owl_tax_options, 'postID', false ) . '> ' . __( 'By Post ID - Show Post / Product / Custom Post Type by Post ID.', 'owl-carousel-2' ) . '</label><br>';
+        echo '			<label class="product-rows"><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="featured_product" ' . checked( $dd_owl_tax_options, 'featured_product', false ) . '> ' . __( 'Show Featured &#40;Starred&#41; Products', 'owl-carousel-2' ) . '</label><br>';
 		echo '		</td>';
 		echo '	</tr>';
 
-		echo '	<tr class="product-rows product-ids">';
-		echo '		<th><label for="dd_owl_product_ids" class="dd_owl_product_ids_label">' . __( 'Product ID&rsquo;s', 'owl-carousel-2' ) . '</label></th>';
+        echo '	<tr id="choose-postids" class="hidden">';
+		echo '		<th><label for="dd_owl_post_ids" class="dd_owl_post_ids_label">' . __( 'Post/Product ID&rsquo;s', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-		echo '			<input type="text" id="dd_owl_product_ids" name="dd_owl_product_ids" class="dd_owl_product_ids_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_product_ids ) . '">';
-		echo '			<p class="description">' . __( 'Enter the WooCommerce Product ID&rsquo;s in a comma separated list.', 'owl-carousel-2' ) . '</p>';
+		echo '			<input type="text" id="dd_owl_post_ids" name="dd_owl_post_ids" class="dd_owl_post_ids_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_post_ids ) . '">';
+		echo '			<p class="description">' . __( 'Enter the Post/Product ID&rsquo;s in a comma separated list.', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
 
-		echo '	<tr id="category-row">';
-		echo '		<th><label for="dd_owl_post_taxonomy" class="dd_owl_post_taxonomy_label">' . __( 'Post Category', 'owl-carousel-2' ) . '</label></th>';
+		echo '	<tr id="category-row" class="hidden">';
+		echo '		<th><label for="dd_owl_post_taxonomy_type" class="dd_owl_post_taxonomy_type_label">' . __( 'Taxonomy Type', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-        if (metadata_exists('post', $post->ID, 'dd_owl_post_taxonomy')) $meta = get_post_meta( $post->ID, 'dd_owl_post_taxonomy', true );
+//        if (metadata_exists('post', $post->ID, 'dd_owl_post_taxonomy_type')) $meta = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_type', true );
         echo '      <div id="taxonomy"></div>';
-		echo '			<p class="description">' . __( 'Category / Taxonomy of Post', 'owl-carousel-2' ) . '</p>';
+		echo '			<p class="description">' . __( 'Taxonomy &#40;Category, Tag, etc&#41; of Post', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '	</tr>';
+        
+		echo '	<tr id="tax-term-row" class="visible">';
+		echo '		<th><label for="dd_owl_post_taxonomy_term" class="dd_owl_post_taxonomy_term_label">' . __( 'Taxonomy Term', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+//        if (metadata_exists('post', $post->ID, 'dd_owl_post_taxonomy_term')) $term = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_term', true );
+        echo '      <div id="taxterm"></div>';
+		echo '			<p class="description">' . __( 'Category, Tag, or other term of Post', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
         
@@ -153,7 +163,8 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_number_posts" class="dd_owl_number_posts_label">' . __( 'Number of Posts', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<input type="number" id="dd_owl_number_posts" name="dd_owl_number_posts" class="dd_owl_number_posts_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_number_posts ) . '">';
-		echo '		</td>';
+		echo '			<p class="description">' . __( 'Enter the number of posts to show.  -1 &#40;negative 1&#41; shows all posts.', 'owl-carousel-2' ) . '</p>';
+        echo '		</td>';
 		echo '	</tr>';
         echo '	<tr>';
 		echo '		<th><label for="dd_owl_excerpt_length" class="dd_owl_excerpt_length_label">' . __( 'Post Excerpt Length', 'owl-carousel-2' ) . '</label></th>';
@@ -166,15 +177,16 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_orderby" class="dd_owl_orderby_label">' . __( 'Order Output', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<select id="dd_owl_orderby" name="dd_owl_orderby" class="dd_owl_orderby_field">';
-		echo '			<option value="dd_owl_asc" ' . selected( $dd_owl_orderby, 'dd_owl_asc', false ) . '> ' . __( ' Date Ascending', 'owl-carousel-2' ) . '</option>';
-		echo '			<option value="dd_owl_desc" ' . selected( $dd_owl_orderby, 'dd_owl_desc', false ) . '> ' . __( 'Date Descending', 'owl-carousel-2' ) . '</option>';
-		echo '			<option value="dd_owl_rand" ' . selected( $dd_owl_orderby, 'dd_owl_rand', false ) . '> ' . __( 'Date Random', 'owl-carousel-2' ) . '</option>';
-		echo '			<option value="dd_owl_title" ' . selected( $dd_owl_orderby, 'dd_owl_title', false ) . '> ' . __( 'Title', 'owl-carousel-2' ) . '</option>';
-		echo '			<option value="dd_owl_menu" ' . selected( $dd_owl_orderby, 'dd_owl_menu', false ) . '> ' . __( 'Menu Order', 'owl-carousel-2' ) . '</option>';
+		echo '			<option value="date_asc" ' . selected( $dd_owl_orderby, 'date_asc', false ) . '> ' . __( ' Date Ascending', 'owl-carousel-2' ) . '</option>';
+		echo '			<option value="date_desc" ' . selected( $dd_owl_orderby, 'date_desc', false ) . '> ' . __( 'Date Descending', 'owl-carousel-2' ) . '</option>';
+		echo '			<option value="date_rand" ' . selected( $dd_owl_orderby, 'date_rnd', false ) . '> ' . __( 'Date Random', 'owl-carousel-2' ) . '</option>';
+		echo '			<option value="title_asc" ' . selected( $dd_owl_orderby, 'title_asc', false ) . '> ' . __( 'Title Ascending', 'owl-carousel-2' ) . '</option>';
+        echo '			<option value="title_desc" ' . selected( $dd_owl_orderby, 'title_desc', false ) . '> ' . __( 'Title Descending', 'owl-carousel-2' ) . '</option>';
+		echo '			<option value="menu" ' . selected( $dd_owl_orderby, 'menu', false ) . '> ' . __( 'Menu Order', 'owl-carousel-2' ) . '</option>';
 		echo '			</select>';
 		echo '		</td>';
 		echo '	</tr>';
-        echo '  </table>';
+        echo '  </table></div>';
         
         /**
          * Display Post Options - Set Appearance
@@ -395,10 +407,9 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_new_excerpt_length = isset( $_POST[ 'dd_owl_excerpt_length' ] ) ? floatval( $_POST[ 'dd_owl_excerpt_length' ] ) : '';
 		$dd_owl_new_margin = isset( $_POST[ 'dd_owl_margin' ] ) ? floatval( $_POST[ 'dd_owl_margin' ] ) : '';
 		$dd_owl_new_image_options = isset( $_POST[ 'dd_owl_image_options' ] ) ? $_POST[ 'dd_owl_image_options' ] : '';
-		$dd_owl_new_featured_product = isset( $_POST[ 'dd_owl_featured_product' ] ) ? 'checked'  : '';
-		$dd_owl_new_post_taxonomy = isset( $_POST[ 'dd_owl_post_taxonomy' ] ) ? $_POST[ 'dd_owl_post_taxonomy' ] : '';
-		$dd_owl_new_by_tax = isset( $_POST[ 'dd_owl_by_tax' ] ) ? 'checked'  : '';
-        $dd_owl_new_product_ids = isset( $_POST[ 'dd_owl_product_ids' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_product_ids' ] ) : '';
+		$dd_owl_new_tax_options = isset( $_POST[ 'dd_owl_tax_options' ] ) ? $_POST[ 'dd_owl_tax_options' ] : '';
+		$dd_owl_new_post_taxonomy_type = isset( $_POST[ 'dd_owl_post_taxonomy_type' ] ) ? $_POST[ 'dd_owl_post_taxonomy_type' ] : '';		$dd_owl_new_post_taxonomy_term = isset( $_POST[ 'dd_owl_post_taxonomy_term' ] ) ? $_POST[ 'dd_owl_post_taxonomy_term' ] : '';
+        $dd_owl_new_post_ids = isset( $_POST[ 'dd_owl_post_ids' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_post_ids' ] ) : '';
 
         $dd_owl_new_items_width1 = isset( $_POST['dd_owl_items_width1']) ? abs(intval($_POST['dd_owl_items_width1'])) : '';
         $dd_owl_new_items_width2 = isset( $_POST['dd_owl_items_width2']) ? abs(intval($_POST['dd_owl_items_width2'])) : '';
@@ -427,10 +438,9 @@ class Owl_Carousel_2_Meta {
         update_post_meta( $post_id, 'dd_owl_excerpt_length', $dd_owl_new_excerpt_length );
         update_post_meta( $post_id, 'dd_owl_margin', $dd_owl_new_margin );
   		update_post_meta( $post_id, 'dd_owl_image_options', $dd_owl_new_image_options );
-		update_post_meta( $post_id, 'dd_owl_featured_product', $dd_owl_new_featured_product );
-		update_post_meta( $post_id, 'dd_owl_post_taxonomy', $dd_owl_new_post_taxonomy );
-		update_post_meta( $post_id, 'dd_owl_by_tax', $dd_owl_new_by_tax );
-		update_post_meta( $post_id, 'dd_owl_product_ids', $dd_owl_new_product_ids );
+		update_post_meta( $post_id, 'dd_owl_post_taxonomy_term', $dd_owl_new_post_taxonomy_term );
+		update_post_meta( $post_id, 'dd_owl_post_ids', $dd_owl_new_post_ids );
+		update_post_meta( $post_id, 'dd_owl_tax_options', $dd_owl_new_tax_options );
         
         // Update Side Meta Fields
 		update_post_meta( $post_id, 'dd_owl_items_width1', $dd_owl_new_items_width1 );
