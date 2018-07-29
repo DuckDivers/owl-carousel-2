@@ -185,10 +185,10 @@ class Owl_Carousel_2_Public {
     );
     $args = array_merge( $args, $standard_args);
     
-    echo '<pre>'; print_r($args); echo '</pre>';
-    
     // The Query
     
+    $query = new WP_Query( $args );
+
     $output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
