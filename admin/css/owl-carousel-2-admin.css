@@ -9,7 +9,7 @@ select#dd_owl_post_type {
 span.shortcode input.large-text.code {
     width: 300px;
 }
-.post-type-owl-carousel .notice.is-dismissible {
+.post-type-owl-carousel .notice.is-dismissible a {
     display: none !important;
 }
 .post-type-owl-carousel #preview-action {

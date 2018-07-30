@@ -30,15 +30,16 @@
         
         $('#dd_owl_show_cta').change(function(){
             if ($(this).is(':checked')) {
-                $('#show-button').removeClass('hidden');
+                $('.show-button').removeClass('hidden');
             }
             else {
-               $('#show-button').addClass('hidden');
+               $('.show-button').addClass('hidden');
             }
         });
 
         $('select#dd_owl_post_type').change(function(){
             $('span.ajax-loader').css('display', 'block');
+            $('#term-row.visible').addClass('hidden').removeClass('visible');
             var postType = $(this).val();
             if (postType === 'product'){
                  $('.product-rows').show();
@@ -73,10 +74,10 @@
             }
             else if (ck === 'postID'){
                 $('#choose-postids').removeClass('hidden').addClass('visible');
-                $('#category-row.visible').addClass('hidden').removeClass('visible');
+                $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
             }
             else {
-                $('#category-row.visible').addClass('hidden').removeClass('visible');
+                $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }
         });
@@ -90,14 +91,13 @@
         $('#dd_owl_post_taxonomy_type').change(function(){
             ajax_get_terms(); 
         });   
-    })
+    });
     
     function ajax_get_terms(){
         $('span.ajax-loader').css('display', 'block');
-        var postType = $('#select#dd_owl_post_type').val();
+        var postType = $('select#dd_owl_post_type').val();
         var taxType = $('select#dd_owl_post_taxonomy_type').val();
         var postID = $('input#post_ID').val();
-
         $.ajax({
                 url: ajaxurl,
                 type: "POST",
@@ -110,6 +110,9 @@
                 success: function(data){
                     $('#taxterm').html(data);
                     $('span.ajax-loader').css('display', 'none');
+                        if (data.length > 234){
+                            $('#term-row').addClass('visible').removeClass('hidden');
+                        }
                     }
                 });
         

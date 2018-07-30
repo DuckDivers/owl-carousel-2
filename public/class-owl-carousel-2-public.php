@@ -64,7 +64,7 @@ class Owl_Carousel_2_Public {
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/owl-carousel-2-public.css', array(), $this->version, 'all' );
         wp_register_style( 'owl-carousel-css', plugin_dir_url(__FILE__) . 'css/owl.carousel.min.css');
         wp_register_style( 'owl-theme-css', plugin_dir_url(__FILE__) . 'css/owl.theme.default.css');
-
+        wp_register_style( 'dd-featherlight-css', plugin_dir_url(__FILE__) . 'css/featherlight.css');
 	}
 
 	/**
@@ -76,6 +76,7 @@ class Owl_Carousel_2_Public {
 
         wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/owl-carousel-2-public.js', array( 'jquery' ), $this->version, false );
         wp_register_script ('owl-two', plugin_dir_url( __FILE__ ) . 'js/owl.carousel.min.js', array('jquery'), '2.2.1', true);
+        wp_register_script ('dd-featherlight', plugin_dir_url(__FILE__) . 'js/featherlight.js', array('jquery'), '1.7.13', true);
 	}
     
     /**
@@ -104,17 +105,25 @@ class Owl_Carousel_2_Public {
     $post_type = get_post_meta($post->ID, 'dd_owl_post_type', true);
     $per_page = get_post_meta( $post->ID, 'dd_owl_number_posts', true );        
 	$thumbs = (get_post_meta( $post->ID, 'dd_owl_thumbs', true ) == 'checked') ? 'true' : 'false';
-	$excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
+    $image_options = get_post_meta( $post->ID, 'dd_owl_image_options', true );
+    $excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
 	$css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
 	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
     $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
+    $btn_display = get_post_meta( $post->ID, 'dd_owl_btn_display', true );
+    $btn_margin = get_post_meta( $post->ID, 'dd_owl_btn_margin', true );
 	$show_cta = (get_post_meta( $post->ID, 'dd_owl_show_cta', true ) == 'checked') ? 'true' : 'false';
     $tax_options = get_post_meta( $post->ID, 'dd_owl_tax_options', true);
     $postIDs = get_post_meta($post->ID, 'dd_owl_post_ids', true);
 	$orderby = get_post_meta( $post->ID, 'dd_owl_orderby', true );
     $taxonomy = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_type', true );
 	$term = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_term', true );
-       
+        
+    if ($image_options == 'lightbox') {
+        wp_enqueue_script('dd-featherlight');
+        wp_enqueue_style('dd-featherlight-css');
+    }    
+        
     if ($orderby == 'menu'){
         $order = 'ASC';
     }
@@ -159,14 +168,17 @@ class Owl_Carousel_2_Public {
     }    
     elseif ($post_type !== 'product' && $tax_options == 'taxonomy'){
       $tax_query = array(
+          'relation' => 'AND',
+          array(
             'taxonomy'  => $taxonomy,
-            'field'     => 'name',
+            'field'     => 'slug',
             'terms'     => $term,
-            'operator'  => 'IN'
+            'operator'  => 'IN',
+              )
           );
 
         $args = array(
-          'post_type'     => $post_type,
+          'post_type'   => $post_type,
           'tax_query'   => $tax_query,
         );
 
@@ -188,12 +200,13 @@ class Owl_Carousel_2_Public {
     // The Query
     
     $query = new WP_Query( $args );
-
+    
+    //Owl Carousel Wrapper
     $output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
-           
+
             $output .= '<div class="item"><div class="item-inner">'; 
             
             // Add Hook before start of Carousel Content 
@@ -202,12 +215,24 @@ class Owl_Carousel_2_Public {
                 $hooked_start = ob_get_contents();
             ob_end_clean();
             $output .= $hooked_start;
-            
+   //             echo '<pre>'; print_r($post->permalink); echo '</pre>';
+            $link = get_the_permalink();
             // Show Image if Checked
             if ($thumbs == 'true'){
                 $thumb = get_post_thumbnail_id();
-                $image = wp_get_attachment_url( $thumb,'medium' ); 
+                $image = wp_get_attachment_url( $thumb,'medium' );
+                if ($image_options == 'link' || $image_options == 'lightbox'){
+                    if ($image_options == 'lightbox') {
+                        $class = 'data-featherlight="'.$image.'" class="lightbox"';
+                    }
+                    else {
+                        $class = 'class="linked-image"';
+                    }
+                                        
+                    $output .= sprintf('<a href="%s" %s>', $link, $class); 
+                }
                 $output .= '<img src="'.$image.'" />';
+                $output .= ($image_options == 'link' || $image_options == 'lightbox') ? '</a>' : '';
             }
             $title = get_the_title();
             $output .= "<h4>{$title}</h4>";
@@ -223,7 +248,7 @@ class Owl_Carousel_2_Public {
                 }
             if ($show_cta == 'true'){
                     $link = get_the_permalink();
-                    $output .= "<a href='{$link}' class='carousel-button {$btn_class}'>{$cta_text}</a>";
+                    $output .= "<p><a href='{$link}' class='carousel-button {$btn_class}' style='display: {$btn_display}; margin: {$btn_margin}'>{$cta_text}</a></p>";
                 }
             $output .='</div>';
             // Add Hook After End of Carousel Content 
@@ -257,7 +282,7 @@ class Owl_Carousel_2_Public {
     $items_width6 = intval(get_post_meta($post->ID, 'dd_owl_items_width6', true));
    
     $output .="
-       <script type='text/javascript'>
+       <script type='text/javascript' async>
            jQuery(document).ready(function($){
             $('#{$css_id}').owlCarousel({
                 loop:{$loop},
