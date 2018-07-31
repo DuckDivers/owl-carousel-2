@@ -81,9 +81,16 @@
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }
         });
-
+        
+        $('select#dd_owl_btn_display').change(function(){
+            if ($(this).val() !== 'inline'){
+                $('.button-margin.hidden').addClass('visible').removeClass('hidden');
+            }
+            else {$('button-margin').addClass('hidden').removeClass('visible');}
+        });
+        
         // Trigger All Functions to Run on Load
-        $('#dd_owl_thumbs, #dd_owl_show_cta, #dd_owl_featured_product, input[name="dd_owl_tax_options"]').trigger('change');        
+        $('#dd_owl_thumbs, #dd_owl_show_cta, #dd_owl_featured_product, input[name="dd_owl_tax_options"], select#dd_owl_btn_display').trigger('change');        
 
     }); // Document Ready
     

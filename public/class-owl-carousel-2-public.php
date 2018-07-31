@@ -63,7 +63,7 @@ class Owl_Carousel_2_Public {
 
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/owl-carousel-2-public.css', array(), $this->version, 'all' );
         wp_register_style( 'owl-carousel-css', plugin_dir_url(__FILE__) . 'css/owl.carousel.min.css');
-        wp_register_style( 'owl-theme-css', plugin_dir_url(__FILE__) . 'css/owl.theme.default.css');
+        wp_register_style( 'owl-theme-css', plugin_dir_url(__FILE__) . 'css/owl.theme.default.min.css');
         wp_register_style( 'dd-featherlight-css', plugin_dir_url(__FILE__) . 'css/featherlight.css');
 	}
 
@@ -78,6 +78,17 @@ class Owl_Carousel_2_Public {
         wp_register_script ('owl-two', plugin_dir_url( __FILE__ ) . 'js/owl.carousel.min.js', array('jquery'), '2.2.1', true);
         wp_register_script ('dd-featherlight', plugin_dir_url(__FILE__) . 'js/featherlight.js', array('jquery'), '1.7.13', true);
 	}
+    
+    /**
+	 * Include the Additional Functions for Admin
+	 *
+	 * @since    1.0.0
+	 */
+    
+    private function include_admin_classes() {
+        include_once( plugin_dir_path(__FILE__) . 'class-owl-carousel-2-shortcode.php');
+    }
+
     
     /**
      * Include the Shortcode Script
@@ -206,6 +217,10 @@ class Owl_Carousel_2_Public {
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
+            
+            // Retrieve Variables
+            $title = get_the_title();
+            $link = get_the_permalink();
 
             $output .= '<div class="item"><div class="item-inner">'; 
             
@@ -215,8 +230,7 @@ class Owl_Carousel_2_Public {
                 $hooked_start = ob_get_contents();
             ob_end_clean();
             $output .= $hooked_start;
-   //             echo '<pre>'; print_r($post->permalink); echo '</pre>';
-            $link = get_the_permalink();
+   
             // Show Image if Checked
             if ($thumbs == 'true'){
                 $thumb = get_post_thumbnail_id();
@@ -234,8 +248,9 @@ class Owl_Carousel_2_Public {
                 $output .= '<img src="'.$image.'" />';
                 $output .= ($image_options == 'link' || $image_options == 'lightbox') ? '</a>' : '';
             }
-            $title = get_the_title();
-            $output .= "<h4>{$title}</h4>";
+            // Add filter to change heading type
+            $title_heading = apply_filters('owl_title_heading', 'h4');
+            $output .= "<{$title_heading}>{$title}</{$title_heading}>";
             
             if (has_excerpt()){
                  $excerpt = strip_shortcodes(get_the_excerpt());
@@ -280,8 +295,8 @@ class Owl_Carousel_2_Public {
     $items_width4 = intval(get_post_meta($post->ID, 'dd_owl_items_width4', true));
     $items_width5 = intval(get_post_meta($post->ID, 'dd_owl_items_width5', true));
     $items_width6 = intval(get_post_meta($post->ID, 'dd_owl_items_width6', true));
-   
-    $output .="
+
+    $output .= "
        <script type='text/javascript' async>
            jQuery(document).ready(function($){
             $('#{$css_id}').owlCarousel({
@@ -294,7 +309,7 @@ class Owl_Carousel_2_Public {
                 navSpeed : {$transition},
                 dotsSpeed : {$transition},
                 margin: {$margin},
-                autoplayHoverPause : true,
+                autoplayHoverPause : {$stop},
                 nav : {$navs},
                 navText : ['&lt;','&gt;'],
                 dots : {$dots},

@@ -94,17 +94,7 @@ class Owl_Carousel_2_Admin {
     
     public function enqueue_jqueryui() {
         wp_enqueue_script( 'jquery-ui-core' );
-		wp_enqueue_script( 'jquery-ui-accordion' );
-		wp_enqueue_script( 'jquery-ui-tabs' );
-		wp_enqueue_script( 'jquery-ui-slider' );
-		wp_enqueue_script( 'jquery-ui-sortable' );
-		wp_enqueue_script( 'jquery-ui-draggable' );
-		wp_enqueue_script( 'jquery-ui-droppable' );
-		wp_enqueue_script( 'jquery-ui-resize' );
-		wp_enqueue_script( 'jquery-ui-dialog' );
-		wp_enqueue_script( 'jquery-ui-button' );
 		wp_enqueue_script( 'jquery-ui-tooltip' );
-		wp_enqueue_script( 'jquery-ui-spinner' );
     }
     
     public static function add_carousel_cpt(){
@@ -132,7 +122,7 @@ class Owl_Carousel_2_Admin {
 			'capability_type'       => 'page',
 			'menu_icon'             => 'dashicons-images-alt2',
             'public'                => false, 
-            'publicly_queryable'    => true,
+            'publicly_queryable'    => false,
             'show_ui'               => true,  
             'exclude_from_search'   => true,
             'show_in_nav_menus'     => false, 
@@ -144,7 +134,7 @@ class Owl_Carousel_2_Admin {
                     )
 	           );
         }
-    
+
     public function owl_carousel_modify_columns($columns) {
 	// new columns to be added
 	$new_columns = array(
@@ -163,7 +153,7 @@ class Owl_Carousel_2_Admin {
         
         // output for the 'Shortcode' column
         if ($column == 'shortcode') {
-            $shortcode = "<span class='shortcode'><input type='text' onfocus='this.select();' readonly='readonly' value='[dd-owl-carousel id=&quot;".$post->ID."&quot;]' class='large-text code'></span>";
+            $shortcode = "<span class='shortcode owl-carousel-2'><input type='text' onfocus='this.select();' readonly='readonly' value='[dd-owl-carousel id=&quot;{$post->ID}&quot; title=&quot;{$post->post_title}&quot;]' class='large-text code'></span>";
             echo ($shortcode);
         }
         

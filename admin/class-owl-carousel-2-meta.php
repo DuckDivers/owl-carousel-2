@@ -95,7 +95,7 @@ class Owl_Carousel_2_Meta {
         if (empty( $dd_owl_margin ) ) $dd_owl_margin = '10';
         if (empty( $dd_owl_cta ) ) $dd_owl_cta = 'Read More';
         if (empty( $dd_owl_btn_class ) ) $dd_owl_btn_class = 'btn btn-primary';
-        if( empty( $dd_owl_image_options ) ) $dd_owl_image_options = 'dd_owl_null';
+        if( empty( $dd_owl_image_options ) ) $dd_owl_image_options = 'null';
         if( empty( $dd_owl_post_ids ) ) $dd_owl_post_ids = '';
         if( empty( $dd_owl_tax_options ) ) $dd_owl_tax_options = 'null';
         if( empty( $dd_owl_btn_display ) ) $dd_owl_btn_display = 'inline';
@@ -197,9 +197,10 @@ class Owl_Carousel_2_Meta {
         echo '<h4>Display Post Options</h4>';
         echo '<table class="form-table">';
         echo '  <tr>';
-		echo '		<th><label for="dd_owl_show_cta" class="dd_owl_show_cta_label">' . __( 'Show Link to Post', 'text_domain' ) . '</label></th>';
+		echo '		<th><label for="dd_owl_show_cta" class="dd_owl_show_cta_label">' . __( 'Show Link to Post', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-		echo '			<label><input type="checkbox" id="dd_owl_show_cta" name="dd_owl_show_cta" class="dd_owl_show_cta_field" value="checked" ' . checked( $dd_owl_show_cta, 'checked', false ) . '> ' . __( '', 'text_domain' ) . '</label>';
+		echo '			<label><input type="checkbox" id="dd_owl_show_cta" name="dd_owl_show_cta" class="dd_owl_show_cta_field" value="checked" ' . checked( $dd_owl_show_cta, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'Include a link to the post. Additional options are available', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
         echo '  </tr>';
         // Show button Options
@@ -225,8 +226,8 @@ class Owl_Carousel_2_Meta {
 		echo '			</select>';
 		echo '			<p class="description">' . __( 'CSS Display option for the link / Button ', 'owl-carousel-2' ) . '</p>';
         echo '		</td>';
-		echo '		<th><label for="dd_owl_btn_margin" class="dd_owl_btn_margin_label">' . __( 'Button CSS margin', 'owl-carousel-2' ) . '</label></th>';
-		echo '		<td>';
+		echo '		<th class="button-margin hidden"><label for="dd_owl_btn_margin" class="dd_owl_btn_margin_label">' . __( 'Button CSS margin', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td class="button-margin hidden">';
 		echo '			<input type="text" id="dd_owl_btn_margin" name="dd_owl_btn_margin" class="dd_owl_btn_margin_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_btn_margin ) . '">';
 		echo '			<p class="description">' . __( 'Margins for Button', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';        
@@ -236,6 +237,7 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_thumbs" class="dd_owl_thumbs_label">' . __( 'Show Post Thumbnails', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="checkbox" id="dd_owl_thumbs" name="dd_owl_thumbs" class="dd_owl_thumbs_field" value="checked" ' . checked( $dd_owl_thumbs, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'Check to show the post thumbnail or featured image if it exists.', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';        
         echo '	<tr class="hidden" id="image-options">';
@@ -265,9 +267,10 @@ class Owl_Carousel_2_Meta {
 		echo '		</td>';
         echo ' </tr>';
         echo ' <tr>';
-        echo '		<th><label for="dd_owl_loop" class="dd_owl_loop_label">' . __( 'Loop', 'text_domain' ) . '</label></th>';
+        echo '		<th><label for="dd_owl_loop" class="dd_owl_loop_label">' . __( 'Loop', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
-		echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked( $dd_owl_loop, 'checked', false ) . '> ' . __( '', 'text_domain' ) . '</label>';
+		echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked( $dd_owl_loop, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+        echo '      <p class="description">'. __('Create an infinite loop of with the carousel, so that it continues to play', 'owl-carousel-2'). '</p>';
 		echo '		</td>';
         echo '		<th><label for="dd_owl_margin" class="dd_owl_margin_label">' . __( 'Margins around Carousel Items', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
@@ -291,9 +294,10 @@ class Owl_Carousel_2_Meta {
 		echo '	</tr>';
 
 		echo '	<tr>';
-		echo '		<th><label for="dd_owl_stop" class="dd_owl_stop_label">' . __( 'Stop on Hover', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<th><label for="dd_owl_stop" class="dd_owl_stop_label">' . __( 'Pause on Hover', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="checkbox" id="dd_owl_stop" name="dd_owl_stop" class="dd_owl_stop_field" value="checked" ' . checked( $dd_owl_stop, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'Pause the carousel while the mouse is hovering on the item', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
 
@@ -301,6 +305,7 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_navs" class="dd_owl_navs_label">' . __( 'Show Nav Arrows', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="checkbox" id="dd_owl_navs" name="dd_owl_navs" class="dd_owl_navs_field" value="checked" ' . checked( $dd_owl_navs, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'Show navigation arrows below the carousel', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
 
@@ -308,6 +313,7 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_dots" class="dd_owl_dots_label">' . __( 'Show Dots', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="checkbox" id="dd_owl_dots" name="dd_owl_dots" class="dd_owl_dots_field" value="checked" ' . checked( $dd_owl_dots, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<p class="description">' . __( 'Show the dots style navs underneath the carousel.', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';        
 		echo '</table>';
@@ -329,9 +335,10 @@ class Owl_Carousel_2_Meta {
         if ($items_width6 == 0) { $items_width6 = 6; }
 
         echo "<div id='items_displayed_metabox'>\n";
+        echo '<p class="description">'.__('This setting determines the number of slides shown for specific css breakpoints.  Each must be set.', 'owl-carousel-2').'</p>';
         echo "<h4>Browser/Device Width:</h4>\n";
         // items for browser width category 1
-        echo "<div><em class='dd_owl_tooltip' href='' title='Up to 479 pixels'></em><span>Mobile Portrait</span><select name='dd_owl_items_width1'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='Up to 479 pixels'></em><span>Mobile Portrait</span><select name='dd_owl_items_width1'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width1) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
@@ -341,7 +348,7 @@ class Owl_Carousel_2_Meta {
         }
         echo "</select></div>\n";
         // items for browser width category 2
-        echo "<div><em class='dd_owl_tooltip' href='' title='480 to 767 pixels'></em><span>Mobile Landscape</span><select name='dd_owl_items_width2'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='480 to 767 pixels'></em><span>Mobile Landscape</span><select name='dd_owl_items_width2'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width2) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
@@ -351,7 +358,7 @@ class Owl_Carousel_2_Meta {
         }
         echo "</select></div>\n";
         // items for browser width category 3
-        echo "<div><em class='dd_owl_tooltip' href='' title='768 to 979 pixels'></em><span>Tablet Portrait</span><select name='dd_owl_items_width3'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='768 to 979 pixels'></em><span>Tablet Portrait</span><select name='dd_owl_items_width3'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width3) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
@@ -361,7 +368,7 @@ class Owl_Carousel_2_Meta {
         }
         echo "</select></div>\n";
         // items for browser width category 4
-        echo "<div><em class='dd_owl_tooltip' href='' title='980 to 1199 pixels'></em><span>Desktop Small</span><select name='dd_owl_items_width4'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='980 to 1199 pixels'></em><span>Desktop Small</span><select name='dd_owl_items_width4'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width4) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
@@ -371,7 +378,7 @@ class Owl_Carousel_2_Meta {
         }
         echo "</select></div>\n";
         // items for browser width category 5
-        echo "<div><em class='dd_owl_tooltip' href='' title='1200 to 1499 pixels'></em><span>Desktop Large</span><select name='dd_owl_items_width5'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='1200 to 1499 pixels'></em><span>Desktop Large</span><select name='dd_owl_items_width5'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width5) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
@@ -381,7 +388,7 @@ class Owl_Carousel_2_Meta {
         }
         echo "</select></div>\n";
         // items for browser width category 6
-        echo "<div><em class='dd_owl_tooltip' href='' title='Over 1500 pixels'></em><span>Desktop X-Large</span><select name='dd_owl_items_width6'>";
+        echo "<div><em class='dd_owl_tooltip' href='#' title='Over 1500 pixels'></em><span>Desktop X-Large</span><select name='dd_owl_items_width6'>";
         for ($i = 1; $i <= 12; $i++) {
             if ($i == $items_width6) {
                 echo "<option value='".esc_attr($i)."' selected>".esc_html($i)."</option>";
