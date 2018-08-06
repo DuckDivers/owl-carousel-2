@@ -9,7 +9,7 @@
  * Plugin Name:       WP Owl Carousel 2
  * Plugin URI:        https://www.duckdiverllc.com
  * Description:       A Simple Implementation of Owl Carousel 2
- * Version:           1.0.0
+ * Version:           0.0.4
  * Author:            Howard Ehrenberg
  * Author URI:        https://www.howardehrenberg.com
  * License:           GPL-2.0+
@@ -23,7 +23,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'DD_Owl_Carousel_2', '1.0.0' );
+define( 'DD_Owl_Carousel_2', '0.0.4' );
 
 /**
  * The code that runs during plugin activation.
