@@ -16,6 +16,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       owl-carousel-2
  * Domain Path:       /languages
+ * GitHub Plugin URI: https://github.com/DuckDivers/owl-carousel-2
  */
 
 // If this file is called directly, abort.
