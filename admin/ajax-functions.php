@@ -6,6 +6,8 @@ function owl_carousel_tax(){
     
     //Terms to exclude from WooCommerce
     $wc_not = array('product_type', 'product_visibility' , 'product_shipping_class');
+	
+	$meta = '';
     
     if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_type')) $meta = get_post_meta( $_POST['postid'], 'dd_owl_post_taxonomy_type', true );
     
@@ -52,7 +54,7 @@ function owl_carousel_terms(){
 
     if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_term')) $theterm = get_post_meta( $_POST['postid'], 'dd_owl_post_taxonomy_term', true );
     
-    if (null == $tax_objects){
+    if (null == $tax_objects || is_wp_error($term_objects)){
         $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
     }
     else {
