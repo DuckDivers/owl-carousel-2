@@ -82,3 +82,32 @@ function owl_carousel_terms(){
         
     die();        
 }
+add_action('wp_ajax_owl_carousel_posts', 'owl_carousel_posts');
+function owl_carousel_posts() {
+    global $post;
+    $args = array(
+        'post_type'              => $_POST['posttype'],
+        'posts_per_page'         => '-1',
+    );
+    
+    $query = new WP_Query( $args );
+    $html = '';
+    // The Loop
+    $selectedArray = array();
+    $selectedArray = maybe_unserialize(get_post_meta($_POST['carousel_id'], 'dd_owl_post_ids', true));
+    
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $html .= "<option value='{$post->ID}'";
+                if (in_array($post->ID, $selectedArray)) $html .='selected="selected"';
+            $html .= ">";
+            $html .= get_the_title($post->ID);
+            $html .= "</option>";
+        }
+    } else {
+        $html .= '<p>No Posts Found</p>';
+    }
+    echo $html;
+    die();
+}

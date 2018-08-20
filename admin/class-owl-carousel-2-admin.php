@@ -78,6 +78,7 @@ class Owl_Carousel_2_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/owl-carousel-2-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'Select2-Style', plugin_dir_url( __FILE__ ) . 'css/select2.min.css', array(), '4.0.5' , 'all' );
 
 	}
 
@@ -87,7 +88,13 @@ class Owl_Carousel_2_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-        
+        $handle = 'select2.js';
+        $list = 'enqueued';
+             if (wp_script_is( $handle, $list )) {
+               return;
+             } else {
+               wp_enqueue_script( 'select2.js' , plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), '4.0.5', false );
+             }
         wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/owl-carousel-2-admin.js', array( 'jquery' ), $this->version, false );
 	
     }

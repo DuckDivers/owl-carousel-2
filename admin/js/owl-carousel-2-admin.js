@@ -1,7 +1,11 @@
 (function( $ ) {
 	'use strict';
+    var gotPosts = 0;
+    var getPostType, postSelected;
     $(document).ready(function(){
-    
+        postSelected = $('select#dd_owl_post_type').val();
+        if (postSelected === ''){getPostType = 'Null';} else {getPostType = postSelected;}
+        console.log(getPostType);
         $('.dd_owl_tooltip').tooltip();
     
         //  Copy to Clipboard
@@ -38,9 +42,10 @@
         });
 
         $('select#dd_owl_post_type').change(function(){
+            var postType = $(this).val();
             $('span.ajax-loader').css('display', 'block');
             $('#term-row.visible').addClass('hidden').removeClass('visible');
-            var postType = $(this).val();
+                        
             if (postType === 'product'){
                  $('.product-rows').show();
                 }    
@@ -73,7 +78,13 @@
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }
             else if (ck === 'postID'){
-                $('#choose-postids').removeClass('hidden').addClass('visible');
+                if (gotPosts === 0) {
+                    dd_select_posts();
+                }
+                else {
+                    $('#choose-postids').removeClass('hidden').addClass('visible');
+                    $('#dd_owl_post_ids').show();
+                }
                 $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
             }
             else {
@@ -123,6 +134,34 @@
                     }
                 });
         
-    }   
+    }  
+    
+    function dd_select_posts(){
+        $('span.ajax-loader').css('display', 'block');
+        var postType = $('select#dd_owl_post_type').val();
+        var carouselID = $('input#post_ID').val();
+        $.ajax({
+                url: ajaxurl,
+                type: "POST",
+                data: {
+                    posttype: postType,
+                    carousel_id: carouselID,
+                    action : 'owl_carousel_posts'
+                },
+            success: function(data){
+                    $('#dd_owl_post_ids').append(data);
+                    $('.dd-owl-multi-select').select2({
+                        placeholder: 'Choose the posts'
+                    });
+                    $('#choose-postids').removeClass('hidden').addClass('visible');
+                    $('#dd_owl_post_ids').show();
+                    $('span.ajax-loader').css('display', 'none');
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+        gotPosts = 1;
+    }
     
 })( jQuery );

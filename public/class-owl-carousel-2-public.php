@@ -249,8 +249,10 @@ class Owl_Carousel_2_Public {
                 $output .= ($image_options == 'link' || $image_options == 'lightbox') ? '</a>' : '';
             }
             // Add filter to change heading type
-            $title_heading = apply_filters('owl_title_heading', 'h4');
-            $output .= "<{$title_heading}>{$title}</{$title_heading}>";
+            
+            $title_heading = get_post_meta( $post->ID, 'dd_owl_title_heading', true );
+
+            if (null == get_post_meta( $post->ID, 'dd_owl_show_title', true ) ) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
             
             if (has_excerpt()){
                  $excerpt = strip_shortcodes(get_the_excerpt());

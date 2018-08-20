@@ -8,8 +8,8 @@
  * @wordpress-plugin
  * Plugin Name:       WP Owl Carousel 2
  * Plugin URI:        https://www.duckdiverllc.com
- * Description:       A Simple Implementation of Owl Carousel 2
- * Version:           1.0.0
+ * Description:       Add post carousels
+ * Version:           0.0.4
  * Author:            Howard Ehrenberg
  * Author URI:        https://www.howardehrenberg.com
  * License:           GPL-2.0+
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'DD_Owl_Carousel_2', '1.0.0' );
+define( 'DD_Owl_Carousel_2', '0.0.4' );
 
 /**
  * The code that runs during plugin activation.
@@ -69,3 +69,20 @@ function run_owl_carousel_2() {
 
 }
 run_owl_carousel_2();
+
+// Add Donate Link to Plugin Page
+add_filter( 'plugin_row_meta', 'dd_owl_2_plugin_row_meta', 10, 2 );
+
+function dd_owl_2_plugin_row_meta( $links, $file ) {
+
+	if ( strpos( $file, 'owl-carousel-2.php' ) !== false ) {
+		$new_links = array(
+				'donate' => '<a href="https://www.duckdiverllc.com/owl-carousel-2-plguin/" target="_blank">Donate</a>',
+                //'doc' => '<a href="doc_url" target="_blank">Documentation</a>'
+				);
+		
+		$links = array_merge( $links, $new_links );
+	}
+	
+	return $links;
+}

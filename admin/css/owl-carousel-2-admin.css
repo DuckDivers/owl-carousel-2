@@ -111,3 +111,17 @@ em.dd_owl_tooltip {
 .ui-widget-header a {
 	color: #222222;
 }
+#dd_owl_post_ids {
+    display: none;
+}
+#choose-postids .select2-container {
+    min-width: 400px;
+}
+#choose-postids input.select2-search__field {
+    min-width: 250px;
+}
+@media (max-width: 500px){
+    #choose-postids .select2-container {
+        min-width: 100%;
+    }
+}
