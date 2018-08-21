@@ -1,11 +1,11 @@
 (function( $ ) {
 	'use strict';
     var gotPosts = 0;
-    var getPostType, postSelected;
+    var getPostType, postSelected, taxOptions, taxCounter = 0;
     $(document).ready(function(){
         postSelected = $('select#dd_owl_post_type').val();
+        taxOptions = $('input[name="dd_owl_tax_options"]:checked').val();
         if (postSelected === ''){getPostType = 'Null';} else {getPostType = postSelected;}
-        console.log(getPostType);
         $('.dd_owl_tooltip').tooltip();
     
         //  Copy to Clipboard
@@ -45,7 +45,12 @@
             var postType = $(this).val();
             $('span.ajax-loader').css('display', 'block');
             $('#term-row.visible').addClass('hidden').removeClass('visible');
-                        
+            if (postType !== postSelected) {
+                gotPosts = 0; 
+                $('select#dd_owl_post_ids').find('option').remove().end();
+                $('input[name="dd_owl_tax_options"]').trigger('change');
+                postSelected = postType;
+            }      
             if (postType === 'product'){
                  $('.product-rows').show();
                 }    
@@ -87,10 +92,15 @@
                 }
                 $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
             }
+            else if (ck === 'featured_product') {
+                console.log('featured product choice');
+                $('#category-row.visible, #term-row.visible, #choose-postids').addClass('hidden').removeClass('visible');
+            }
             else {
                 $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }
+            return false;
         });
         
         $('select#dd_owl_btn_display').change(function(){
@@ -101,8 +111,10 @@
         });
         
         // Trigger All Functions to Run on Load
-        $('#dd_owl_thumbs, #dd_owl_show_cta, #dd_owl_featured_product, input[name="dd_owl_tax_options"], select#dd_owl_btn_display').trigger('change');        
-
+        $('#dd_owl_thumbs, #dd_owl_show_cta, select#dd_owl_btn_display').trigger('change');        
+        
+        if ( taxOptions !== null && taxCounter === 0 ) {console.log('run');$('input[name="dd_owl_tax_options"]').trigger('change'); taxCounter = 1;}
+    
     }); // Document Ready
     
     $(document).on('ajaxComplete', function(){

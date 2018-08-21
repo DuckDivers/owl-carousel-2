@@ -5,3 +5,7 @@
 .owl-wrapper {
     width: 100%;
 }
+.owl-btn-wrapper {
+    margin-top: .75rem;
+    margin-bottom: .75rem;
+}

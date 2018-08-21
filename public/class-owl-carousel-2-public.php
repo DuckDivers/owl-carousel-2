@@ -122,7 +122,7 @@ class Owl_Carousel_2_Public {
 	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
     $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
     $btn_display = get_post_meta( $post->ID, 'dd_owl_btn_display', true );
-    $btn_margin = get_post_meta( $post->ID, 'dd_owl_btn_margin', true );
+    $btn_margin = ( !empty (get_post_meta( $post->ID, 'dd_owl_btn_margin', true ) ) ) ? 'margin: '. get_post_meta($post->ID, 'dd_owl_btn_margin', true). ';' : '';
 	$show_cta = (get_post_meta( $post->ID, 'dd_owl_show_cta', true ) == 'checked') ? 'true' : 'false';
     $tax_options = get_post_meta( $post->ID, 'dd_owl_tax_options', true);
     $postIDs = get_post_meta($post->ID, 'dd_owl_post_ids', true);
@@ -151,7 +151,7 @@ class Owl_Carousel_2_Public {
      */
         
     if ($tax_options == 'postID'){
-        $posts = explode(',', $postIDs);
+        $posts = maybe_unserialize($postIDs);
         $args = array(
             'post_type' => $post_type,
             'post__in' => $posts,
@@ -265,7 +265,7 @@ class Owl_Carousel_2_Public {
                 }
             if ($show_cta == 'true'){
                     $link = get_the_permalink();
-                    $output .= "<p><a href='{$link}' class='carousel-button {$btn_class}' style='display: {$btn_display}; margin: {$btn_margin}'>{$cta_text}</a></p>";
+                    $output .= "<p class='owl-btn-wrapper'><a href='{$link}' class='carousel-button {$btn_class}' style='display: {$btn_display};{$btn_margin}'>{$cta_text}</a></p>";
                 }
             $output .='</div>';
             // Add Hook After End of Carousel Content 

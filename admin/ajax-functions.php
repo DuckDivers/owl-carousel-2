@@ -93,14 +93,17 @@ function owl_carousel_posts() {
     $query = new WP_Query( $args );
     $html = '';
     // The Loop
-    $selectedArray = array();
     $selectedArray = maybe_unserialize(get_post_meta($_POST['carousel_id'], 'dd_owl_post_ids', true));
     
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
             $html .= "<option value='{$post->ID}'";
-                if (in_array($post->ID, $selectedArray)) $html .='selected="selected"';
+                if (is_array($selectedArray) ) {
+                    if (in_array($post->ID, $selectedArray) ){
+                        $html .='selected="selected"';
+                    }
+                }
             $html .= ">";
             $html .= get_the_title($post->ID);
             $html .= "</option>";

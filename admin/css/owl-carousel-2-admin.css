@@ -114,14 +114,14 @@ em.dd_owl_tooltip {
 #dd_owl_post_ids {
     display: none;
 }
-#choose-postids .select2-container {
+#choose-postids .select2-container, select#dd_owl_post_ids {
     min-width: 400px;
 }
 #choose-postids input.select2-search__field {
     min-width: 250px;
 }
 @media (max-width: 500px){
-    #choose-postids .select2-container {
+    #choose-postids .select2-container, select#dd_owl_post_ids {
         min-width: 100%;
     }
 }
