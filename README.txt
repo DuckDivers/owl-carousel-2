@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Custom Post Carousels with Owl ===
 Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
 Tags: Carousel,Slider,Owl Carousel,Post Carousel,Rotator,Product Carousel,CPT Carousel,CPT Slider,Testimonial Slider,FAQ Slider
@@ -9,10 +9,9 @@ Stable tag: 1.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
-Add post carousels to your blog. Works with any custom post type or regular posts. Controls allow for insetion of 
+Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a single page.  You can specify margins, number of items per page at multiple breakpoints. Choose options by category, tag, other custom taxonomy or by post ID. 
 
 == Description ==
-
 
 This plugin uses the Owl Carousel 2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make 
 * Product Carousels
@@ -36,21 +35,20 @@ This section describes how to install the plugin and get it working.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= I made the carousel, but now I can't see it. =
 
-An answer to that question.
+Make sure you insert the shortcode created by the plugin.
 
-= What about foo bar? =
+= Can I use multiple carousels on a single page? =
 
-Answer to foo bar dilemma.
+Yes, you can use as many as you want. Each one will have it's own CSS ID so you can target them in your custom CSS files if you need to.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Admin View of a Featured Product Carousel
+2. Admin View of choosing by post ID.
+3. Admin View of Chosen Category
+4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
 
