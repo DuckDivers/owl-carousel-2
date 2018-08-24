@@ -43,6 +43,27 @@ Make sure you insert the shortcode created by the plugin.
 
 Yes, you can use as many as you want. Each one will have it's own CSS ID so you can target them in your custom CSS files if you need to.
 
+= Are there programming Hooks? =
+
+Yes, there are 2 hooks right now. One is before the carousel contents, and the other is after the contents.
+
+1. add_action( 'dd-carousel-before-content', 'your_function' );
+1. add_action( 'dd-carousel-after-content' , 'your_other_function' );
+
+Example to add pricing for WooCommerce Carousels - Add to your theme functions.php :
+
+`<?php 
+	function add_wc_price_to_carousel(){
+    global $post, $woocommerce;
+    $product = wc_get_product( $post->ID );
+    if ($product) {
+        echo '<p class="price">$' . $product->get_price() . '</p>' ;
+        echo '<a href="'.get_permalink( $post->ID ).'" class="btn btn-primary ">Shop Now</a>';
+		}
+	}
+	add_action('dd-carousel-after-content', 'add_wc_price_to_carousel', 10);
+`
+
 == Screenshots ==
 
 1. Admin View of a Featured Product Carousel
