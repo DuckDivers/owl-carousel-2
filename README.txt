@@ -45,10 +45,10 @@ Yes, you can use as many as you want. Each one will have it's own CSS ID so you 
 
 = Are there programming Hooks? =
 
-Yes, there are 2 hooks right now. One is before the carousel contents, and the other is after the contents.
+Yes, there are 2 hooks right now. One is before the carousel contents, and the other is after the contents.  There will be more enhancement to this at a later date.
 
-1. add_action( 'dd-carousel-before-content', 'your_function' );
-1. add_action( 'dd-carousel-after-content' , 'your_other_function' );
+1. dd-carousel-before-content
+1. dd-carousel-after-content
 
 Example to add pricing for WooCommerce Carousels - Add to your theme functions.php :
 

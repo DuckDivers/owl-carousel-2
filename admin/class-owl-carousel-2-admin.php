@@ -95,8 +95,18 @@ class Owl_Carousel_2_Admin {
              } else {
                wp_enqueue_script( 'select2.js' , plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), '4.0.5', false );
              }
-        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/owl-carousel-2-admin.js', array( 'jquery' ), $this->version, false );
-	
+    }
+    
+    /**
+     * Enquque Admin Script only for Edit Page
+     *
+     * @since    1.0.1
+     */
+    public function only_admin_page() {
+        if ( 'owl-carousel' === get_post_type() ) {     
+                wp_enqueue_script(  'dd-owl-admin' );
+                    wp_enqueue_script( 'dd-owl-admin', plugin_dir_url( __FILE__ ) . '/js/owl-carousel-2-admin.js', $this->version, false );
+            }
     }
     
     public function enqueue_jqueryui() {

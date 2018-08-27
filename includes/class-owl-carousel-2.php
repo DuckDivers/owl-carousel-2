@@ -161,6 +161,8 @@ class Owl_Carousel_2 {
 		$this->loader->add_action( 'init', $plugin_admin, 'add_carousel_cpt' );
         $this->loader->add_filter( 'manage_owl-carousel_posts_columns', $plugin_admin, 'owl_carousel_modify_columns');
         $this->loader->add_filter( 'manage_owl-carousel_posts_custom_column', $plugin_admin, 'owl_carousel_custom_column_content');
+        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'only_admin_page');
+        
 	}
 
 	/**
