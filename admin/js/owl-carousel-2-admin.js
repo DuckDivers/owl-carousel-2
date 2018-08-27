@@ -112,7 +112,7 @@
         // Trigger All Functions to Run on Load
         $('#dd_owl_thumbs, #dd_owl_show_cta, select#dd_owl_btn_display').trigger('change');        
         
-        if ( taxOptions !== null && taxCounter === 0 ) $('input[name="dd_owl_tax_options"]').trigger('change'); taxCounter = 1;}
+        if ( taxOptions !== null && taxCounter === 0 ) {$('input[name="dd_owl_tax_options"]').trigger('change'); taxCounter = 1;}
     
     }); // Document Ready
     

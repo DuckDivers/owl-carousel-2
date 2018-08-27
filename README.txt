@@ -5,7 +5,7 @@ Tags: Carousel,Slider,Owl Carousel,Post Carousel,Rotator,Product Carousel,CPT Ca
 Requires at least: 4.5
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -75,3 +75,6 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 
 = 1.0 =
 Initial Release
+
+= 1.0.1 =
+Change admin script to only enqueu on carousel custom post type.
