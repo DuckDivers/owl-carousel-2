@@ -85,6 +85,8 @@ class Owl_Carousel_2_Meta {
         $dd_owl_btn_display = get_post_meta( $post->ID, 'dd_owl_btn_display', true );
         $dd_owl_btn_margin = get_post_meta( $post->ID, 'dd_owl_btn_margin', true );
         $dd_owl_title_heading = get_post_meta( $post->ID, 'dd_owl_title_heading', true );
+        $dd_owl_excerpt_more = get_post_meta( $post->ID, 'dd_owl_excerpt_more', true);        
+        $dd_owl_hide_excerpt_more = get_post_meta( $post->ID, 'dd_owl_hide_excerpt_more', true);
      
 		// Set default values.
 		if( empty( $dd_owl_post_type ) ) $dd_owl_post_type = '';
@@ -93,7 +95,8 @@ class Owl_Carousel_2_Meta {
 		if( empty( $dd_owl_transition ) ) $dd_owl_transition = '400';
 		if( empty( $dd_owl_orderby ) ) $dd_owl_orderby = '';
 		if( empty( $dd_owl_css_id ) ) $dd_owl_css_id = 'carousel-'.$post->ID;
-        if (empty( $dd_owl_excerpt_length ) ) $dd_owl_excerpt_length = '20';
+        if (null == ( $dd_owl_excerpt_length ) ) $dd_owl_excerpt_length = '20';
+        if (empty( $dd_owl_excerpt_more ) ) $dd_owl_excerpt_more = '...';
         if (empty( $dd_owl_margin ) ) $dd_owl_margin = '10';
         if (empty( $dd_owl_cta ) ) $dd_owl_cta = 'Read More';
         if (empty( $dd_owl_btn_class ) ) $dd_owl_btn_class = 'btn btn-primary';
@@ -175,7 +178,15 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_excerpt_length" class="dd_owl_excerpt_length_label">' . __( 'Post Excerpt Length', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<input type="text" id="dd_owl_excerpt_length" name="dd_owl_excerpt_length" class="dd_owl_excerpt_length_field" value="' . esc_attr( $dd_owl_excerpt_length ) . '">';
-		echo '			<p class="description">' . __( 'Number of words in the excerpt', 'owl-carousel-2' ) . '</p>';
+		echo '			<p class="description">' . __( 'Number of words in the excerpt. If you put 0 &#40;zero&#41; it will not display any excerpt', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '	</tr>';
+        echo '	<tr>';
+		echo '		<th><label for="dd_owl_excerpt_more" class="dd_owl_excerpt_more_label">' . __( 'Post Excerpt more', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="text" id="dd_owl_excerpt_more" name="dd_owl_excerpt_more" class="dd_owl_excerpt_more_field" value="' . esc_attr( $dd_owl_excerpt_more ) . '">';
+        echo '          <input type="checkbox" id="dd_owl_hide_excerpt_more" name="dd_owl_hide_excerpt_more" class="dd_owl_hide_excerpt_more_field" value="checked" ' . checked($dd_owl_hide_excerpt_more, 'checked', false) .'>' . __('Check to hide this field ');
+		echo '			<p class="description">' . __( 'What to append to the excerpt if the excerpt needs to be trimmed. Default &#39;&hellip;&#39;', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
 		echo '	<tr>';
@@ -443,7 +454,9 @@ class Owl_Carousel_2_Meta {
 		// Sanitize user input.
 		$dd_owl_new_post_type = isset( $_POST[ 'dd_owl_post_type' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_post_type' ] ) : '';
         $dd_owl_new_number_posts = isset( $_POST[ 'dd_owl_number_posts' ] ) ? floatval( $_POST[ 'dd_owl_number_posts' ] ) : '';
-		$dd_owl_new_loop = isset( $_POST[ 'dd_owl_loop' ] ) ? 'checked'  : '';
+		$dd_owl_new_excerpt_more = isset( $_POST[ 'dd_owl_excerpt_more' ] ) ? sanitize_text_field( $_POST[ 'dd_owl_excerpt_more' ] ) : '';
+		$dd_owl_new_hide_excerpt_more = isset( $_POST[ 'dd_owl_hide_excerpt_more' ] ) ? 'checked'  : '';
+        $dd_owl_new_loop = isset( $_POST[ 'dd_owl_loop' ] ) ? 'checked'  : '';
 		$dd_owl_new_show_cta = isset( $_POST[ 'dd_owl_show_cta' ] ) ? 'checked'  : '';
 		$dd_owl_new_show_title = isset( $_POST[ 'dd_owl_show_title' ] ) ? 'checked'  : '';
 		$dd_owl_new_center = isset( $_POST[ 'dd_owl_center' ] ) ? 'checked'  : '';
@@ -480,6 +493,8 @@ class Owl_Carousel_2_Meta {
         // Update the meta field in the database.
 		update_post_meta( $post_id, 'dd_owl_post_type', $dd_owl_new_post_type );
 		update_post_meta( $post_id, 'dd_owl_number_posts', $dd_owl_new_number_posts );
+		update_post_meta( $post_id, 'dd_owl_excerpt_more', $dd_owl_new_excerpt_more );
+		update_post_meta( $post_id, 'dd_owl_hide_excerpt_more', $dd_owl_new_hide_excerpt_more );
 		update_post_meta( $post_id, 'dd_owl_loop', $dd_owl_new_loop );
 		update_post_meta( $post_id, 'dd_owl_show_cta', $dd_owl_new_show_cta );
 		update_post_meta( $post_id, 'dd_owl_show_title', $dd_owl_new_show_title );

@@ -118,8 +118,10 @@ class Owl_Carousel_2_Public {
 	$thumbs = (get_post_meta( $post->ID, 'dd_owl_thumbs', true ) == 'checked') ? 'true' : 'false';
     $image_options = get_post_meta( $post->ID, 'dd_owl_image_options', true );
     $excerpt_length = get_post_meta( $post->ID, 'dd_owl_excerpt_length', true );
+    $excerpt_more = esc_html(get_post_meta($post->ID, 'dd_owl_excerpt_more', true));
+    $hide_more = (get_post_meta( $post->ID, 'dd_owl_hide_excerpt_more', true ) === 'checked') ? 'true' : 'false';  
 	$css_id = get_post_meta( $post->ID, 'dd_owl_css_id', true );
-	$cta_text = get_post_meta( $post->ID, 'dd_owl_cta', true );
+	$cta_text = esc_html(get_post_meta( $post->ID, 'dd_owl_cta', true ));
     $btn_class = get_post_meta( $post->ID, 'dd_owl_btn_class', true );
     $btn_display = get_post_meta( $post->ID, 'dd_owl_btn_display', true );
     $btn_margin = ( !empty (get_post_meta( $post->ID, 'dd_owl_btn_margin', true ) ) ) ? 'margin: '. get_post_meta($post->ID, 'dd_owl_btn_margin', true). ';' : '';
@@ -129,6 +131,8 @@ class Owl_Carousel_2_Public {
 	$orderby = get_post_meta( $post->ID, 'dd_owl_orderby', true );
     $taxonomy = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_type', true );
 	$term = get_post_meta( $post->ID, 'dd_owl_post_taxonomy_term', true );
+    
+    if ($hide_more == 'true') $excerpt_more = '';    
         
     if ($image_options == 'lightbox') {
         wp_enqueue_script('dd-featherlight');
@@ -256,12 +260,12 @@ class Owl_Carousel_2_Public {
             
             if (has_excerpt()){
                  $excerpt = strip_shortcodes(get_the_excerpt());
-                 $excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
+                 $excerpt = wp_trim_words($excerpt, $excerpt_length, $excerpt_more);
                  $output .= $excerpt;
                 } else {
                  $theContent = apply_filters('the_content', get_the_content()); 
                  $theContent = strip_shortcodes($theContent);
-                 $output .= wp_trim_words( $theContent, $excerpt_length, '...' );
+                 $output .= wp_trim_words( $theContent, $excerpt_length, $excerpt_more );
                 }
             if ($show_cta == 'true'){
                     $link = get_the_permalink();

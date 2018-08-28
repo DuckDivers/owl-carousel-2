@@ -5,7 +5,7 @@ Tags: Carousel,Slider,Owl Carousel,Post Carousel,Rotator,Product Carousel,CPT Ca
 Requires at least: 4.5
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -13,15 +13,19 @@ Easily add post carousels to your website. Works with any custom post type or re
 
 == Description ==
 
-This plugin uses the Owl Carousel 2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make 
+This plugin uses the Owl Carousel 2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make:
+
 * Product Carousels
 * Featured Product Carousels
 * Carousel by post (product) ID
 * Testimonial Sliders (Carousels)
 * Event Sliders
+* Latest Posts
 * More
 
 Easy to use controls allow for customization of each carousel with options to show or hide Titles, Featured Image, Call to Action buttons (links) and more.
+
+This plugin is simple and without on screen nags, promotions or upsells.
 
 == Installation ==
 
@@ -73,8 +77,11 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 
 == Changelog ==
 
-= 1.0 =
-Initial Release
+= 1.0.2 =
+Allow for empty excerpt under title.
 
 = 1.0.1 =
 Change admin script to only enqueu on carousel custom post type.
+
+= 1.0 =
+Initial Release
