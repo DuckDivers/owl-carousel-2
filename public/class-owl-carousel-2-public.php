@@ -259,7 +259,7 @@ class Owl_Carousel_2_Public {
                 
                 $thumb = get_post_thumbnail_id();
                 $img_url = wp_get_attachment_url( $thumb, $size);
-                $image = aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
+                $image = dd_aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
                 if ($image_options == 'link' || $image_options == 'lightbox'){
                     if ($image_options == 'lightbox') {
                         $class = 'data-featherlight="'.$image.'" class="lightbox"';
