@@ -9,7 +9,7 @@
  * Plugin Name:       Custom Post Carousels with Owl
  * Plugin URI:        https://www.duckdiverllc.com/dd-owl-carousel-2/
  * Description:       Easily add any post type post as a custom post carousel with Owl Carousel 2. Works with any cusotm post type, WooCommerce Products, Featured Products, FAQ, etc.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Howard Ehrenberg
  * Author URI:        https://www.howardehrenberg.com
  * License:           GPL-2.0+
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'DD_Owl_Carousel_2', '1.0.2' );
+define( 'DD_Owl_Carousel_2', '1.0.3' );
 
 /**
  * The code that runs during plugin activation.
@@ -53,6 +53,7 @@ register_deactivation_hook( __FILE__, 'deactivate_owl_carousel_2' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-owl-carousel-2.php';
 require_once plugin_dir_path(__FILE__) . 'admin/ajax-functions.php';
+require_once plugin_dir_path(__FILE__) . 'includes/aq_resizer.php';
 /**
  * Begins execution of the plugin.
  *

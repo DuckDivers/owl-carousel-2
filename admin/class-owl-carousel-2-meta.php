@@ -9,6 +9,27 @@ class Owl_Carousel_2_Meta {
 		}
 
 	}
+    /**
+     * Comments
+     *
+     * @since    1.1.0
+     * For Future Use with image size choices
+     */
+    private function get_all_image_sizes() {
+        global $_wp_additional_image_sizes;
+        $default_image_sizes = array( 'thumbnail', 'medium', 'large' );
+
+        foreach ( $default_image_sizes as $size ) {
+            $image_sizes[$size]['width']	= intval( get_option( "{$size}_size_w") );
+            $image_sizes[$size]['height'] = intval( get_option( "{$size}_size_h") );
+            $image_sizes[$size]['crop']	= get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
+        }
+
+        if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) )
+            $image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
+
+        return $image_sizes;
+    }
 
 	public function init_metabox() {
 
@@ -87,6 +108,10 @@ class Owl_Carousel_2_Meta {
         $dd_owl_title_heading = get_post_meta( $post->ID, 'dd_owl_title_heading', true );
         $dd_owl_excerpt_more = get_post_meta( $post->ID, 'dd_owl_excerpt_more', true);        
         $dd_owl_hide_excerpt_more = get_post_meta( $post->ID, 'dd_owl_hide_excerpt_more', true);
+		$dd_owl_img_width = get_post_meta( $post->ID, 'dd_owl_img_width', true );
+		$dd_owl_img_height = get_post_meta( $post->ID, 'dd_owl_img_height', true );
+		$dd_owl_img_crop = get_post_meta( $post->ID, 'dd_owl_img_crop', true );
+		$dd_owl_img_upscale = get_post_meta( $post->ID, 'dd_owl_img_upscale', true );
      
 		// Set default values.
 		if( empty( $dd_owl_post_type ) ) $dd_owl_post_type = '';
@@ -105,7 +130,11 @@ class Owl_Carousel_2_Meta {
         if( empty( $dd_owl_tax_options ) ) $dd_owl_tax_options = 'null';
         if( empty( $dd_owl_btn_display ) ) $dd_owl_btn_display = 'inline';
         if( empty( $dd_owl_title_heading ) ) $dd_owl_title_heading = 'h4';
-
+		if( empty( $dd_owl_img_width ) ) $dd_owl_img_width = '600';
+		if( empty( $dd_owl_img_height ) ) $dd_owl_img_height = '400';
+		if( empty( $dd_owl_img_crop ) ) $dd_owl_img_crop = '';
+		if( empty( $dd_owl_img_upscale ) ) $dd_owl_img_upscale = '';
+        
         /**
          * Choose Post Type and Options
          *
@@ -279,7 +308,7 @@ class Owl_Carousel_2_Meta {
 		echo '			<p class="description">' . __( 'Check to show the post thumbnail or featured image if it exists.', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';        
-        echo '	<tr class="hidden" id="image-options">';
+        echo '	<tr class="hidden image-options" id="image-options">';
 		echo '		<th><label for="dd_owl_image_options" class="dd_owl_image_options_label">' . __( 'Image Display Options', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
 		echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="null" ' . checked( $dd_owl_image_options, 'null', false ) . '> ' . __( 'None - Just show image', 'owl-carousel-2' ) . '</label><br>';
@@ -287,6 +316,33 @@ class Owl_Carousel_2_Meta {
 		echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="link" ' . checked( $dd_owl_image_options, 'link', false ) . '> ' . __( 'Link to Post', 'owl-carousel-2' ) . '</label><br>';
 		echo '		</td>';
 		echo '	</tr>';
+		echo '	<tr class="hidden image-options">';
+		echo '		<th><label for="dd_owl_img_width" class="dd_owl_img_width_label">' . __( 'Image Width', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="number" id="dd_owl_img_width" name="dd_owl_img_width" class="dd_owl_img_width_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_img_width ) . '">';
+		echo '			<p class="description">' . __( 'Width of the image', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '		<th><label for="dd_owl_img_height" class="dd_owl_img_height_label">' . __( 'Image Height', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<input type="number" id="dd_owl_img_height" name="dd_owl_img_height" class="dd_owl_img_height_field" placeholder="' . esc_attr__( '', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_img_height ) . '">';
+		echo '			<p class="description">' . __( 'Height of the Image', 'owl-carousel-2' ) . '</p>';
+		echo '		</td>';
+		echo '	</tr>';
+
+		echo '	<tr class="hidden image-options">';
+		echo '		<th><label for="dd_owl_img_crop" class="dd_owl_img_crop_label">' . __( 'Crop the Image', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<label><input type="checkbox" id="dd_owl_img_crop" name="dd_owl_img_crop" class="dd_owl_img_crop_field" value="checked" ' . checked( $dd_owl_img_crop, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<span class="description">' . __( 'If checked, image will be hard cropped', 'owl-carousel-2' ) . '</span>';
+		echo '		</td>';
+
+		echo '		<th><label for="dd_owl_img_upscale" class="dd_owl_img_upscale_label">' . __( 'Upscale Image', 'owl-carousel-2' ) . '</label></th>';
+		echo '		<td>';
+		echo '			<label><input type="checkbox" id="dd_owl_img_upscale" name="dd_owl_img_upscale" class="dd_owl_img_upscale_field" value="checked" ' . checked( $dd_owl_img_upscale, 'checked', false ) . '> ' . __( '', 'owl-carousel-2' ) . '</label>';
+		echo '			<span class="description">' . __( 'If checked, the image will be made larger if smaller than the specified size', 'owl-carousel-2' ) . '</span>';
+		echo '		</td>';
+		echo '	</tr>';
+        
         echo '</table>';
         
         
@@ -481,7 +537,11 @@ class Owl_Carousel_2_Meta {
         $dd_owl_new_post_ids = isset( $_POST[ 'dd_owl_post_ids' ] ) ? maybe_serialize( $_POST[ 'dd_owl_post_ids' ] ) : '';
         $dd_owl_new_btn_display = isset( $_POST['dd_owl_btn_display'] ) ? $_POST['dd_owl_btn_display'] : '';
         $dd_owl_new_btn_margin = isset( $_POST['dd_owl_btn_margin'] ) ? sanitize_text_field( $_POST['dd_owl_btn_margin'] ) : '';
-
+		$dd_owl_new_img_width = isset( $_POST[ 'dd_owl_img_width' ] ) ? floatval( $_POST[ 'dd_owl_img_width' ] ) : '';
+		$dd_owl_new_img_height = isset( $_POST[ 'dd_owl_img_height' ] ) ? floatval( $_POST[ 'dd_owl_img_height' ] ) : '';
+		$dd_owl_new_img_crop = isset( $_POST[ 'dd_owl_img_crop' ] ) ? 'checked'  : '';
+		$dd_owl_new_img_upscale = isset( $_POST[ 'dd_owl_img_upscale' ] ) ? 'checked'  : '';
+        
 
         $dd_owl_new_items_width1 = isset( $_POST['dd_owl_items_width1']) ? abs(intval($_POST['dd_owl_items_width1'])) : '';
         $dd_owl_new_items_width2 = isset( $_POST['dd_owl_items_width2']) ? abs(intval($_POST['dd_owl_items_width2'])) : '';
@@ -520,6 +580,10 @@ class Owl_Carousel_2_Meta {
 		update_post_meta( $post_id, 'dd_owl_tax_options', $dd_owl_new_tax_options );
 		update_post_meta( $post_id, 'dd_owl_btn_display', $dd_owl_new_btn_display );
 		update_post_meta( $post_id, 'dd_owl_btn_margin', $dd_owl_new_btn_margin );
+		update_post_meta( $post_id, 'dd_owl_img_width', $dd_owl_new_img_width );
+		update_post_meta( $post_id, 'dd_owl_img_height', $dd_owl_new_img_height );
+		update_post_meta( $post_id, 'dd_owl_img_crop', $dd_owl_new_img_crop );
+		update_post_meta( $post_id, 'dd_owl_img_upscale', $dd_owl_new_img_upscale );        
         
         // Update Side Meta Fields
 		update_post_meta( $post_id, 'dd_owl_items_width1', $dd_owl_new_items_width1 );

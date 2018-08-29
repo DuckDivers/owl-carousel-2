@@ -237,8 +237,29 @@ class Owl_Carousel_2_Public {
    
             // Show Image if Checked
             if ($thumbs == 'true'){
+                
+                // retreive image dimensions from settings
+                
+                $dd_owl_img_width = get_post_meta( $post->ID, 'dd_owl_img_width', true );
+                $dd_owl_img_height = get_post_meta( $post->ID, 'dd_owl_img_height', true );
+                $dd_owl_img_crop = get_post_meta( $post->ID, 'dd_owl_img_crop', true );
+                $dd_owl_img_upscale = get_post_meta( $post->ID, 'dd_owl_img_upscale', true );
+
+                $img_width = (intval($dd_owl_img_width));
+                
+                if ($img_width <= 300){
+                    $size = 'medium';
+                }
+                elseif ($img_width <= 600){
+                    $size = 'large';
+                }
+                else {
+                    $size = 'full';
+                }
+                
                 $thumb = get_post_thumbnail_id();
-                $image = wp_get_attachment_url( $thumb,'medium' );
+                $img_url = wp_get_attachment_url( $thumb, $size);
+                $image = aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
                 if ($image_options == 'link' || $image_options == 'lightbox'){
                     if ($image_options == 'lightbox') {
                         $class = 'data-featherlight="'.$image.'" class="lightbox"';

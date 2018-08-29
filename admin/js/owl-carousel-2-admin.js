@@ -25,10 +25,10 @@
         
         $('#dd_owl_thumbs').change(function(){
             if ($(this).is(':checked')) {
-                $('#image-options').removeClass('hidden');
+                $('.image-options').removeClass('hidden');
             }
             else {
-               $('#image-options').addClass('hidden');
+               $('.image-options').addClass('hidden');
             }
         });
         
