@@ -3,10 +3,11 @@ Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
 Tags: Carousel,Slider,Owl Carousel,Post Carousel,Rotator,Product Carousel,CPT Carousel,CPT Slider,Testimonial Slider,FAQ Slider
 Requires at least: 4.5
-Tested up to: 4.9
+Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 License: GPL-2.0+
+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
 Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a single page.  You can specify margins, number of items per page at multiple breakpoints. Choose options by category, tag, other custom taxonomy or by post ID. 
@@ -76,6 +77,10 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.0.6 =
+
+Add Placeholder image for no-image
 
 = 1.0.4 =
 
