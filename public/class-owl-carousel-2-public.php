@@ -258,7 +258,8 @@ class Owl_Carousel_2_Public {
                 }
                 
                 $thumb = get_post_thumbnail_id();
-                $img_url = wp_get_attachment_url( $thumb, $size);
+                if (!empty($thumb)){
+                    $img_url = wp_get_attachment_url( $thumb, $size);
                 $image = dd_aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
                 if ($image_options == 'link' || $image_options == 'lightbox'){
                     if ($image_options == 'lightbox') {
@@ -269,8 +270,13 @@ class Owl_Carousel_2_Public {
                     }
                                         
                     $output .= sprintf('<a href="%s" %s>', $link, $class); 
+                    }
+                $output .= '<img src="'.$image.'" />';                
+                }else {
+                    $image = plugin_dir_url( __FILE__ ) . 'images/placeholder.jpg';
+                    $output .= '<img src="'.$image.'" style="width: '.$dd_owl_img_width.'; height: '.$dd_owl_img_height.';"/>';
                 }
-                $output .= '<img src="'.$image.'" />';
+
                 $output .= ($image_options == 'link' || $image_options == 'lightbox') ? '</a>' : '';
             }
             // Add filter to change heading type
