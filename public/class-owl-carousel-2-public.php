@@ -260,7 +260,10 @@ class Owl_Carousel_2_Public {
                 $thumb = get_post_thumbnail_id();
                 if (!empty($thumb)){
                     $img_url = wp_get_attachment_url( $thumb, $size);
-                $image = dd_aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
+                    $image = dd_aq_resize( $img_url, $dd_owl_img_width, $dd_owl_img_height, $dd_owl_img_crop, 'true', $dd_owl_img_upscale );
+                } else {
+                    $image = plugin_dir_url( __FILE__ ) . 'images/placeholder.jpg';
+                }
                 if ($image_options == 'link' || $image_options == 'lightbox'){
                     if ($image_options == 'lightbox') {
                         $class = 'data-featherlight="'.$image.'" class="lightbox"';
@@ -271,10 +274,10 @@ class Owl_Carousel_2_Public {
                                         
                     $output .= sprintf('<a href="%s" %s>', $link, $class); 
                     }
-                $output .= '<img src="'.$image.'" />';                
-                }else {
-                    $image = plugin_dir_url( __FILE__ ) . 'images/placeholder.jpg';
-                    $output .= '<img src="'.$image.'" style="width: '.$dd_owl_img_width.'; height: '.$dd_owl_img_height.';"/>';
+                if (!empty($thumb)){
+                    $output .= '<img src="'.$image.'" class="carousel-image"/>';                
+                }else { 
+                    $output .= '<img src="'.$image.'" class="carousel-placeholder" style="width: auto; height: '.$dd_owl_img_height.'px; max-height: '.$dd_owl_img_height.'px;"/>';
                 }
 
                 $output .= ($image_options == 'link' || $image_options == 'lightbox') ? '</a>' : '';
