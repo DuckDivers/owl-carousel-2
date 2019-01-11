@@ -53,7 +53,7 @@ function owl_carousel_terms(){
     $term_objects = get_terms($_POST['taxtype'], 'objects');
 
     if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_term')) $theterm = get_post_meta( $_POST['postid'], 'dd_owl_post_taxonomy_term', true );
-    
+ 
     if (null == $tax_objects || is_wp_error($term_objects)){
         $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
     }
@@ -62,15 +62,13 @@ function owl_carousel_terms(){
             $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
         }
         else {
-            $html .= '<select id="dd_owl_post_taxonomy_term" name="dd_owl_post_taxonomy_term" class="dd_owl_post_taxonomy_term_field">';
-
-                if (!in_array($theterm, $term_objects) || $term_objects->errors) $html .= '<option value="" selected> - - Choose A Term - -</option>';
-
+            $html .= '<select id="dd_owl_post_taxonomy_term" name="dd_owl_post_taxonomy_term[]" multiple="multiple" class="dd-owl-multi-select">';
+                if (!in_array($theterm, $term_objects) || $term_objects->errors) $html .= '<option value=""> - - Choose A Term - -</option>';
                 foreach ($term_objects as $term){
                     $label = $term->name;
-                    $value= $term->slug;
+                    $value = $term->slug;
                     $html .= '<option value="'.$value.'" ';
-                    $html .= ($value == $theterm && $term_objects->errors == null) ? "selected" : null;  
+                    $html .= ((in_array($value, $theterm)) && (!isset($term_objects->errors))) ? "selected data-selected='true'" : null;  
                     $html .=  '> ' . $label . '</option>';
                 }
 
@@ -78,7 +76,7 @@ function owl_carousel_terms(){
         }
     }
 
-    echo $html;
+    echo json_encode($html);
         
     die();        
 }

@@ -136,13 +136,22 @@
                         postid: postID,
                         action: 'owl_carousel_terms',
                     },
+				dataType: 'json',
                 success: function(data){
                     $('#taxterm').html(data);
                     $('span.ajax-loader').css('display', 'none');
                         if (data.length > 234){
                             $('#term-row').addClass('visible').removeClass('hidden');
                         }
-                    }
+						$('select#dd_owl_post_taxonomy_term').select2({
+                            placeholder: "Choose Terms",
+                            allowClear: true
+                        });
+                        $('select#dd_owl_post_taxonomy_term').find(':selected').data('selected');
+                    },
+					error: function(data) {
+						console.log(data);
+					}
                 });
         
     }  

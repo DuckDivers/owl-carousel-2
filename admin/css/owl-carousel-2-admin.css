@@ -78,6 +78,9 @@ em.dd_owl_tooltip {
     width: 20px;
     height: 20px;
 }
+#taxterm .select2-container {
+    min-width: 300px;
+}
 /* Component containers
 ----------------------------------*/
 .ui-widget {

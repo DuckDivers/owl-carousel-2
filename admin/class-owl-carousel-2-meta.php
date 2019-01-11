@@ -192,7 +192,7 @@ class Owl_Carousel_2_Meta {
 		echo '		<th><label for="dd_owl_post_taxonomy_term" class="dd_owl_post_taxonomy_term_label">' . __( 'Taxonomy Term', 'owl-carousel-2' ) . '</label></th>';
 		echo '		<td>';
         echo '      <div id="taxterm"></div>';
-		echo '			<p class="description">' . __( 'Category, Tag, or other term of Post', 'owl-carousel-2' ) . '</p>';
+		echo '			<p class="description">' . __( 'Category, Tag, or other term of Post - You may choose multiple terms.', 'owl-carousel-2' ) . '</p>';
 		echo '		</td>';
 		echo '	</tr>';
         
