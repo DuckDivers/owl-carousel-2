@@ -9,11 +9,11 @@
     margin-top: .75rem;
     margin-bottom: .75rem;
 }
-#dd_owl_shortcode .no-image{
+.owl-wrapper .no-image{
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
 }
-#dd_owl_shortcode .item {
+.owl-wrapper .item {
     max-width: 100%;   
 }
