@@ -175,11 +175,18 @@ class Owl_Carousel_2_Public {
 	   );
     }
     elseif ($post_type == 'product' && $tax_options == 'taxonomy'){
-      $args = array(
+        $args = array(
             'post_type'     => array( 'product' ),
-            'product_cat'   => $term,
+            'tax_query'     => array (
+                'relation' => 'AND',
+                array (
+                    'taxonomy' => 'product_cat',    
+                    'terms' => $term,
+                    'field' => 'slug',
+                    'operator' => 'IN',
+                )
+            )
         );
-
     }    
     elseif ($post_type !== 'product' && $tax_options == 'taxonomy'){
       $tax_query = array(
@@ -213,7 +220,7 @@ class Owl_Carousel_2_Public {
     $args = array_merge( $args, $standard_args);
     
     // The Query
-    
+
     $query = new WP_Query( $args );
     
     //Owl Carousel Wrapper
