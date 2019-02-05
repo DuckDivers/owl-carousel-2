@@ -16,7 +16,6 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       owl-carousel-2
  * Domain Path:       /languages
- * GitHub Plugin URI: https://github.com/DuckDivers/owl-carousel-2
  * WC requires at least: 3.0.0
  * WC tested up to: 3.5
  */
@@ -26,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'DD_Owl_Carousel_2', '1.0.7' );
+define( 'DD_Owl_Carousel_2', '1.0.8' );
 
 /**
  * The code that runs during plugin activation.
