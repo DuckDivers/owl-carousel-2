@@ -35,7 +35,7 @@ function owl_carousel_tax(){
                     $html .=  '> ' . $label . '</option>';
                 }
             }
-
+		
         $html .= '</select>';
     }
 
@@ -50,7 +50,7 @@ function owl_carousel_terms(){
 
     $tax_objects = get_object_taxonomies($_POST['posttype'], 'objects');
 
-    $term_objects = get_terms($_POST['taxtype'], 'objects');
+    $term_objects = (isset($_POST['taxtype'])) ? get_terms($_POST['taxtype'], 'objects') : null;
 
     if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_term')) $theterm = get_post_meta( $_POST['postid'], 'dd_owl_post_taxonomy_term', true );
  
@@ -68,7 +68,7 @@ function owl_carousel_terms(){
                     $label = $term->name;
                     $value = $term->slug;
                     $html .= '<option value="'.$value.'" ';
-                    $html .= ((in_array($value, $theterm)) && (!isset($term_objects->errors))) ? "selected data-selected='true'" : null;  
+                    if ( is_array($theterm) )$html .= ((in_array($value, $theterm)) && (!isset($term_objects->errors))) ? "selected data-selected='true'" : null;  
                     $html .=  '> ' . $label . '</option>';
                 }
 

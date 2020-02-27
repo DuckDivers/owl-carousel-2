@@ -1,15 +1,15 @@
 === Custom Post Carousels with Owl ===
 Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
-Tags: Carousel,Slider,Owl Carousel,Post Carousel,Rotator,Product Carousel,CPT Carousel,CPT Slider,Testimonial Slider,FAQ Slider
+Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
-Tested up to: 5.0
-Requires PHP: 5.6
-Stable tag: 1.0.8
+Tested up to: 5.3
+Requires PHP: 7.0
+Stable tag: 1.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
-Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a single page.  You can specify margins, number of items per page at multiple breakpoints. Choose options by category, tag, other custom taxonomy or by post ID. 
+Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a single page.  You can specify margins, number of items per page at multiple breakpoints. Choose options by category, tag, other custom taxonomy or by post ID.
 
 == Description ==
 
@@ -35,7 +35,7 @@ This section describes how to install the plugin and get it working.
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Click on the menu item called `Carousels`
 1. Create your carousel.
-1. Copy the Shortcode and place in your page or post, or place `<?php echo do_shortcode('[dd-owl-carousel id="1" title="Carousel Title"]'); ?>` in your templates 
+1. Copy the Shortcode and place in your page or post, or place `<?php echo do_shortcode('[dd-owl-carousel id="1" title="Carousel Title"]'); ?>` in your templates
 
 == Frequently Asked Questions ==
 
@@ -49,14 +49,14 @@ Yes, you can use as many as you want. Each one will have it's own CSS ID so you 
 
 = Are there programming Hooks? =
 
-Yes, there are 2 hooks right now. One is before the carousel contents, and the other is after the contents.  There will be more enhancement to this at a later date.
+Yes, there are 2 hooks. One is before the carousel contents, and the other is after the contents.  There will be more enhancement to this at a later date.
 
 1. dd-carousel-before-content
 1. dd-carousel-after-content
 
 Example to add pricing for WooCommerce Carousels - Add to your theme functions.php :
 
-`<?php 
+`<?php
 	function add_wc_price_to_carousel(){
     global $post, $woocommerce;
     $product = wc_get_product( $post->ID );
@@ -68,6 +68,36 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 	add_action('dd-carousel-after-content', 'add_wc_price_to_carousel', 10);
 `
 
+= Can I Filter the Query Arguments? =
+
+Yes, there is currently one filter.
+
+* dd_carousel_filter_query_args
+
+This filter passes 2 variables. `$args` the current arguments of the WP_Query and `$carousel_id` which is the ID of the carousel you want to filter.
+
+Example to create your own custom Query - Add to your theme functions.php :
+
+`<?php
+add_filter('dd_carousel_filter_query_args', 'filter_carousel', 10, 2);
+function filter_carousel($args, $carouselID){
+	if ($carouselID == 9803){
+	$args = array(
+		'post_type'              => array( 'post' ),
+		'meta_query'             => array(
+				'relation' => 'AND',
+				array(
+					'key'     => '_chosen_store',
+					'value'   => '1',
+					'compare' => '>=',
+					'type'    => 'NUMERIC',
+				),
+			),
+		);
+	return $args;
+	}
+}`
+
 == Screenshots ==
 
 1. Admin View of a Featured Product Carousel
@@ -76,6 +106,9 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.1 =
+Added Taxonomy Carousel and filter for main Query.
 
 = 1.0.8 =
 Fix issue with multiple WC Categories

@@ -2,7 +2,7 @@
 	'use strict';
     var gotPosts = 0;
     var getPostType, postSelected, taxOptions, taxCounter = 0;
-    $(document).ready(function(){
+    $(document).bind('ready ajaxcomplete', function(){
         postSelected = $('select#dd_owl_post_type').val();
         taxOptions = $('input[name="dd_owl_tax_options"]:checked').val();
         if (postSelected === ''){getPostType = 'Null';} else {getPostType = postSelected;}
@@ -56,7 +56,7 @@
                 }    
             else {
                 $('.product-rows').hide();
-            }            
+            } 
             // Select the product category
             var postID = $('input#post_ID').val();
             $.ajax({
@@ -78,9 +78,12 @@
         
         $('input[name="dd_owl_tax_options"]').change(function(){
             var ck = $('input[name="dd_owl_tax_options"]:checked').val();
+			var terms = $('#dd_owl_post_taxonomy_term').val();
+			var showTerms = (terms.length) ? true : false;
             if (ck === 'taxonomy'){
                 $('#category-row').removeClass('hidden').addClass('visible');
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
+				if (showTerms) $('#term-row').addClass('visible').removeClass('hidden');
             }
             else if (ck === 'postID'){
                 if (gotPosts === 0) {
@@ -95,7 +98,11 @@
             else if (ck === 'featured_product') {
                 $('#category-row.visible, #term-row.visible, #choose-postids').addClass('hidden').removeClass('visible');
             }
-            else {
+			else if (ck === 'show_tax_only') {
+                $('#category-row').removeClass('hidden').addClass('visible');
+				$('#choose-postids.visible').addClass('hidden').removeClass('visible');
+				if (showTerms) $('#term-row').addClass('visible').removeClass('hidden');
+			} else {
                 $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
             }

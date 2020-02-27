@@ -167,6 +167,7 @@ class Owl_Carousel_2_Meta {
 		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="null" ' . checked( $dd_owl_tax_options, 'null', false ) . '> ' . __( 'None - Show Latest Posts - set number of posts below', 'owl-carousel-2' ) . '</label><br>';
 		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="taxonomy" ' . checked( $dd_owl_tax_options, 'taxonomy', false ) . '> ' . __( 'By Taxonomy/Category - choose taxonomy below.', 'owl-carousel-2' ) . '</label><br>';
 		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="postID" ' . checked( $dd_owl_tax_options, 'postID', false ) . '> ' . __( 'By Post ID - Show Post / Product / Custom Post Type by Post ID.', 'owl-carousel-2' ) . '</label><br>';
+		echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="show_tax_only" ' . checked( $dd_owl_tax_options, 'show_tax_only', false ) . '> ' . __( 'Only Show Taxonomies / Categories. Do not show individual posts.', 'owl-carousel-2' ) . '</label><br>';
         echo '			<label class="product-rows"><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="featured_product" ' . checked( $dd_owl_tax_options, 'featured_product', false ) . '> ' . __( 'Show Featured &#40;Starred&#41; Products', 'owl-carousel-2' ) . '</label><br>';
 		echo '		</td>';
 		echo '	</tr>';
