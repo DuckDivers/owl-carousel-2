@@ -7,9 +7,9 @@
         taxOptions = $('input[name="dd_owl_tax_options"]:checked').val();
         if (postSelected === ''){getPostType = 'Null';} else {getPostType = postSelected;}
         $('.dd_owl_tooltip').tooltip();
-    
+
         //  Copy to Clipboard
-        
+
         $('#dd_shortcode_copy').click(function() {
             var shortcode = document.getElementById('dd_owl_shortcode').innerHTML;
             var aux = document.createElement("input"); // Create a "hidden" input
@@ -18,11 +18,11 @@
             aux.select(); // Highlight its content
             document.execCommand("copy"); // Copy the highlighted text
             document.body.removeChild(aux); // Remove it from the body
-            // DISPLAY 'Shortcode Copied' message 
+            // DISPLAY 'Shortcode Copied' message
             document.getElementById('dd_owl_shortcode').innerHTML = "Copied!";
             setTimeout(function(){ document.getElementById('dd_owl_shortcode').innerHTML = shortcode; }, 1000);
         });
-        
+
         $('#dd_owl_thumbs').change(function(){
             if ($(this).is(':checked')) {
                 $('.image-options').removeClass('hidden');
@@ -31,7 +31,7 @@
                $('.image-options').addClass('hidden');
             }
         });
-        
+
         $('#dd_owl_show_cta').change(function(){
             if ($(this).is(':checked')) {
                 $('.show-button').removeClass('hidden');
@@ -46,17 +46,17 @@
             $('span.ajax-loader').css('display', 'block');
             $('#term-row.visible').addClass('hidden').removeClass('visible');
             if (postType !== postSelected) {
-                gotPosts = 0; 
+                gotPosts = 0;
                 $('select#dd_owl_post_ids').find('option').remove().end();
                 $('input[name="dd_owl_tax_options"]').trigger('change');
                 postSelected = postType;
-            }      
+            }
             if (postType === 'product'){
                  $('.product-rows').show();
-                }    
+                }
             else {
                 $('.product-rows').hide();
-            } 
+            }
             // Select the product category
             var postID = $('input#post_ID').val();
             $.ajax({
@@ -72,14 +72,17 @@
                         ajax_get_terms();
                         }
                 });
-               
+
             });
-        $('select#dd_owl_post_type').trigger('change');        
-        
+        $('select#dd_owl_post_type').trigger('change');
+
         $('input[name="dd_owl_tax_options"]').change(function(){
             var ck = $('input[name="dd_owl_tax_options"]:checked').val();
-			var terms = $('#dd_owl_post_taxonomy_term').val();
-			var showTerms = (terms.length) ? true : false;
+			var terms = ($('#dd_owl_post_taxonomy_term').length) ? $('#dd_owl_post_taxonomy_term').val() : -1;
+			var showTerms = false;
+			if (!null == terms) {
+				showTerms = ( terms.length ) ? true : false;
+			}
             if (ck === 'taxonomy'){
                 $('#category-row').removeClass('hidden').addClass('visible');
                 $('#choose-postids.visible').addClass('hidden').removeClass('visible');
@@ -108,27 +111,27 @@
             }
             return false;
         });
-        
+
         $('select#dd_owl_btn_display').change(function(){
             if ($(this).val() !== 'inline'){
                 $('.button-margin.hidden').addClass('visible').removeClass('hidden');
             }
             else {$('button-margin').addClass('hidden').removeClass('visible');}
         });
-        
+
         // Trigger All Functions to Run on Load
-        $('#dd_owl_thumbs, #dd_owl_show_cta, select#dd_owl_btn_display').trigger('change');        
-        
+        $('#dd_owl_thumbs, #dd_owl_show_cta, select#dd_owl_btn_display').trigger('change');
+
         if ( taxOptions !== null && taxCounter === 0 ) {$('input[name="dd_owl_tax_options"]').trigger('change'); taxCounter = 1;}
-    
+
     }); // Document Ready
-    
+
     $(document).on('ajaxComplete', function(){
         $('#dd_owl_post_taxonomy_type').change(function(){
-            ajax_get_terms(); 
-        });   
+            ajax_get_terms();
+        });
     });
-    
+
     function ajax_get_terms(){
         $('span.ajax-loader').css('display', 'block');
         var postType = $('select#dd_owl_post_type').val();
@@ -160,9 +163,9 @@
 						console.log(data);
 					}
                 });
-        
-    }  
-    
+
+    }
+
     function dd_select_posts(){
         $('span.ajax-loader').css('display', 'block');
         var postType = $('select#dd_owl_post_type').val();
@@ -190,5 +193,5 @@
         });
         gotPosts = 1;
     }
-    
+
 })( jQuery );
