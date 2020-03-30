@@ -240,7 +240,7 @@ class Owl_Carousel_2_Public {
 
 				// Add Hook before start of Carousel Content
 				ob_start();
-					do_action('dd-carousel-before-content');
+					do_action('dd-carousel-before-content', $atts['id']);
 					$hooked_start = ob_get_contents();
 				ob_end_clean();
 				$output .= $hooked_start;
@@ -314,7 +314,7 @@ class Owl_Carousel_2_Public {
 				$output .='</div>';
 				// Add Hook After End of Carousel Content
 				ob_start();
-					do_action('dd-carousel-after-content');
+					do_action('dd-carousel-after-content', $atts['id']);
 					$hooked_end = ob_get_contents();
 				ob_end_clean();
 				$output .= $hooked_end;
@@ -334,7 +334,7 @@ class Owl_Carousel_2_Public {
 
 				// Add Hook before start of Carousel Content
 				ob_start();
-					do_action('dd-carousel-before-content');
+					do_action('dd-carousel-before-content', $atts['id']);
 					$hooked_start = ob_get_contents();
 				ob_end_clean();
 				$output .= $hooked_start;
@@ -402,7 +402,7 @@ class Owl_Carousel_2_Public {
 				$output .='</div>';
 				// Add Hook After End of Carousel Content
 				ob_start();
-					do_action('dd-carousel-after-content');
+					do_action('dd-carousel-after-content', $atts['id']);
 					$hooked_end = ob_get_contents();
 				ob_end_clean();
 				$output .= $hooked_end;
