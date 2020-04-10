@@ -109,7 +109,7 @@ function filter_carousel($args, $carouselID){
 
 == Changelog ==
 = 1.2.1 =
-Fix - Admin enqueue scripts only on carousel pages/edit.
+Fix - Admin enqueue stylesheets only on carousel pages/edit.
 
 = 1.2 =
 Add Parameter to action hooks for carousel ID.
