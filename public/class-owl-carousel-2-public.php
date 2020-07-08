@@ -224,7 +224,7 @@ class Owl_Carousel_2_Public {
 
     // The Query
 	if ($tax_options !== 'show_tax_only'){
-		$query = new WP_Query( apply_filters('dd_carousel_filter_query_args', $args) );
+		$query = new WP_Query( apply_filters('dd_carousel_filter_query_args', $args, $post->ID) );
 
 		//Owl Carousel Wrapper
 		$output = '<div class="owl-wrapper"><div id="'.$css_id.'" class="owl-carousel owl-theme">';
