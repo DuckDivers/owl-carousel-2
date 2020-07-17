@@ -466,7 +466,8 @@ class Owl_Carousel_2_Public {
                 });
             });
         </script>";
-
+	// Reset Post Data 	
+	wp_reset_postdata();    
     return $output;
     }
 
