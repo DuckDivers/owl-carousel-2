@@ -5,10 +5,8 @@ Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
 Tested up to: 5.4
 Requires PHP: 7.0
-Stable tag: 1.2.3
+Stable tag: 1.2.2
 License: GPL-2.0+
-WC requires at least: 3.0
-WC tested up to: 4.3
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
 Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a single page.  You can specify margins, number of items per page at multiple breakpoints. Choose options by category, tag, other custom taxonomy or by post ID.
