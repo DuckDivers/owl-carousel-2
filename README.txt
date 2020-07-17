@@ -5,7 +5,7 @@ Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
 Tested up to: 5.4
 Requires PHP: 7.0
-Stable tag: 1.2.2
+Stable tag: 1.2.4
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -108,6 +108,10 @@ function filter_carousel($args, $carouselID){
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.2.4 =
+Fix for Elementor
+
 = 1.2.2 =
 Fix missing param in filter
 
