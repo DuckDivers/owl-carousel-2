@@ -141,6 +141,9 @@ class Owl_Carousel_2_Public {
 
     if ($orderby == 'menu'){
         $order = 'ASC';
+    } elseif ($orderby == 'rand') {
+        $orderby = 'rand';
+        $order = 'ASC';
     }
     else {
         $new_order = explode('_', $orderby);
@@ -221,7 +224,6 @@ class Owl_Carousel_2_Public {
         'posts_per_page' => $per_page
     );
     $args = array_merge( $args, $standard_args);
-
     // The Query
 	if ($tax_options !== 'show_tax_only'){
 		$query = new WP_Query( apply_filters('dd_carousel_filter_query_args', $args, $post->ID) );
@@ -466,8 +468,8 @@ class Owl_Carousel_2_Public {
                 });
             });
         </script>";
-	// Reset Post Data 	
-	wp_reset_postdata();    
+	// Reset Post Data
+	wp_reset_postdata();
     return $output;
     }
 
