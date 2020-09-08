@@ -3,9 +3,9 @@ Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
 Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -108,6 +108,8 @@ function filter_carousel($args, $carouselID){
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+= 1.2.5 =
+Fix Random
 
 = 1.2.4 =
 Fix for Elementor
