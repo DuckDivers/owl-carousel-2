@@ -303,11 +303,11 @@ class Owl_Carousel_2_Public {
 				if (has_excerpt()){
 					 $excerpt = strip_shortcodes(get_the_excerpt());
 					 $excerpt = wp_trim_words($excerpt, $excerpt_length, $excerpt_more);
-					 $output .= apply_filters('dd_carousel_filter_excerpt', $excerpt);
+					 $output .= apply_filters('dd_carousel_filter_excerpt', $excerpt, $post->ID);
 					} else {
 					 $theContent = apply_filters('the_content', get_the_content());
 					 $theContent = strip_shortcodes($theContent);
-					 $output .= apply_filters('dd_carousel_filter_excerpt' , wp_trim_words( $theContent, $excerpt_length, $excerpt_more ) );
+					 $output .= apply_filters('dd_carousel_filter_excerpt' , wp_trim_words( $theContent, $excerpt_length, $excerpt_more ), $post->ID );
 					}
 				if ($show_cta == 'true'){
 						$link = get_the_permalink();
@@ -435,7 +435,7 @@ class Owl_Carousel_2_Public {
     $items_width6 = intval(get_post_meta($post->ID, 'dd_owl_items_width6', true));
 
     $output .= '<script type="text/javascript" async>';
-    $owl_script = "
+    $owl_script = "  
            jQuery(document).ready(function($){
             $('#{$css_id}').owlCarousel({
                 loop:{$loop},
@@ -468,7 +468,7 @@ class Owl_Carousel_2_Public {
                 });
             });";
     $output .= apply_filters('dd_filter_owl_carousel_script', $owl_script, $post->ID );
-    $output .= '</script>';
+    $output .= '</script>';  
     // Reset Post Data
     wp_reset_postdata();
     return $output;

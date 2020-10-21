@@ -5,7 +5,7 @@ Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.2.6
+Stable tag: 1.2.6.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -73,7 +73,7 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 
 There are currently two filters
 
-1. dd_carousel_filter_excerpt - Passes parameter *$excerpt*
+1. dd_carousel_filter_excerpt - Passes 2 parameter *$excerpt* and *$carousel_id*
 1. dd_filter_owl_carousel_script - Passes 2 Parameters the entire jQuery script, and the carousel ID.
 
 Example of script filter:
