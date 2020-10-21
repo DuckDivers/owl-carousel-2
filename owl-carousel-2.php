@@ -17,7 +17,7 @@
  * Text Domain:       owl-carousel-2
  * Domain Path:       /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 4.0
+ * WC tested up to: 4.6
  */
 
 // If this file is called directly, abort.
