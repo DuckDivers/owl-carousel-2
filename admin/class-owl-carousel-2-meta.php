@@ -519,8 +519,7 @@ class Owl_Carousel_2_Meta {
   }
 
   public function save_metabox( $post_id, $post ) {
-    global $post;
-    if ( $post->post_type != 'owl-carousel' ) {
+    if ( $post && $post->post_type != 'owl-carousel' ) {
       return;
     }
     // Sanitize user input.

@@ -5,7 +5,7 @@ Tags: owl carousel 2, post slider, product slider
 Requires at least: 4.5
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -69,6 +69,22 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 	}
 	add_action('dd-carousel-after-content', 'add_wc_price_to_carousel', 10);
 `
+= Are there other filters available? =
+
+There are currently two filters
+
+1. dd_carousel_filter_excerpt - Passes parameter *$excerpt*
+1. dd_filter_owl_carousel_script - Passes 2 Parameters the entire jQuery script, and the carousel ID.
+
+Example of script filter:
+
+`<?php
+apply_filters('dd_filter_owl_carousel_script', 'my_filter_owl_carousel_script', 10 , 2);
+function my_filter_owl_carousel_script($script, $carousel_id){
+	// Do stuff
+	return $script;
+}
+?>`
 
 = Can I Filter the Query Arguments? =
 
@@ -108,6 +124,11 @@ function filter_carousel($args, $carouselID){
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.2.6 =
+Add two additional filters `dd_filter_owl_carousel_script` and `dd_carousel_filter_excerpt`
+Fix for CPT adding meta to all posts.
+
 = 1.2.5 =
 Fix Random
 
