@@ -435,8 +435,7 @@ class Owl_Carousel_2_Public {
     $items_width6 = intval(get_post_meta($post->ID, 'dd_owl_items_width6', true));
 
     $output .= '<script type="text/javascript" async>';
-    $owl_script = "  
-           jQuery(document).ready(function($){
+    $owl_script = "jQuery(document).ready(function($){
             $('#{$css_id}').owlCarousel({
                 loop:{$loop},
                 autoplay : true,
@@ -468,7 +467,7 @@ class Owl_Carousel_2_Public {
                 });
             });";
     $output .= apply_filters('dd_filter_owl_carousel_script', $owl_script, $post->ID );
-    $output .= '</script>';  
+    $output .= '</script>';
     // Reset Post Data
     wp_reset_postdata();
     return $output;
