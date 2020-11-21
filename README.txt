@@ -136,6 +136,9 @@ function my_filter_owl_carousel_script($script, $carousel_id){
 
 == Changelog ==
 
+= 1.3 =
+Add "Media/Image" Carousel with choose media items. Additional filters added for convenience.
+
 = 1.2.6 =
 Add two additional filters `dd_filter_owl_carousel_script` and `dd_carousel_filter_excerpt`
 Fix for CPT adding meta to all posts.
