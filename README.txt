@@ -15,11 +15,12 @@ Easily add post carousels to your website. Works with any custom post type or re
 
 This plugin uses the Owl Carousel 2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make:
 
-* Product Carousels
+* Image Carousel from Media Library
+* Product Carousels (Choose WooCommerce Products)
 * Featured Product Carousels
-* Carousel by post (product) ID
-* Testimonial Sliders (Carousels)
-* Event Sliders
+* Carousels from Posts or Products by ID
+* Taxonomy (Category/Tag) Carousels
+* Carousel from *Any Custom Post Type*
 * Latest Posts
 * More
 
