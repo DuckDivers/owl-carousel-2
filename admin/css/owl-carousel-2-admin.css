@@ -38,18 +38,19 @@ span.no-cats {
     text-transform: uppercase;
 }
 #Carousel_Data span.ajax-loader {
-    background: url('spinner-2x.gif') no-repeat;
-    background-size: 30px 30px;
+    background: url(spinner-2x.gif) no-repeat;
+    background-size: 40px 40px;
     vertical-align: middle;
-    opacity: .8;
+    opacity: 1;
     filter: alpha(opacity=80);
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     margin: 15px 0 0;
-    top: 48%;
-    left: 280px;
-    position:absolute;
-    display:none;
+    top: 40%;
+    left: 50%;
+    position: absolute;
+    z-index: 9;
+    display: none;
 }
 .ui-tooltip {
 	padding: 8px;
@@ -117,6 +118,90 @@ em.dd_owl_tooltip {
 #dd_owl_post_ids {
     display: none;
 }
+#dd_owl_image_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+#dd_owl_image_wrapper .dd-owl-image-preview {
+    flex: 0 1 18.6%;
+    width: 18.6%;
+    padding: 5px 10px 5px 0;
+    position: relative;
+    max-width: 150px;
+}
+#dd_owl_image_wrapper .dd-owl-image-preview img {
+    display: block;
+    width: 100%;
+    margin-right: 5px;
+}
+#dd_owl_image_wrapper ul.actions {
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    padding: 2px;
+    z-index: 99;
+    display: none;
+}
+#dd_owl_image_wrapper ul.actions li {
+    float: right;
+    margin: 0 0 0 2px
+}
+#dd_owl_image_wrapper ul.actions li a {
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    height: 0;
+    display: block;
+    overflow: hidden
+}
+#dd_owl_image_wrapper ul ul.actions li a.delete {
+    display: block;
+    text-indent: -9999px;
+    position: relative;
+    height: 1em;
+    width: 1em;
+    font-size: 1.4em
+}
+#dd_owl_image_wrapper ul.actions li a.delete::before {
+    font-family: Dashicons;
+    font-size: 16px;
+    speak: none;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    text-indent: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    content: "\f153";
+    color: #999;
+    background: #fff;
+    border-radius: 50%;
+    height: 1em;
+    width: 1em;
+    line-height: 1em
+}
+#dd_owl_image_wrapper ul.actions li a.delete:hover::before {
+    color: #aa0000;
+}
+#dd_owl_image_wrapper li:hover ul.actions {
+    display: block
+}
+#dd-owl-loading {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.2);
+    z-index: 9999;
+    display: none;
+}
+
 #choose-postids .select2-container, select#dd_owl_post_ids {
     min-width: 400px;
 }

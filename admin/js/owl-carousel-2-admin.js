@@ -1,191 +1,281 @@
-(function( $ ) {
-	'use strict';
-    var gotPosts = 0;
-    var getPostType, postSelected, taxOptions, taxCounter = 0;
-    $(document).bind('ready ajaxcomplete', function(){
-        postSelected = $('select#dd_owl_post_type').val();
-        taxOptions = $('input[name="dd_owl_tax_options"]:checked').val();
-        if (postSelected === ''){getPostType = 'Null';} else {getPostType = postSelected;}
+jQuery( function( $ ){
+    'use strict';
+    let gotPosts = 0; postSelected, taxOptions;
+    let taxCounter = 0;
+    const   $post_type = $("select#dd_owl_post_type"),
+            $tax_options = $('input[name="dd_owl_tax_options"]'),
+            $term_row = $('#term-row'),
+            $is_media = $('.is-media'),
+            $image_size = $('#dd_owl_image_size'),
+            $post_options = $('div[data-id="display_post_options"]');
+    $( '#dd_owl_image_wrapper' ).on( 'click', 'a.delete', function() {
+        $(this).closest('li.dd-owl-image-preview').remove();
+    });
+
+    $('#dd_shortcode_copy').on('click', function() {
+        let shortcode = document.getElementById('dd_owl_shortcode').innerHTML;
+        let aux = document.createElement("input"); // Create a "hidden" input
+        aux.setAttribute("value", shortcode); // Assign it the value of the specified element
+        document.body.appendChild(aux); // Append it to the body
+        aux.select(); // Highlight its content
+        document.execCommand("copy"); // Copy the highlighted text
+        document.body.removeChild(aux); // Remove it from the body
+        // DISPLAY 'Shortcode Copied' message
+        document.getElementById('dd_owl_shortcode').innerHTML = "Copied!";
+        setTimeout(function(){ document.getElementById('dd_owl_shortcode').innerHTML = shortcode; }, 1000);
+    });
+
+    postSelected = $post_type.val();
+    taxOptions = $('input[name="dd_owl_tax_options"]:checked').val();
+
+    $('#dd_owl_thumbs').on('click', function(){
+        if ($(this).is(':checked')) {
+            $('.image-options').removeClass('hidden');
+        }
+        else {
+            $('.image-options').addClass('hidden');
+        }
+    });
+
+    $('#dd_owl_show_cta').on('change', function(){
+        if ($(this).is(':checked')) {
+            $('.show-button').removeClass('hidden');
+        }
+        else {
+            $('.show-button').addClass('hidden');
+        }
+    });
+    $('select#dd_owl_btn_display').on('change', function(){
+        if ($(this).val() !== 'inline'){
+            $('.button-margin').addClass('visible').removeClass('hidden');
+        }
+        else {
+            $('.button-margin').addClass('hidden').removeClass('visible');
+        }
+    });
+
+
+    $post_type.on('change', function(){
+        let postType = $(this).val();
+        $('#dd-owl-loading').show();
+        $('span.ajax-loader').show();
+        $term_row.addClass('hidden').removeClass('visible');
+        $is_media.removeClass('visible').addClass('hidden');
+        $post_options.removeClass('hidden').addClass('visible');
+        $('#tax-options').removeClass('hidden').addClass('visible');
+        if (postType !== postSelected) {
+            gotPosts = 0;
+            $('select#dd_owl_post_ids').find('option').remove().end();
+            $tax_options.trigger('change');
+            postSelected = postType;
+        }
+        if (postType === 'product'){
+            $('.product-rows').show();
+            $('.not-media').removeClass('hidden').addClass('visible');
+            $post_options.removeClass('hidden').addClass('visible');
+        }
+        else if (postType === 'attachment') {
+            $is_media.removeClass('hidden').addClass('visible');
+            $('.not-media').removeClass('visible').addClass('hidden');
+            $('#tax-options').removeClass('visible').addClass('hidden');
+            $post_options.removeClass('visible').addClass('hidden');
+        }
+        else {
+            $('.product-rows').hide();
+            $('.not-media').removeClass('hidden').addClass('visible');
+            $is_media.removeClass('visible').addClass('hidden');
+            $term_row.addClass('hidden').removeClass('visible');
+            $post_options.removeClass('hidden').addClass('visible');
+        }
+        // Select the product category
+        let postID = $('input#post_ID').val();
+        $.ajax({
+            url: ajaxurl,
+            type: "POST",
+            data: {
+                posttype: postType,
+                action: 'owl_carousel_tax',
+                postid: postID,
+            },
+            success: function(data){
+                $('#taxonomy').html(data);
+                ajax_get_terms();
+            }
+        });
+
+    });
+
+    $tax_options.on('change', function(){
+        let ck = $('input[name="dd_owl_tax_options"]:checked').val();
+        let ddOwlPostTaxonomyTerm = $('#dd_owl_post_taxonomy_term');
+        let terms = (ddOwlPostTaxonomyTerm.length) ? ddOwlPostTaxonomyTerm.val() : -1;
+        let showTerms = false;
+        if (true === terms) {
+            showTerms = !!(terms.length);
+        }
+        if (ck === 'taxonomy'){
+            $('#category-row').removeClass('hidden').addClass('visible');
+            $('#choose-postids.visible').addClass('hidden').removeClass('visible');
+            $('#number_of_posts').show();
+            if (showTerms) $term_row.addClass('visible').removeClass('hidden');
+        }
+        else if (ck === 'postID'){
+            $('#number_of_posts').hide();
+            if (gotPosts === 0) {
+                dd_select_posts();
+            }
+            else {
+                $('#choose-postids').removeClass('hidden').addClass('visible');
+                $('#dd_owl_post_ids').show();
+            }
+            $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
+        }
+        else if (ck === 'featured_product') {
+            $('#number_of_posts').show();
+            $('#category-row.visible, #term-row.visible, #choose-postids').addClass('hidden').removeClass('visible');
+            $term_row.hide();
+        }
+        else if (ck === 'show_tax_only') {
+            $('#category-row').removeClass('hidden').addClass('visible');
+            $('#choose-postids.visible').addClass('hidden').removeClass('visible');
+            $('#number_of_posts').show();
+            if (showTerms) $term_row.addClass('visible').removeClass('hidden');
+        } else {
+            $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
+            $('#choose-postids.visible').addClass('hidden').removeClass('visible');
+        }
+        return false;
+    });
+    $image_size.on('change', function(){
+        if ($image_size.val() === 'custom'){
+            $('.show-custom').removeClass('hidden').addClass('visible');
+        } else {
+            $('.show-custom').addClass('hidden').removeClass('visible');
+        }
+    });
+    if ( taxOptions !== null && taxCounter === 0 ) {$tax_options.trigger('change'); taxCounter = 1;}
+
+    $(document).ready(function(){
+
+        $('body.post-type-owl-carousel #wpwrap').before('<div id="dd-owl-loading"></div>');
         $('.dd_owl_tooltip').tooltip();
+        $('#dd_owl_image_wrapper').sortable();
+        $post_type.trigger('change');
+        $image_size.trigger('change');
+        let dd_owl_media_upload;
 
-        //  Copy to Clipboard
+        $('#dd-owl-add-media').click(function (e) {
 
-        $('#dd_shortcode_copy').click(function() {
-            var shortcode = document.getElementById('dd_owl_shortcode').innerHTML;
-            var aux = document.createElement("input"); // Create a "hidden" input
-            aux.setAttribute("value", shortcode); // Assign it the value of the specified element
-            document.body.appendChild(aux); // Append it to the body
-            aux.select(); // Highlight its content
-            document.execCommand("copy"); // Copy the highlighted text
-            document.body.removeChild(aux); // Remove it from the body
-            // DISPLAY 'Shortcode Copied' message
-            document.getElementById('dd_owl_shortcode').innerHTML = "Copied!";
-            setTimeout(function(){ document.getElementById('dd_owl_shortcode').innerHTML = shortcode; }, 1000);
-        });
+            e.preventDefault();
+            // If the uploader object has already been created, reopen the dialog
+            if (dd_owl_media_upload) {
+                dd_owl_media_upload.open();
+                return;
+            }
+            // Extend the wp.media object
+            dd_owl_media_upload = wp.media.frames.file_frame = wp.media({
+                title: dd_owl_admin_script.select_images,
+                button: {text: dd_owl_admin_script.insert_images},
+                multiple: true //allowing for multiple image selection
+            });
 
-        $('#dd_owl_thumbs').change(function(){
-            if ($(this).is(':checked')) {
-                $('.image-options').removeClass('hidden');
-            }
-            else {
-               $('.image-options').addClass('hidden');
-            }
-        });
+            dd_owl_media_upload.on('select', function () {
 
-        $('#dd_owl_show_cta').change(function(){
-            if ($(this).is(':checked')) {
-                $('.show-button').removeClass('hidden');
-            }
-            else {
-               $('.show-button').addClass('hidden');
-            }
-        });
+                let attachments = dd_owl_media_upload.state().get('selection').map(
+                    function (attachment) {
 
-        $('select#dd_owl_post_type').change(function(){
-            var postType = $(this).val();
-            $('span.ajax-loader').css('display', 'block');
-            $('#term-row.visible').addClass('hidden').removeClass('visible');
-            if (postType !== postSelected) {
-                gotPosts = 0;
-                $('select#dd_owl_post_ids').find('option').remove().end();
-                $('input[name="dd_owl_tax_options"]').trigger('change');
-                postSelected = postType;
-            }
-            if (postType === 'product'){
-                 $('.product-rows').show();
+                        attachment.toJSON();
+                        return attachment;
+
+                    });
+
+                //loop through the array and do things with each attachment
+
+                let i, $ul = $('#dd_owl_image_wrapper');
+
+                for (i = 0; i < attachments.length; ++i) {
+                    let image = (attachments[i].attributes.sizes.thumbnail) ? attachments[i].attributes.sizes.thumbnail.url : attachments[i].attributes.url
+                    $ul.append(
+                        '<li class="dd-owl-image-preview" id="dd-owl-media-' +
+                        attachments[i].id + 'data-media-id="' + attachments[i].id + '">' +
+                        '<img src="' + image + '" alt="'+ attachments[i].attributes.alt +'">' +
+                        '<input id="dd-owl-image-input-' + attachments[i].id + '" type="hidden" name="dd_owl_media_items_array[]"  value="' + attachments[i].id + '">' +
+                        '<ul class="actions"><li><a href="#" class="delete"></a></li></ul>' +
+                        '</li>'
+                    );
+
                 }
-            else {
-                $('.product-rows').hide();
-            }
-            // Select the product category
-            var postID = $('input#post_ID').val();
-            $.ajax({
-                url: ajaxurl,
-                type: "POST",
-                data: {
-                    posttype: postType,
-                    action: 'owl_carousel_tax',
-                    postid: postID,
-                    },
-                success: function(data){
-                        $('#taxonomy').html(data);
-                        ajax_get_terms();
-                        }
-                });
 
             });
-        $('select#dd_owl_post_type').trigger('change');
-
-        $('input[name="dd_owl_tax_options"]').change(function(){
-            var ck = $('input[name="dd_owl_tax_options"]:checked').val();
-			var terms = ($('#dd_owl_post_taxonomy_term').length) ? $('#dd_owl_post_taxonomy_term').val() : -1;
-			var showTerms = false;
-			if (!null == terms) {
-				showTerms = ( terms.length ) ? true : false;
-			}
-            if (ck === 'taxonomy'){
-                $('#category-row').removeClass('hidden').addClass('visible');
-                $('#choose-postids.visible').addClass('hidden').removeClass('visible');
-				if (showTerms) $('#term-row').addClass('visible').removeClass('hidden');
-            }
-            else if (ck === 'postID'){
-                if (gotPosts === 0) {
-                    dd_select_posts();
-                }
-                else {
-                    $('#choose-postids').removeClass('hidden').addClass('visible');
-                    $('#dd_owl_post_ids').show();
-                }
-                $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
-            }
-            else if (ck === 'featured_product') {
-                $('#category-row.visible, #term-row.visible, #choose-postids').addClass('hidden').removeClass('visible');
-            }
-			else if (ck === 'show_tax_only') {
-                $('#category-row').removeClass('hidden').addClass('visible');
-				$('#choose-postids.visible').addClass('hidden').removeClass('visible');
-				if (showTerms) $('#term-row').addClass('visible').removeClass('hidden');
-			} else {
-                $('#category-row.visible, #term-row.visible').addClass('hidden').removeClass('visible');
-                $('#choose-postids.visible').addClass('hidden').removeClass('visible');
-            }
-            return false;
-        });
-
-        $('select#dd_owl_btn_display').change(function(){
-            if ($(this).val() !== 'inline'){
-                $('.button-margin.hidden').addClass('visible').removeClass('hidden');
-            }
-            else {$('button-margin').addClass('hidden').removeClass('visible');}
-        });
-
-        // Trigger All Functions to Run on Load
-        $('#dd_owl_thumbs, #dd_owl_show_cta, select#dd_owl_btn_display').trigger('change');
-
-        if ( taxOptions !== null && taxCounter === 0 ) {$('input[name="dd_owl_tax_options"]').trigger('change'); taxCounter = 1;}
-
-    }); // Document Ready
-
-    $(document).on('ajaxComplete', function(){
-        $('#dd_owl_post_taxonomy_type').change(function(){
-            ajax_get_terms();
+            dd_owl_media_upload.open();
         });
     });
 
+    $('#dd_owl_post_taxonomy_type').on('change', function(){
+        ajax_get_terms();
+    });
+
     function ajax_get_terms(){
-        $('span.ajax-loader').css('display', 'block');
-        var postType = $('select#dd_owl_post_type').val();
-        var taxType = $('select#dd_owl_post_taxonomy_type').val();
-        var postID = $('input#post_ID').val();
+        $('#dd-owl-loading').show();
+        $('span.ajax-loader').show();
+        let postType = $('select#dd_owl_post_type').val();
+        let taxType = $('select#dd_owl_post_taxonomy_type').val();
+        let postID = $('input#post_ID').val();
         $.ajax({
-                url: ajaxurl,
-                type: "POST",
-                data: {
-                        posttype: postType,
-                        taxtype: taxType,
-                        postid: postID,
-                        action: 'owl_carousel_terms',
-                    },
-				dataType: 'json',
-                success: function(data){
-                    $('#taxterm').html(data);
-                    $('span.ajax-loader').css('display', 'none');
-                        if (data.length > 234){
-                            $('#term-row').addClass('visible').removeClass('hidden');
-                        }
-						$('select#dd_owl_post_taxonomy_term').select2({
-                            placeholder: "Choose Terms",
-                            allowClear: true
-                        });
-                        $('select#dd_owl_post_taxonomy_term').find(':selected').data('selected');
-                    },
-					error: function(data) {
-						console.log(data);
-					}
+            url: ajaxurl,
+            type: "POST",
+            data: {
+                posttype: postType,
+                taxtype: taxType,
+                postid: postID,
+                action: 'owl_carousel_terms',
+            },
+            dataType: 'json',
+            success: function(data){
+                $('#taxterm').html(data);
+                $('#dd-owl-loading').hide();
+                $('span.ajax-loader').hide();
+                $('body:before').css('display', 'none');
+                if (data.length > 234){
+                    $term_row.addClass('visible').removeClass('hidden');
+                }
+                let $1 = $('select#dd_owl_post_taxonomy_term');
+                $1.select2({
+                    placeholder: "Choose Terms",
+                    allowClear: true
                 });
+                $1.find(':selected').data('selected');
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
 
     }
 
     function dd_select_posts(){
-        $('span.ajax-loader').css('display', 'block');
-        var postType = $('select#dd_owl_post_type').val();
-        var carouselID = $('input#post_ID').val();
+        $('#dd-owl-loading').show();
+        $('span.ajax-loader').show();
+        let postType = $('select#dd_owl_post_type').val();
+        let carouselID = $('input#post_ID').val();
         $.ajax({
-                url: ajaxurl,
-                type: "POST",
-                data: {
-                    posttype: postType,
-                    carousel_id: carouselID,
-                    action : 'owl_carousel_posts'
-                },
+            url: ajaxurl,
+            type: "POST",
+            data: {
+                posttype: postType,
+                carousel_id: carouselID,
+                action : 'owl_carousel_posts'
+            },
             success: function(data){
-                    $('#dd_owl_post_ids').append(data);
-                    $('.dd-owl-multi-select').select2({
-                        placeholder: 'Choose the posts'
-                    });
-                    $('#choose-postids').removeClass('hidden').addClass('visible');
-                    $('#dd_owl_post_ids').show();
-                    $('span.ajax-loader').css('display', 'none');
+                let ddOwlPostIds = $('#dd_owl_post_ids');
+                ddOwlPostIds.append(data);
+                $('.dd-owl-multi-select').select2({
+                    placeholder: 'Choose the posts'
+                });
+                $('#choose-postids').removeClass('hidden').addClass('visible');
+                ddOwlPostIds.show();
+                $('#dd-owl-loading').hide();
+                $('span.ajax-loader').hide();
             },
             error: function(data) {
                 console.log(data);
@@ -193,5 +283,4 @@
         });
         gotPosts = 1;
     }
-
-})( jQuery );
+});

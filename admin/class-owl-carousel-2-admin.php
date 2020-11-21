@@ -95,7 +95,11 @@ class Owl_Carousel_2_Admin {
   public function only_admin_page() {
     if ( 'owl-carousel' === get_post_type() ) {
       wp_enqueue_script( 'dd-owl-admin' );
-      wp_enqueue_script( 'dd-owl-admin', plugin_dir_url( __FILE__ ) . '/js/owl-carousel-2-admin.js', $this->version, false );
+      wp_enqueue_script( 'dd-owl-admin', plugin_dir_url( __FILE__ ) . '/js/owl-carousel-2-admin.min.js', $this->version, false );
+      wp_localize_script( 'dd-owl-admin', 'dd_owl_admin_script', array(
+          'select_images' => __('Select Carousel Images', 'owl-carousel-2'),
+          'insert_images' => __('Insert Images', 'owl-carousel-2')
+      ));
     }
   }
 

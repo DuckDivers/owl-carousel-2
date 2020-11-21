@@ -1,6 +1,4 @@
-<?php
-
-/**
+<?php /**
  * The file that defines the core plugin class
  *
  * A class definition that includes attributes and functions used across both the
@@ -221,5 +219,27 @@ class Owl_Carousel_2 {
 	public function get_version() {
 		return $this->version;
 	}
+
+    /**
+     * Retrieve all image sizes in WP
+     *
+     * @return array $image_sizes['size_name'] = array ('width' , 'height' , 'crop')
+     */
+	public static function get_all_image_sizes() {
+        global $_wp_additional_image_sizes;
+
+        $default_image_sizes = array( 'thumbnail', 'medium', 'large' );
+        $image_sizes = array();
+        foreach ( $default_image_sizes as $size ) {
+            $image_sizes[$size]['width']	= intval( get_option( "{$size}_size_w") );
+            $image_sizes[$size]['height'] = intval( get_option( "{$size}_size_h") );
+            $image_sizes[$size]['crop']	= get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
+        }
+
+        if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) )
+            $image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
+
+        return $image_sizes;
+    }
 
 }

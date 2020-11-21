@@ -1,11 +1,11 @@
 === Custom Post Carousels with Owl ===
 Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
-Tags: owl carousel 2, post slider, product slider
+Tags: owl carousel 2, post slider, product slider, image carousel, post carousel
 Requires at least: 4.5
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.2.6.1
+Stable tag: 1.3
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -69,23 +69,6 @@ Example to add pricing for WooCommerce Carousels - Add to your theme functions.p
 	}
 	add_action('dd-carousel-after-content', 'add_wc_price_to_carousel', 10);
 `
-= Are there other filters available? =
-
-There are currently two filters
-
-1. dd_carousel_filter_excerpt - Passes 2 parameter *$excerpt* and *$carousel_id*
-1. dd_filter_owl_carousel_script - Passes 2 Parameters the entire jQuery script, and the carousel ID.
-
-Example of script filter:
-
-`<?php
-apply_filters('dd_filter_owl_carousel_script', 'my_filter_owl_carousel_script', 10 , 2);
-function my_filter_owl_carousel_script($script, $carousel_id){
-	// Do stuff
-	return $script;
-}
-?>`
-
 = Can I Filter the Query Arguments? =
 
 Yes, there is currently one filter.
@@ -115,6 +98,34 @@ function filter_carousel($args, $carouselID){
 	return $args;
 	}
 }`
+
+= Are there other filters available? =
+
+There are currently several filters available to you. You can apply these in your theme's functions.php
+
+1. `dd_carousel_filter_excerpt` ($excerpt, $carousel_id)
+	* `$excerpt` : string the excerpt
+	* `$carousel_id` int the post ID of the carousel.
+1. `dd_filter_owl_carousel_script` ($owl_script, $carousel_id)
+	* `$owl_script` string the jQuery function that invokes the Owl Carousel
+	* `$carousel_id` int the post ID of the carousel.
+1. `dd_carousel_filter_title_heading` ($heading)
+	* `$heading` string - use any additional valid HTML tag to wrap the title that isn't already present.
+1. `dd_carousel_filter_prev` and `dd_carousel_filter_next`
+	* This might be helpful to include a fontawesome or other icon set as the Prev/Next buttons
+1. `dd_carousel_filter_caption` ($the_caption, $caption)
+	* `$the_caption` - The HTML wrapper and caption for an image carousel
+	* `$caption` The `wp_get_attachment_caption` caption for the image
+
+Example of script filter:
+
+`<?php
+apply_filters('dd_filter_owl_carousel_script', 'my_filter_owl_carousel_script', 10 , 2);
+function my_filter_owl_carousel_script($script, $carousel_id){
+	// Do stuff
+	return $script;
+}
+?>`
 
 == Screenshots ==
 

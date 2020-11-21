@@ -112,3 +112,17 @@ function owl_carousel_posts() {
     echo $html;
     die();
 }
+
+// Ajax action to refresh the user image
+add_action( 'wp_ajax_myprefix_get_image', 'myprefix_get_image'   );
+function myprefix_get_image() {
+    if(isset($_GET['id']) ){
+        $image = wp_get_attachment_image( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ), 'medium', false, array( 'id' => 'myprefix-preview-image' ) );
+        $data = array(
+            'image'    => $image,
+        );
+        wp_send_json_success( $data );
+    } else {
+        wp_send_json_error();
+    }
+}
