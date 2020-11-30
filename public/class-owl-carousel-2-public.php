@@ -99,35 +99,36 @@ class Owl_Carousel_2_Public {
             ), $atts, 'dd-owl-carousel');
 
         $post = get_post($atts['id']);
-
+        $this_carousel = $post->ID;
         // Retrieve Meta from Carousel
 
-        $post_type = get_post_meta($post->ID, 'dd_owl_post_type', true);
-        $per_page = get_post_meta($post->ID, 'dd_owl_number_posts', true);
-        $thumbs = (get_post_meta($post->ID, 'dd_owl_thumbs', true) == 'checked') ? 'true' : 'false';
-        $image_options = get_post_meta($post->ID, 'dd_owl_image_options', true);
-        $excerpt_length = get_post_meta($post->ID, 'dd_owl_excerpt_length', true);
-        $excerpt_more = esc_html(get_post_meta($post->ID, 'dd_owl_excerpt_more', true));
-        $hide_more = (get_post_meta($post->ID, 'dd_owl_hide_excerpt_more', true) === 'checked') ? 'true' : 'false';
-        $css_id = get_post_meta($post->ID, 'dd_owl_css_id', true);
-        $cta_text = esc_html(get_post_meta($post->ID, 'dd_owl_cta', true));
-        $btn_class = get_post_meta($post->ID, 'dd_owl_btn_class', true);
-        $btn_display = get_post_meta($post->ID, 'dd_owl_btn_display', true);
-        $btn_margin = (!empty (get_post_meta($post->ID, 'dd_owl_btn_margin', true))) ? 'margin: ' . get_post_meta($post->ID, 'dd_owl_btn_margin', true) . ';' : '';
-        $show_cta = (get_post_meta($post->ID, 'dd_owl_show_cta', true) == 'checked') ? 'true' : 'false';
-        $tax_options = get_post_meta($post->ID, 'dd_owl_tax_options', true);
-        $postIDs = get_post_meta($post->ID, 'dd_owl_post_ids', true);
-        $orderby = get_post_meta($post->ID, 'dd_owl_orderby', true);
-        $taxonomy = get_post_meta($post->ID, 'dd_owl_post_taxonomy_type', true);
-        $term = get_post_meta($post->ID, 'dd_owl_post_taxonomy_term', true);
+        $post_type = get_post_meta($this_carousel, 'dd_owl_post_type', true);
+        $per_page = get_post_meta($this_carousel, 'dd_owl_number_posts', true);
+        $thumbs = (get_post_meta($this_carousel, 'dd_owl_thumbs', true) == 'checked') ? 'true' : 'false';
+        $image_options = get_post_meta($this_carousel, 'dd_owl_image_options', true);
+        $excerpt_length = get_post_meta($this_carousel, 'dd_owl_excerpt_length', true);
+        $excerpt_more = esc_html(get_post_meta($this_carousel, 'dd_owl_excerpt_more', true));
+        $hide_more = (get_post_meta($this_carousel, 'dd_owl_hide_excerpt_more', true) === 'checked') ? 'true' : 'false';
+        $css_id = get_post_meta($this_carousel, 'dd_owl_css_id', true);
+        $cta_text = esc_html(get_post_meta($this_carousel, 'dd_owl_cta', true));
+        $btn_class = get_post_meta($this_carousel, 'dd_owl_btn_class', true);
+        $btn_display = get_post_meta($this_carousel, 'dd_owl_btn_display', true);
+        $btn_margin = (!empty (get_post_meta($this_carousel, 'dd_owl_btn_margin', true))) ? 'margin: ' . get_post_meta($this_carousel, 'dd_owl_btn_margin', true) . ';' : '';
+        $show_cta = (get_post_meta($this_carousel, 'dd_owl_show_cta', true) == 'checked') ? 'true' : 'false';
+        $tax_options = get_post_meta($this_carousel, 'dd_owl_tax_options', true);
+        $postIDs = get_post_meta($this_carousel, 'dd_owl_post_ids', true);
+        $orderby = get_post_meta($this_carousel, 'dd_owl_orderby', true);
+        $taxonomy = get_post_meta($this_carousel, 'dd_owl_post_taxonomy_type', true);
+        $term = get_post_meta($this_carousel, 'dd_owl_post_taxonomy_term', true);
+        $centered = (get_post_meta($this_carousel, 'dd_owl_nav_position', true ) == 'centered') ? ' nav-centered' : '';
 
         $img_atts = array(
-            'size' => get_post_meta($post->ID, 'dd_owl_image_size', true),
-            'width' => get_post_meta($post->ID, 'dd_owl_img_width', true),
-            'height' => get_post_meta($post->ID, 'dd_owl_img_height', true),
-            'crop' => get_post_meta($post->ID, 'dd_owl_img_crop', true),
-            'upscale' => get_post_meta($post->ID, 'dd_owl_img_upscale', true),
-            'options' => get_post_meta($post->ID, 'dd_owl_image_options', true)
+            'size' => get_post_meta($this_carousel, 'dd_owl_image_size', true),
+            'width' => get_post_meta($this_carousel, 'dd_owl_img_width', true),
+            'height' => get_post_meta($this_carousel, 'dd_owl_img_height', true),
+            'crop' => get_post_meta($this_carousel, 'dd_owl_img_crop', true),
+            'upscale' => get_post_meta($this_carousel, 'dd_owl_img_upscale', true),
+            'options' => get_post_meta($this_carousel, 'dd_owl_image_options', true)
         );
 
         if ($hide_more == 'true') $excerpt_more = '';
@@ -138,7 +139,7 @@ class Owl_Carousel_2_Public {
         }
         // Check if is attachment / media do subroutine
         if ($post_type == 'attachment') {
-            $output = $this->do_media_carousel($post->ID, $css_id, get_post_meta($post->ID, 'dd_owl_media_items', true), $img_atts);
+            $output = $this->do_media_carousel($this_carousel, $css_id, get_post_meta($this_carousel, 'dd_owl_media_items', true), $img_atts);
             goto beforeCarousel;
         }
 
@@ -232,10 +233,10 @@ class Owl_Carousel_2_Public {
              * @param array $args The arguments created for the WP_Query to get the carousel items
              * @param int The post ID of the carousel
              */
-            $query = new WP_Query(apply_filters('dd_carousel_filter_query_args', $args, $post->ID));
+            $query = new WP_Query(apply_filters('dd_carousel_filter_query_args', $args, $this_carousel));
 
             //Owl Carousel Wrapper
-            $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme nav-centered">';
+            $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme'.$centered.'">';
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
@@ -260,9 +261,9 @@ class Owl_Carousel_2_Public {
                         }
                     }
                     // Add filter to change heading type
-                    $title_heading = apply_filters('dd_carousel_filter_title_heading', get_post_meta($post->ID, 'dd_owl_title_heading', true));
+                    $title_heading = apply_filters('dd_carousel_filter_title_heading', get_post_meta($this_carousel, 'dd_owl_title_heading', true));
 
-                    if (null == get_post_meta($post->ID, 'dd_owl_show_title', true)) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
+                    if (null == get_post_meta($this_carousel, 'dd_owl_show_title', true)) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
 
                     if (has_excerpt()) {
                         $excerpt = strip_shortcodes(get_the_excerpt());
@@ -275,11 +276,11 @@ class Owl_Carousel_2_Public {
                          * @param string $excerpt
                          * @param int Post ID
                          */
-                        $output .= apply_filters('dd_carousel_filter_excerpt', $excerpt, $post->ID);
+                        $output .= apply_filters('dd_carousel_filter_excerpt', $excerpt, $this_carousel);
                     } else {
                         $theContent = apply_filters('the_content', get_the_content());
                         $theContent = strip_shortcodes($theContent);
-                        $output .= apply_filters('dd_carousel_filter_excerpt', wp_trim_words($theContent, $excerpt_length, $excerpt_more), $post->ID);
+                        $output .= apply_filters('dd_carousel_filter_excerpt', wp_trim_words($theContent, $excerpt_length, $excerpt_more), $this_carousel);
                     }
                     if ($show_cta == 'true') {
                         $link = get_the_permalink();
@@ -298,7 +299,7 @@ class Owl_Carousel_2_Public {
             $output .= '</div></div>';
         } else {
             // Is term list only
-            $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme">';
+            $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme'.$centered.'">';
             foreach ($term as $theTerm) {
                 $category = get_term_by('slug', $theTerm, $taxonomy);
                 // Retrieve Variables
@@ -325,9 +326,9 @@ class Owl_Carousel_2_Public {
                 }
 
                 // Add filter to change heading type
-                $title_heading = get_post_meta($post->ID, 'dd_owl_title_heading', true);
+                $title_heading = get_post_meta($this_carousel, 'dd_owl_title_heading', true);
 
-                if (null == get_post_meta($post->ID, 'dd_owl_show_title', true)) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
+                if (null == get_post_meta($this_carousel, 'dd_owl_show_title', true)) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
 
                 if (intval($excerpt_length) > 0) {
                     $output .= wp_trim_words($category->description, $excerpt_length);
@@ -350,27 +351,27 @@ class Owl_Carousel_2_Public {
         } // EndIF
         beforeCarousel:
         // Get Owl Meta for Carousel Init
-        $loop = (get_post_meta($post->ID, 'dd_owl_loop', true) === 'checked') ? 'true' : 'false';
-        $center = (get_post_meta($post->ID, 'dd_owl_center', true) === 'checked') ? 'true' : 'false';
-        $duration = get_post_meta($post->ID, 'dd_owl_duration', true);
-        $transition = get_post_meta($post->ID, 'dd_owl_transition', true);
-        $stop = (get_post_meta($post->ID, 'dd_owl_stop', true) === 'checked') ? 'true' : 'false';
-        $navs = (get_post_meta($post->ID, 'dd_owl_navs', true) === 'checked') ? 'true' : 'false';
-        $dots = (get_post_meta($post->ID, 'dd_owl_dots', true) === 'checked') ? 'true' : 'false';
-        $margin = get_post_meta($post->ID, 'dd_owl_margin', true);
-        $get_prev = (!empty( get_post_meta( $post->ID, 'dd_owl_prev', true ))) ? esc_html(get_post_meta($post->ID, 'dd_owl_prev', true)) : '&lt;';
-        $get_next = (!empty( get_post_meta( $post->ID, 'dd_owl_next', true ))) ? esc_html(get_post_meta($post->ID, 'dd_owl_next', true)) : '&gt;';
-
-        $prev = apply_filters('dd_carousel_filter_prev', $get_prev);
-        $next = apply_filters('dd_carousel_filter_next', $get_next);
+        $loop = (get_post_meta($this_carousel, 'dd_owl_loop', true) === 'checked') ? 'true' : 'false';
+        $center = (get_post_meta($this_carousel, 'dd_owl_center', true) === 'checked') ? 'true' : 'false';
+        $duration = get_post_meta($this_carousel, 'dd_owl_duration', true);
+        $transition = get_post_meta($this_carousel, 'dd_owl_transition', true);
+        $stop = (get_post_meta($this_carousel, 'dd_owl_stop', true) === 'checked') ? 'true' : 'false';
+        $navs = (get_post_meta($this_carousel, 'dd_owl_navs', true) === 'checked') ? 'true' : 'false';
+        $dots = (get_post_meta($this_carousel, 'dd_owl_dots', true) === 'checked') ? 'true' : 'false';
+        $margin = get_post_meta($this_carousel, 'dd_owl_margin', true);
+        $get_prev = (!empty( get_post_meta( $this_carousel, 'dd_owl_prev', true ))) ? html_entity_decode(get_post_meta($this_carousel, 'dd_owl_prev', true)) : '&lt;';
+        $get_next = (!empty( get_post_meta( $this_carousel, 'dd_owl_next', true ))) ? html_entity_decode(get_post_meta($this_carousel, 'dd_owl_next', true)) : '&gt;';
+        
+        $prev = apply_filters('dd_carousel_filter_prev', $get_prev, $this_carousel);
+        $next = apply_filters('dd_carousel_filter_next', $get_next, $this_carousel);
 
         // Get Responsive Settings
-        $items_width1 = intval(get_post_meta($post->ID, 'dd_owl_items_width1', true));
-        $items_width2 = intval(get_post_meta($post->ID, 'dd_owl_items_width2', true));
-        $items_width3 = intval(get_post_meta($post->ID, 'dd_owl_items_width3', true));
-        $items_width4 = intval(get_post_meta($post->ID, 'dd_owl_items_width4', true));
-        $items_width5 = intval(get_post_meta($post->ID, 'dd_owl_items_width5', true));
-        $items_width6 = intval(get_post_meta($post->ID, 'dd_owl_items_width6', true));
+        $items_width1 = intval(get_post_meta($this_carousel, 'dd_owl_items_width1', true));
+        $items_width2 = intval(get_post_meta($this_carousel, 'dd_owl_items_width2', true));
+        $items_width3 = intval(get_post_meta($this_carousel, 'dd_owl_items_width3', true));
+        $items_width4 = intval(get_post_meta($this_carousel, 'dd_owl_items_width4', true));
+        $items_width5 = intval(get_post_meta($this_carousel, 'dd_owl_items_width5', true));
+        $items_width6 = intval(get_post_meta($this_carousel, 'dd_owl_items_width6', true));
 
         // Output the Script
         $output .= '<script type="text/javascript" async>';
@@ -410,7 +411,7 @@ class Owl_Carousel_2_Public {
          *
          * Since 1.2.6
          */
-        $output .= apply_filters('dd_filter_owl_carousel_script', $owl_script, $post->ID);
+        $output .= apply_filters('dd_filter_owl_carousel_script', $owl_script, $this_carousel);
         $output .= '</script>';
         // Reset Post Data
         wp_reset_postdata();
@@ -426,10 +427,12 @@ class Owl_Carousel_2_Public {
      * @since 1.3
      */
     public function do_media_carousel($carousel_id, $css_id, $media, $img_atts) {
+        // Retrieve atts
         $use_lightbox = ('lightbox' == get_post_meta($carousel_id, 'dd_owl_image_options', true)) ? true : false;
-
+        $centered = (get_post_meta($carousel_id, 'dd_owl_nav_position', true ) == 'centered') ? ' nav-centered' : '';
         $use_caption = ("checked" == get_post_meta($carousel_id, 'dd_owl_use_image_caption', true)) ? true : false;
-        $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme">';
+
+        $output = '<div class="owl-wrapper"><div id="' . $css_id . '" class="owl-carousel owl-theme'.$centered.'">';
         if ('custom' == $img_atts['size']) {
             $img_width = (intval($img_atts['width']));
             if ($img_width <= 300) {

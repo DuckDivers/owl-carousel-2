@@ -82,7 +82,7 @@ em.dd_owl_tooltip {
 #taxterm .select2-container {
     min-width: 300px;
 }
-/* Component containers
+/* Component containers jQuery UI
 ----------------------------------*/
 .ui-widget {
 	font-family: Verdana,Arial,sans-serif;
@@ -212,4 +212,8 @@ em.dd_owl_tooltip {
     #choose-postids .select2-container, select#dd_owl_post_ids {
         min-width: 100%;
     }
+}
+#dd_owl_prev, #dd_owl_next {
+    width: 350px;
+    max-width: 100%;
 }

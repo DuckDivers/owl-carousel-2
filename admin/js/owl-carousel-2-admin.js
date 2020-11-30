@@ -1,6 +1,7 @@
 jQuery( function( $ ){
     'use strict';
-    let gotPosts = 0; postSelected, taxOptions;
+    // Define Variables
+    let gotPosts = 0, postSelected, taxOptions;
     let taxCounter = 0;
     const   $post_type = $("select#dd_owl_post_type"),
             $tax_options = $('input[name="dd_owl_tax_options"]'),

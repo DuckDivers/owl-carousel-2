@@ -433,7 +433,6 @@ class Owl_Carousel_2_Meta {
         echo '			<select id="dd_owl_nav_position" name="dd_owl_nav_position" class="dd_owl_nav_position_field">';
         echo '			<option value="default" ' . selected($dd_owl_nav_position, 'default', false) . '> ' . __('Default (bottom)', 'owl-carousel-2') . '</option>';
         echo '			<option value="centered" ' . selected($dd_owl_nav_position, 'centered', false) . '> ' . __('Vertically Centered', 'owl-carousel-2') . '</option>';
-        echo '			<option value="block" ' . selected($dd_owl_nav_position, 'block', false) . '> ' . __('Block', 'owl-carousel-2') . '</option>';
         echo '			</select>';
         echo '			<p class="description">' . __('Position of the Prev/Next Buttons ', 'owl-carousel-2') . '</p>';
         echo '		</td>';
@@ -602,8 +601,8 @@ class Owl_Carousel_2_Meta {
         $dd_owl_new_media_items = isset($_POST['dd_owl_media_items_array']) ? $_POST['dd_owl_media_items_array'] : '';
         $dd_owl_new_image_size = isset($_POST['dd_owl_image_size']) ? $_POST['dd_owl_image_size'] : '';
         $dd_owl_new_use_image_caption = isset($_POST['dd_owl_use_image_caption']) ? 'checked' : '';
-        $dd_owl_new_prev = isset($_POST['dd_owl_prev']) ? sanitize_text_field($_POST['dd_owl_prev']) : '&lt;';
-        $dd_owl_new_next = isset($_POST['dd_owl_next']) ? sanitize_text_field($_POST['dd_owl_next']) : '&gt;';
+        $dd_owl_new_prev = isset($_POST['dd_owl_prev']) ? wp_kses_post(esc_attr($_POST['dd_owl_prev'])) : '&lt;';
+        $dd_owl_new_next = isset($_POST['dd_owl_next']) ? wp_kses_post(esc_attr($_POST['dd_owl_next'])) : '&gt;';
         // Owl Carousel Settings //
         $dd_owl_new_items_width1 = isset($_POST['dd_owl_items_width1']) ? abs(intval($_POST['dd_owl_items_width1'])) : '';
         $dd_owl_new_items_width2 = isset($_POST['dd_owl_items_width2']) ? abs(intval($_POST['dd_owl_items_width2'])) : '';
