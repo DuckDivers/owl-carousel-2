@@ -70,7 +70,7 @@ jQuery( function( $ ){
             $tax_options.trigger('change');
             postSelected = postType;
         }
-        if (postType === 'product'){
+        if (postType === 'product' || postType === 'reviews'){
             $('.product-rows').show();
             $('.not-media').removeClass('hidden').addClass('visible');
             $post_options.removeClass('hidden').addClass('visible');
@@ -155,7 +155,12 @@ jQuery( function( $ ){
         }
     });
     if ( taxOptions !== null && taxCounter === 0 ) {$tax_options.trigger('change'); taxCounter = 1;}
-
+    // Specific AjaxComplete Functions
+    $(window).on('ajaxComplete', function(){
+        $(document).on('change', '#dd_owl_post_taxonomy_type', function () {
+            ajax_get_terms();
+        });
+    });
     $(document).ready(function(){
 
         $('body.post-type-owl-carousel #wpwrap').before('<div id="dd-owl-loading"></div>');
@@ -210,10 +215,6 @@ jQuery( function( $ ){
             });
             dd_owl_media_upload.open();
         });
-    });
-
-    $('#dd_owl_post_taxonomy_type').on('change', function(){
-        ajax_get_terms();
     });
 
     function ajax_get_terms(){

@@ -49,10 +49,10 @@ class Owl_Carousel_2_Meta {
     public function render_carousel_data($post) {
         wp_enqueue_script('jquery-ui-sortable');
         wp_enqueue_media();
+
         $args = array(
             'public' => true,
         );
-
         $output = 'objects'; // names or objects, note names is the default
         $operator = 'and'; // 'and' or 'or'
 
@@ -137,6 +137,10 @@ class Owl_Carousel_2_Meta {
                 echo ($post_type->name === $dd_owl_post_type) ? "selected" : '';
                 echo '> ' . __($post_type->label, 'owl-carousel-2') . '</option>';
             }
+        }
+        echo '          <option value="post_comment">Post Comments</option>';
+        if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+            echo '      <option value="reviews" '.selected($dd_owl_post_type, 'reviews', false).'>Product Reviews</option>';
         }
         echo '			</select>';
         echo '			<p class="description">' . __('Type of Post', 'owl-carousel-2') . '</p>';

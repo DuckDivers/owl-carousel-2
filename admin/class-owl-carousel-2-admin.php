@@ -49,12 +49,15 @@ class Owl_Carousel_2_Admin {
 
     $this->plugin_name = $plugin_name;
     $this->version = $version;
-    $this->load_metaboxes();
+    $this->load_dependencies();
   }
 
-  private function load_metaboxes() {
-    $plugin_meta = new Owl_Carousel_2_Meta;
+  private function load_dependencies() {
+      require_once plugin_dir_path(__FILE__) . 'ajax-functions.php';
+      new Owl_Carousel_2_Admin_Ajax;
+      new Owl_Carousel_2_Meta;
   }
+
 
   /**
    * Register the stylesheets for the admin area.
