@@ -29,6 +29,14 @@ class Owl_Carousel_2_Meta {
         );
 
         add_meta_box(
+            'owl-carousel-settings',
+            __('Carousel Functionality', 'owl-carousel-2'),
+            array($this, 'owl_carousel_items_functions'),
+            'owl-carousel',
+            'side',
+            'default');
+
+        add_meta_box(
             'owl-items-displayed',
             __('Items Displayed', 'owl-carousel-2'),
             array($this, 'owl_carousel_items_content'),
@@ -53,6 +61,7 @@ class Owl_Carousel_2_Meta {
         $args = array(
             'public' => true,
         );
+
         $output = 'objects'; // names or objects, note names is the default
         $operator = 'and'; // 'and' or 'or'
 
@@ -61,10 +70,8 @@ class Owl_Carousel_2_Meta {
         // Retrieve an existing value from the database.
         $dd_owl_post_type = get_post_meta($post->ID, 'dd_owl_post_type', true);
         $dd_owl_number_posts = get_post_meta($post->ID, 'dd_owl_number_posts', true);
-        $dd_owl_loop = get_post_meta($post->ID, 'dd_owl_loop', true);
         $dd_owl_duration = get_post_meta($post->ID, 'dd_owl_duration', true);
         $dd_owl_transition = get_post_meta($post->ID, 'dd_owl_transition', true);
-        $dd_owl_stop = get_post_meta($post->ID, 'dd_owl_stop', true);
         $dd_owl_orderby = get_post_meta($post->ID, 'dd_owl_orderby', true);
         $dd_owl_navs = get_post_meta($post->ID, 'dd_owl_navs', true);
         $dd_owl_dots = get_post_meta($post->ID, 'dd_owl_dots', true);
@@ -93,6 +100,10 @@ class Owl_Carousel_2_Meta {
         $dd_owl_image_size = get_post_meta($post->ID, 'dd_owl_image_size', true);
         $dd_owl_prev = get_post_meta($post->ID, 'dd_owl_prev', true);
         $dd_owl_next = get_post_meta($post->ID, 'dd_owl_next', true);
+        $dd_owl_show_review_stars = get_post_meta($post->ID, 'dd_owl_show_review_stars', true);
+        $dd_owl_show_review_product = get_post_meta($post->ID, 'dd_owl_show_review_product', true);
+        $dd_owl_show_review_date = get_post_meta($post->ID, 'dd_owl_show_review_date', true);
+        $dd_owl_show_review_reviewer = get_post_meta($post->ID, 'dd_owl_show_review_reviewer', true);
 
         // Set default values.
         if (empty($dd_owl_post_type)) $dd_owl_post_type = '';
@@ -117,6 +128,16 @@ class Owl_Carousel_2_Meta {
         if (empty($dd_owl_img_upscale)) $dd_owl_img_upscale = '';
         if (empty($dd_owl_prev)) $dd_owl_prev = '&lt;';
         if (empty($dd_owl_next)) $dd_owl_next = '&gt;';
+        if (empty($dd_owl_show_review_stars)) $dd_owl_show_review_stars = '';
+        if (empty($dd_owl_show_review_product)) $dd_owl_show_review_product = '';
+        if (empty($dd_owl_show_review_date)) $dd_owl_show_review_date = '';
+        if (empty($dd_owl_show_review_reviewer)) $dd_owl_show_review_reviewer = '';
+
+        // Hidden Media means it is hidden when someone chooses "Media" carousel
+        $hidden_media = ($dd_owl_post_type === 'attachment') ? ' class="hidden"' : '';
+        $hide_media = ($dd_owl_post_type !== 'attachment') ? ' hidden' : ' visible';
+        $is_review = ($dd_owl_post_type !== 'reviews') ? 'hidden' : 'visible';
+        $hidden = ('postID' !== '$dd_owl_tax_options') ? ' class="hidden"' : '';
 
         /**
          * Choose Post Type and Options
@@ -138,7 +159,7 @@ class Owl_Carousel_2_Meta {
                 echo '> ' . __($post_type->label, 'owl-carousel-2') . '</option>';
             }
         }
-        echo '          <option value="post_comment">Post Comments</option>';
+        //echo '          <option value="post_comment">Post Comments</option>';
         if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             echo '      <option value="reviews" '.selected($dd_owl_post_type, 'reviews', false).'>Product Reviews</option>';
         }
@@ -146,7 +167,6 @@ class Owl_Carousel_2_Meta {
         echo '			<p class="description">' . __('Type of Post', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
-        $hide_media = ($dd_owl_post_type !== 'attachment') ? ' hidden' : ' visible';
         echo '<tr class="is-media' . $hide_media . '" id="choose-images">';
         echo '<th>' . esc_html__('Choose Images') . '</th>';
         echo '<td>';
@@ -165,7 +185,7 @@ class Owl_Carousel_2_Meta {
         echo '<tr class="is-media' . $hide_media . '" id="show-image-caption">';
         echo '		<th><label for="dd_owl_use_caption" class="dd_owl_use_caption_label">' . __('Captions', 'owl-carousel-2') . '?</label></th>';
         echo '		<td>';
-        echo '          <input type="checkbox" id="dd_owl_use_image_caption" name="dd_owl_use_image_caption" class="dd_owl_use_image_caption_field" value="checked" ' . checked($dd_owl_use_image_caption, 'checked', false) . '>&nbsp;' . __('Show the image caption below image', 'owl-carousel-2');
+        echo '          <input type="checkbox" id="dd_owl_use_image_caption" name="dd_owl_use_image_caption" class="dd_owl_use_image_caption_field" value="checked" ' . checked($dd_owl_use_image_caption, 'checked', false) . '>&nbsp;' . __('Show the image caption below the image. Set this individually on the media item within the media library.', 'owl-carousel-2');
         echo '		</td>';
         echo '	</tr>';
 
@@ -173,13 +193,12 @@ class Owl_Carousel_2_Meta {
         echo '		<th><label for="dd_owl_tax_options" class="dd_owl_tax_options_label">' . __('Taxonomy Display Options', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="null" ' . checked($dd_owl_tax_options, 'null', false) . '> ' . __('None - Show Latest Posts - set number of posts below', 'owl-carousel-2') . '</label><br>';
-        echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="taxonomy" ' . checked($dd_owl_tax_options, 'taxonomy', false) . '> ' . __('By Taxonomy/Category - choose taxonomy below.', 'owl-carousel-2') . '</label><br>';
+        echo '			<span class="not-comment"><label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="taxonomy" ' . checked($dd_owl_tax_options, 'taxonomy', false) . '> ' . __('By Taxonomy/Category - choose taxonomy below.', 'owl-carousel-2') . '</label><br></span>';
         echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="postID" ' . checked($dd_owl_tax_options, 'postID', false) . '> ' . __('By Post ID - Show Post / Product / Custom Post Type by Post ID.', 'owl-carousel-2') . '</label><br>';
-        echo '			<label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="show_tax_only" ' . checked($dd_owl_tax_options, 'show_tax_only', false) . '> ' . __('Only Show Taxonomies / Categories. Do not show individual posts.', 'owl-carousel-2') . '</label><br>';
+        echo '			<span class="not-comment"><label><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="show_tax_only" ' . checked($dd_owl_tax_options, 'show_tax_only', false) . '> ' . __('Only Show Taxonomies / Categories. Do not show individual posts.', 'owl-carousel-2') . '</label><br></span>';
         echo '			<label class="product-rows"><input type="radio" name="dd_owl_tax_options" class="dd_owl_tax_options_field" value="featured_product" ' . checked($dd_owl_tax_options, 'featured_product', false) . '> ' . __('Show Featured &#40;Starred&#41; Products', 'owl-carousel-2') . '</label><br>';
         echo '		</td>';
         echo '	</tr>';
-        $hidden = ('postID' !== '$dd_owl_tax_options') ? ' class="hidden"' : '';
         echo '	<tr id="choose-postids"' . $hidden . '>';
         echo '		<th><label for="dd_owl_post_ids" class="dd_owl_post_ids_label">' . __('Post/Product ID&rsquo;s', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
@@ -196,7 +215,7 @@ class Owl_Carousel_2_Meta {
         echo '		</td>';
         echo '	</tr>';
 
-        echo '	<tr id="term-row" class="hidden not-media">';
+        echo '	<tr id="term-row" class="hidden not-media not-comment">';
         echo '		<th><label for="dd_owl_post_taxonomy_term" class="dd_owl_post_taxonomy_term_label">' . __('Taxonomy Term', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '      <div id="taxterm"></div>';
@@ -207,7 +226,7 @@ class Owl_Carousel_2_Meta {
         echo '	<tr class="not-media" id="number_of_posts">';
         echo '		<th><label for="dd_owl_number_posts" class="dd_owl_number_posts_label">' . __('Number of Posts', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="number" id="dd_owl_number_posts" name="dd_owl_number_posts" class="dd_owl_number_posts_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_number_posts) . '">';
+        echo '			<input type="number" id="dd_owl_number_posts" name="dd_owl_number_posts" class="dd_owl_number_posts_field" placeholder="10" value="' . esc_attr($dd_owl_number_posts) . '">';
         echo '			<p class="description">' . __('Enter the number of posts to show.  -1 &#40;negative 1&#41; shows all posts.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
@@ -240,27 +259,58 @@ class Owl_Carousel_2_Meta {
         echo '		</td>';
         echo '	</tr>';
         echo '  </table></div>';
-
+        /**
+         * Options for Reviews
+         */
+        echo '<div id="reviews_options" class="'.$is_review.'">';
+        echo '<h4>' . esc_html__('Options for Reviews', 'owl-carousel-2'). '</h4>';
+        echo '<table class="form-table">';
+        echo sprintf('<tr data-id="product_reviews" class="%s">', $is_review);
+        echo '		<th><label for="dd_owl_show_review_product" class="dd_owl_show_review_product_label">' . __('Product Name', 'owl-carousel-2') . '</label></th>';
+        echo '		<td>';
+        echo '			<label><input type="checkbox" id="dd_owl_show_review_product" name="dd_owl_show_review_product" class="dd_owl_show_review_product_field" value="checked" ' . checked($dd_owl_show_review_product, '', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Show a link to the review product', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo '  </tr>';
+        echo sprintf('<tr data-id="product_reviews" class="%s">', $is_review);
+        echo '		<th><label for="dd_owl_show_review_stars" class="dd_owl_show_review_stars_label">' . __('Show Stars', 'owl-carousel-2') . '</label></th>';
+        echo '		<td>';
+        echo '			<label><input type="checkbox" id="dd_owl_show_review_stars" name="dd_owl_show_review_stars" class="dd_owl_show_review_stars_field" value="checked" ' . checked($dd_owl_show_review_stars, '', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Show the stars.', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo '  </tr>';
+        echo sprintf('<tr data-id="product_reviews" class="%s">', $is_review);
+        echo '		<th><label for="dd_owl_show_review_date" class="dd_owl_show_review_date_label">' . __('Show Date', 'owl-carousel-2') . '</label></th>';
+        echo '		<td>';
+        echo '			<label><input type="checkbox" id="dd_owl_show_review_date" name="dd_owl_show_review_date" class="dd_owl_show_review_date_field" value="checked" ' . checked($dd_owl_show_review_date, '', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Show the date of the review.', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo '  </tr>';
+        echo sprintf('<tr data-id="product_reviews" class="%s">', $is_review);
+        echo '		<th><label for="dd_owl_show_review_reviewer" class="dd_owl_show_review_reviewer_label">' . __('Show Reviewer', 'owl-carousel-2') . '</label></th>';
+        echo '		<td>';
+        echo '			<label><input type="checkbox" id="dd_owl_show_review_reviewer" name="dd_owl_show_review_reviewer" class="dd_owl_show_review_reviewer_field" value="checked" ' . checked($dd_owl_show_review_reviewer, '', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Show reviewed by.', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo '  </tr>';
+        echo '</table>';
+        echo '</div>';
         /**
          * Display Post Options - Set Appearance
          *
          * @since    1.0.0
          */
-
-        // Hidden Media means it is hidden when someone chooses "Media" carousel
-        $hidden_media = ($dd_owl_post_type === 'attachment') ? ' class="hidden"' : '';
-
-        echo '<div>';
-        echo '<h4>Display Post Options</h4>';
+        echo '<div id="displayPostOptions">';
+        echo '<h4>'. esc_html__('Display Post Options', 'owl-carousel-2').'</h4>';
         echo '<table class="form-table">';
-        echo sprintf('<tr data-id="display_post_options"%s>', $hidden_media);
+        echo sprintf('<tr data-id="display_post_options" %s>', $hidden_media);
         echo '		<th><label for="dd_owl_show_title" class="dd_owl_show_title_label">' . __('Hide the Post Title', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="checkbox" id="dd_owl_show_title" name="dd_owl_show_title" class="dd_owl_show_title_field" value="checked" ' . checked($dd_owl_show_title, 'checked', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
         echo '			<p class="description">' . __('Include the post title in the carousel. This is shown by default, check yes to hide it.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '  </tr>';
-        echo sprintf('<tr data-id="display_post_options"%s>', $hidden_media);
+        echo sprintf('<tr data-id="display_post_options" %s>', $hidden_media);
         echo '		<th><label for="dd_owl_title_heading" class="dd_owl_title_heading_label">' . __('Heading Type', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<select id="dd_owl_title_heading" name="dd_owl_title_heading" class="dd_owl_title_heading_field">';
@@ -276,7 +326,7 @@ class Owl_Carousel_2_Meta {
         echo '			<p class="description">' . __('What type of heading should the title be?', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '  </tr>';
-        echo sprintf('<tr data-id="display_post_options"%s>', $hidden_media);
+        echo sprintf('<tr data-id="display_post_options" %s>', $hidden_media);
         echo '		<th><label for="dd_owl_show_cta" class="dd_owl_show_cta_label">' . __('Show Link to Post', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="checkbox" id="dd_owl_show_cta" name="dd_owl_show_cta" class="dd_owl_show_cta_field" value="checked" ' . checked($dd_owl_show_cta, 'checked', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
@@ -293,7 +343,7 @@ class Owl_Carousel_2_Meta {
         echo '		</td>';
         echo '		<th><label for="dd_owl_btn_class" class="dd_owl_btn_class_label">' . __('Button CSS Class', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="text" id="dd_owl_btn_class" name="dd_owl_btn_class" class="dd_owl_btn_class_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_btn_class) . '">';
+        echo '			<input type="text" id="dd_owl_btn_class" name="dd_owl_btn_class" class="dd_owl_btn_class_field" placeholder="' . esc_attr__('classname', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_btn_class) . '">';
         echo '			<p class="description">' . __('CSS Class for the button', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '  </tr>';
@@ -310,12 +360,12 @@ class Owl_Carousel_2_Meta {
         $show_margins = ($dd_owl_btn_display === 'inline') ? "hidden" : "visible";
         echo '		<th class="button-margin ' . $show_margins . '"><label for="dd_owl_btn_margin" class="dd_owl_btn_margin_label">' . __('Button CSS margin', 'owl-carousel-2') . '</label></th>';
         echo '		<td class="button-margin ' . $show_margins . '">';
-        echo '			<input type="text" id="dd_owl_btn_margin" name="dd_owl_btn_margin" class="dd_owl_btn_margin_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_btn_margin) . '">';
+        echo '			<input type="text" id="dd_owl_btn_margin" name="dd_owl_btn_margin" class="dd_owl_btn_margin_field" placeholder="' . esc_attr__('10px', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_btn_margin) . '">';
         echo '			<p class="description">' . __('Margins for Button', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '  </tr>';
         // End button display options
-        echo sprintf('<tr data-id="display_post_options"%s>', $hidden_media);
+        echo sprintf('<tr data-id="display_post_options" %s>', $hidden_media);
         echo '		<th><label for="dd_owl_thumbs" class="dd_owl_thumbs_label">' . __('Show Post Thumbnails', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="checkbox" id="dd_owl_thumbs" name="dd_owl_thumbs" class="dd_owl_thumbs_field" value="checked" ' . checked($dd_owl_thumbs, 'checked', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
@@ -323,7 +373,7 @@ class Owl_Carousel_2_Meta {
         echo '		</td>';
         echo '	</tr>';
         $hidden = ('checked' !== $dd_owl_thumbs) ? 'hidden ' : '';
-        echo '	<tr class="' . $hidden . 'image-options" id="image-options">';
+        echo '	<tr class="' . $hidden . 'image-options is-media" id="image-options">';
         echo '		<th><label for="dd_owl_image_options" class="dd_owl_image_options_label">' . __('Image On Click Options', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="null" ' . checked($dd_owl_image_options, 'null', false) . '> ' . __('None - Just show image', 'owl-carousel-2') . '</label><br>';
@@ -331,7 +381,7 @@ class Owl_Carousel_2_Meta {
         echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="link" ' . checked($dd_owl_image_options, 'link', false) . '> ' . __('Link to Post', 'owl-carousel-2') . '</label><br>';
         echo '		</td>';
         echo '	</tr>';
-        echo '	<tr class="' . $hidden . 'image-options">';
+        echo '	<tr class="' . $hidden . 'image-options is-media">';
         echo '		<th><label for="dd_owl_image_size" class="dd_owl_image_size_label">' . __('Image Size Options', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<select id="dd_owl_image_size" name="dd_owl_image_size" class="dd_owl_image_size_field">';
@@ -347,12 +397,12 @@ class Owl_Carousel_2_Meta {
         echo '	<tr class="hidden show-custom">';
         echo '		<th><label for="dd_owl_img_width" class="dd_owl_img_width_label">' . __('Image Width', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="number" id="dd_owl_img_width" name="dd_owl_img_width" class="dd_owl_img_width_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_img_width) . '">';
+        echo '			<input type="number" id="dd_owl_img_width" name="dd_owl_img_width" class="dd_owl_img_width_field" placeholder="' . esc_attr__('600', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_img_width) . '">';
         echo '			<p class="description">' . __('Width of the image', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '		<th><label for="dd_owl_img_height" class="dd_owl_img_height_label">' . __('Image Height', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="number" id="dd_owl_img_height" name="dd_owl_img_height" class="dd_owl_img_height_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_img_height) . '">';
+        echo '			<input type="number" id="dd_owl_img_height" name="dd_owl_img_height" class="dd_owl_img_height_field" placeholder="' . esc_attr__('400', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_img_height) . '">';
         echo '			<p class="description">' . __('Height of the Image', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
@@ -360,14 +410,14 @@ class Owl_Carousel_2_Meta {
         echo '	<tr class="hidden show-custom">';
         echo '		<th><label for="dd_owl_img_crop" class="dd_owl_img_crop_label">' . __('Crop the Image', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_img_crop" name="dd_owl_img_crop" class="dd_owl_img_crop_field" value="checked" ' . checked($dd_owl_img_crop, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
-        echo '			<span class="description">' . __('If checked, image will be hard cropped', 'owl-carousel-2') . '</span>';
+        echo '			<label><input type="checkbox" id="dd_owl_img_crop" name="dd_owl_img_crop" class="dd_owl_img_crop_field" value="checked" ' . checked($dd_owl_img_crop, 'checked', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('If checked, image will be hard cropped', 'owl-carousel-2') . '</p>';
         echo '		</td>';
 
         echo '		<th><label for="dd_owl_img_upscale" class="dd_owl_img_upscale_label">' . __('Upscale Image', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_img_upscale" name="dd_owl_img_upscale" class="dd_owl_img_upscale_field" value="checked" ' . checked($dd_owl_img_upscale, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
-        echo '			<span class="description">' . __('If checked, the image will be made larger if smaller than the specified size', 'owl-carousel-2') . '</span>';
+        echo '			<label><input type="checkbox" id="dd_owl_img_upscale" name="dd_owl_img_upscale" class="dd_owl_img_upscale_field" value="checked" ' . checked($dd_owl_img_upscale, 'checked', false) . '> ' . __('Yes', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('If checked, the image will be made larger if smaller than the specified size', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
         echo '</table>';
@@ -379,7 +429,7 @@ class Owl_Carousel_2_Meta {
          * @since    1.0.0
          */
 
-        echo '<h4>Carousel Options</h4>';
+        echo '<h4>Carousel Navigation Options</h4>';
         echo '<table class="form-table">';
         echo '  <tr>';
         echo '		<th><label for="dd_owl_css_id" class="dd_owl_css_id_label">' . __('CSS ID', 'owl-carousel-2') . '</label></th>';
@@ -389,11 +439,6 @@ class Owl_Carousel_2_Meta {
         echo '		</td><th></th><td></td>';
         echo ' </tr>';
         echo ' <tr>';
-        echo '		<th><label for="dd_owl_loop" class="dd_owl_loop_label">' . __('Loop', 'owl-carousel-2') . '</label></th>';
-        echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked($dd_owl_loop, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
-        echo '      <p class="description">' . __('Create an infinite loop of with the carousel, so that it continues to play', 'owl-carousel-2') . '</p>';
-        echo '		</td>';
         echo '		<th><label for="dd_owl_margin" class="dd_owl_margin_label">' . __('Margins around Carousel Items', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
         echo '			<input type="text" id="dd_owl_margin" name="dd_owl_margin" class="dd_owl_margin_field" value="' . esc_attr($dd_owl_margin) . '">';
@@ -403,25 +448,20 @@ class Owl_Carousel_2_Meta {
         echo '	<tr>';
         echo '		<th><label for="dd_owl_duration" class="dd_owl_duration_label">' . __('Slide Duration', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="number" id="dd_owl_duration" name="dd_owl_duration" class="dd_owl_duration_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_duration) . '">';
+        echo '			<input type="number" id="dd_owl_duration" name="dd_owl_duration" class="dd_owl_duration_field" placeholder="' . esc_attr__('Slide duration time', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_duration) . '">';
         echo '			<p class="description">' . __('Duration in ms.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '		<th><label for="dd_owl_transition" class="dd_owl_transition_label">' . __('Slide Transition', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<input type="number" id="dd_owl_transition" name="dd_owl_transition" class="dd_owl_transition_field" placeholder="' . esc_attr__('', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_transition) . '">';
+        echo '			<input type="number" id="dd_owl_transition" name="dd_owl_transition" class="dd_owl_transition_field" placeholder="' . esc_attr__('Slide transition time', 'owl-carousel-2') . '" value="' . esc_attr($dd_owl_transition) . '">';
         echo '			<p class="description">' . __('Transition Time in ms', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
 
         echo '	<tr>';
-        echo '		<th><label for="dd_owl_stop" class="dd_owl_stop_label">' . __('Pause on Hover', 'owl-carousel-2') . '</label></th>';
-        echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_stop" name="dd_owl_stop" class="dd_owl_stop_field" value="checked" ' . checked($dd_owl_stop, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
-        echo '			<p class="description">' . __('Pause the carousel while the mouse is hovering on the item', 'owl-carousel-2') . '</p>';
-        echo '		</td>';
         echo '		<th><label for="dd_owl_dots" class="dd_owl_dots_label">' . __('Show Dots', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_dots" name="dd_owl_dots" class="dd_owl_dots_field" value="checked" ' . checked($dd_owl_dots, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_dots" name="dd_owl_dots" class="dd_owl_dots_field" value="checked" ' . checked($dd_owl_dots, 'checked', false) . '> ' . __('Check to show dots', 'owl-carousel-2') . '</label>';
         echo '			<p class="description">' . __('Show the dots style navs underneath the carousel.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '	</tr>';
@@ -429,8 +469,8 @@ class Owl_Carousel_2_Meta {
         echo '	<tr>';
         echo '		<th><label for="dd_owl_navs" class="dd_owl_navs_label">' . __('Show Nav Arrows', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
-        echo '			<label><input type="checkbox" id="dd_owl_navs" name="dd_owl_navs" class="dd_owl_navs_field" value="checked" ' . checked($dd_owl_navs, 'checked', false) . '> ' . __('', 'owl-carousel-2') . '</label>';
-        echo '			<p class="description">' . __('Show navigation arrows below the carousel', 'owl-carousel-2') . '</p>';
+        echo '			<label><input type="checkbox" id="dd_owl_navs" name="dd_owl_navs" class="dd_owl_navs_field" value="checked" ' . checked($dd_owl_navs, 'checked', false) . '>'.__('Show navigation arrows below the carousel', 'owl-carousel-2').'</label>';
+       // echo '			<p class="description">' . __('Show navigation arrows below the carousel', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo '		<th><label for="dd_owl_nav_position" class="dd_owl_nav_position_label">' . __('Button Position', 'owl-carousel-2') . '</label></th>';
         echo '		<td>';
@@ -552,6 +592,58 @@ class Owl_Carousel_2_Meta {
         echo "</div>\n";
     }
 
+    public function owl_carousel_items_functions($post){
+        $dd_owl_autoplay = get_post_meta($post->ID, 'dd_owl_autoplay', true);
+        $dd_owl_slideby = get_post_meta($post->ID, 'dd_owl_slideby', true);
+        $dd_owl_mousedrag = get_post_meta($post->ID, 'dd_owl_mousedrag', true);
+        $dd_owl_touchdrag = get_post_meta($post->ID, 'dd_owl_touchDrag', true);
+        $dd_owl_loop = get_post_meta($post->ID, 'dd_owl_loop', true);
+        $dd_owl_stop = get_post_meta($post->ID, 'dd_owl_stop', true);
+
+        if (empty($dd_owl_slideby)) $dd_owl_slideby = 1;
+
+        echo '<div id="carousel-functions-metabox">';
+        echo '<h4>Display Settings</h4>';
+        echo '<p>These are additional settings for the carousels that are available to Owl Carousel</p>';
+        echo '<table class="form-table">';
+        echo '		<tr><td><label for="dd_owl_loop" class="dd_owl_loop_label side-box-label">' . __('Continuous Loop', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked($dd_owl_loop, 'checked', false) . '> ' . __('Check to loop', 'owl-carousel-2') . '</label>';
+        echo '      <p class="description">' . __('Create an infinite loop of with the carousel, so that it continues to play', 'owl-carousel-2') . '</p>';
+        echo '		</td></tr>';
+        echo '	<tr>';
+        echo '		<td><label for="dd_owl_stop" class="dd_owl_stop_label side-box-label">' . __('Pause on Hover', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_stop" name="dd_owl_stop" class="dd_owl_stop_field" value="checked" ' . checked($dd_owl_stop, 'checked', false) . '> ' . __('Check to pause on hover', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Pause the carousel while the mouse is hovering on the item', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo ' </tr>';
+        echo '	<tr>';
+        echo '		<td><label for="dd_owl_autoplay" class="dd_owl_autoplay_label side-box-label">' . __('Autoplay Carousel', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_autoplay" name="dd_owl_autoplay" class="dd_owl_autoplay_field" value="checked" ' . checked($dd_owl_autoplay, '', false) . '> ' . __('Check to autoplay', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('The carousel starts playing automatically', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo ' </tr>';
+        echo '	<tr>';
+        echo '		<td><label for="dd_owl_slideby" class="dd_owl_slideby_label"><b>' . __('Slide By', 'owl-carousel-2') . '</b></label>';
+        echo '			<input type="number" id="dd_owl_slideby" name="dd_owl_slideby" class="dd_owl_slideby_field" value="'.$dd_owl_slideby.'">';
+        echo '			<p class="description">' . __('Number of items to Slide or Swipe by', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo ' </tr>';
+        echo '	<tr>';
+        echo '		<td><label for="dd_owl_mousedrag" class="dd_owl_mousedrag_label side-box-label">' . __('Enable Mouse Drag', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_mousedrag" name="dd_owl_mousedrag" class="dd_owl_mousedrag_field" value="checked" ' . checked($dd_owl_mousedrag, '', false) . '> ' . __('Check to Enable Mouse Drag', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Items can be dragged with a mouse click drag action.', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo ' </tr>';
+        echo '	<tr>';
+        echo '		<td><label for="dd_owl_touchdrag" class="dd_owl_touchdrag_label side-box-label">' . __('Enable TouchDrag', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_touchdrag" name="dd_owl_touchdrag" class="dd_owl_touchdrag_field" value="checked" ' . checked($dd_owl_touchdrag, '', false) . '> ' . __('Check to Enable TouchDrag', 'owl-carousel-2') . '</label>';
+        echo '			<p class="description">' . __('Allows users to drag items with touch devices.', 'owl-carousel-2') . '</p>';
+        echo '		</td>';
+        echo ' </tr>';
+        echo '</table>';
+        echo '</div>';
+    }
+
     public function owl_carousel_shortcode_link($post) {
         $shortcode = '[dd-owl-carousel id="' . $post->ID . '"]';
         echo "<div id='dd_owl_shortcode'>" . esc_html($shortcode) . "</div>\n";
@@ -576,7 +668,6 @@ class Owl_Carousel_2_Meta {
         $dd_owl_new_show_cta = isset($_POST['dd_owl_show_cta']) ? 'checked' : '';
         $dd_owl_new_show_title = isset($_POST['dd_owl_show_title']) ? 'checked' : '';
         $dd_owl_new_center = isset($_POST['dd_owl_center']) ? 'checked' : '';
-        $dd_owl_new_mousedrag = isset($_POST['dd_owl_mousedrag']) ? 'checked' : '';
         $dd_owl_new_duration = isset($_POST['dd_owl_duration']) ? floatval($_POST['dd_owl_duration']) : '';
         $dd_owl_new_transition = isset($_POST['dd_owl_transition']) ? floatval($_POST['dd_owl_transition']) : '';
         $dd_owl_new_stop = isset($_POST['dd_owl_stop']) ? 'checked' : '';
@@ -605,6 +696,15 @@ class Owl_Carousel_2_Meta {
         $dd_owl_new_media_items = isset($_POST['dd_owl_media_items_array']) ? $_POST['dd_owl_media_items_array'] : '';
         $dd_owl_new_image_size = isset($_POST['dd_owl_image_size']) ? $_POST['dd_owl_image_size'] : '';
         $dd_owl_new_use_image_caption = isset($_POST['dd_owl_use_image_caption']) ? 'checked' : '';
+        $dd_owl_new_show_review_stars = isset($_POST['dd_owl_show_review_stars']) ? '' : 'checked';
+        $dd_owl_new_show_review_product = isset($_POST['dd_owl_show_review_product']) ? '' : 'checked';
+        $dd_owl_new_show_review_date = isset($_POST['dd_owl_show_review_date']) ? '' : 'checked';
+        $dd_owl_new_show_review_reviewer = isset($_POST['dd_owl_show_review_reviewer']) ? '' : 'checked';
+        $dd_owl_new_autoplay = isset($_POST['dd_owl_autoplay']) ? '' : 'checked';
+        $dd_owl_new_mousedrag = isset($_POST['dd_owl_mousedrag']) ? '' : 'checked';
+        $dd_owl_new_touchdrag = isset($_POST['dd_owl_touchdrag']) ? '' : 'checked';
+        $dd_owl_new_slideby = isset($_POST['dd_owl_slideby']) ? abs(intval($_POST['dd_owl_slideby'])) : 1;
+
         $dd_owl_new_prev = isset($_POST['dd_owl_prev']) ? wp_kses_post(esc_attr($_POST['dd_owl_prev'])) : '&lt;';
         $dd_owl_new_next = isset($_POST['dd_owl_next']) ? wp_kses_post(esc_attr($_POST['dd_owl_next'])) : '&gt;';
         // Owl Carousel Settings //
@@ -625,7 +725,6 @@ class Owl_Carousel_2_Meta {
         update_post_meta($post_id, 'dd_owl_show_title', $dd_owl_new_show_title);
         update_post_meta($post_id, 'dd_owl_title_heading', $dd_owl_title_heading);
         update_post_meta($post_id, 'dd_owl_center', $dd_owl_new_center);
-        update_post_meta($post_id, 'dd_owl_mousedrag', $dd_owl_new_mousedrag);
         update_post_meta($post_id, 'dd_owl_duration', $dd_owl_new_duration);
         update_post_meta($post_id, 'dd_owl_transition', $dd_owl_new_transition);
         update_post_meta($post_id, 'dd_owl_stop', $dd_owl_new_stop);
@@ -653,8 +752,16 @@ class Owl_Carousel_2_Meta {
         update_post_meta($post_id, 'dd_owl_media_items', $dd_owl_new_media_items);
         update_post_meta($post_id, 'dd_owl_use_image_caption', $dd_owl_new_use_image_caption);
         update_post_meta($post_id, 'dd_owl_image_size', $dd_owl_new_image_size);
+        update_post_meta($post_id, 'dd_owl_show_review_stars', $dd_owl_new_show_review_stars);
+        update_post_meta($post_id, 'dd_owl_show_review_product', $dd_owl_new_show_review_product);
+        update_post_meta($post_id, 'dd_owl_show_review_date', $dd_owl_new_show_review_date);
+        update_post_meta($post_id, 'dd_owl_show_review_reviewer', $dd_owl_new_show_review_reviewer);
         update_post_meta($post_id, 'dd_owl_next', $dd_owl_new_next);
         update_post_meta($post_id, 'dd_owl_prev', $dd_owl_new_prev);
+        update_post_meta($post_id, 'dd_owl_autoplay', $dd_owl_new_autoplay);
+        update_post_meta($post_id, 'dd_owl_slideby', $dd_owl_new_slideby);
+        update_post_meta($post_id, 'dd_owl_mousedrag', $dd_owl_new_mousedrag);
+        update_post_meta($post_id, 'dd_owl_touchdrag', $dd_owl_new_touchdrag);
 
         // Update Side Meta Fields
         update_post_meta($post_id, 'dd_owl_items_width1', $dd_owl_new_items_width1);

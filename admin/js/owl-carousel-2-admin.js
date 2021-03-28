@@ -5,14 +5,16 @@ jQuery( function( $ ){
     let taxCounter = 0;
     const   $post_type = $("select#dd_owl_post_type"),
             $tax_options = $('input[name="dd_owl_tax_options"]'),
+            $tax_value = $tax_options.val(),
             $term_row = $('#term-row'),
             $is_media = $('.is-media'),
             $image_size = $('#dd_owl_image_size'),
-            $post_options = $('div[data-id="display_post_options"]');
+            $reviews = $('#reviews_options, [data-id="product_reviews"]'),
+            $post_options = $('[data-id="display_post_options"]');
     $( '#dd_owl_image_wrapper' ).on( 'click', 'a.delete', function() {
         $(this).closest('li.dd-owl-image-preview').remove();
     });
-
+    //Copy the shortcode
     $('#dd_shortcode_copy').on('click', function() {
         let shortcode = document.getElementById('dd_owl_shortcode').innerHTML;
         let aux = document.createElement("input"); // Create a "hidden" input
@@ -64,16 +66,25 @@ jQuery( function( $ ){
         $is_media.removeClass('visible').addClass('hidden');
         $post_options.removeClass('hidden').addClass('visible');
         $('#tax-options').removeClass('hidden').addClass('visible');
+        $reviews.removeClass('visible').addClass('hidden');
+        $('#displayPostOptions').removeClass('hidden').addClass('visible');
         if (postType !== postSelected) {
             gotPosts = 0;
             $('select#dd_owl_post_ids').find('option').remove().end();
             $tax_options.trigger('change');
             postSelected = postType;
         }
-        if (postType === 'product' || postType === 'reviews'){
+        if (postType === 'product'){
             $('.product-rows').show();
             $('.not-media').removeClass('hidden').addClass('visible');
             $post_options.removeClass('hidden').addClass('visible');
+        }
+        else if (postType === 'reviews'){
+            $('.product-rows').show();
+            $('.not-media').removeClass('hidden').addClass('visible');
+            $post_options.removeClass('hidden').addClass('visible');
+            $reviews.removeClass('hidden').addClass('visible');
+            $('#displayPostOptions').removeClass('visible').addClass('hidden');
         }
         else if (postType === 'attachment') {
             $is_media.removeClass('hidden').addClass('visible');
@@ -84,7 +95,6 @@ jQuery( function( $ ){
         else {
             $('.product-rows').hide();
             $('.not-media').removeClass('hidden').addClass('visible');
-            $is_media.removeClass('visible').addClass('hidden');
             $term_row.addClass('hidden').removeClass('visible');
             $post_options.removeClass('hidden').addClass('visible');
         }
@@ -103,8 +113,11 @@ jQuery( function( $ ){
                 ajax_get_terms();
             }
         });
-
-    });
+        let no_tax = ['null', 'postID', 'featured_product'];
+        if ( $.inArray($tax_value, no_tax) !== -1 ) {
+            $('#term-row').addClass('hidden').removeClass('visible');
+        }
+    }); // End Post Type on Change
 
     $tax_options.on('change', function(){
         let ck = $('input[name="dd_owl_tax_options"]:checked').val();
@@ -154,14 +167,21 @@ jQuery( function( $ ){
             $('.show-custom').addClass('hidden').removeClass('visible');
         }
     });
-    if ( taxOptions !== null && taxCounter === 0 ) {$tax_options.trigger('change'); taxCounter = 1;}
+    if ( taxOptions !== null && taxCounter === 0 ) {
+        $tax_options.trigger('change');
+        taxCounter = 1;
+    }
     // Specific AjaxComplete Functions
     $(window).on('ajaxComplete', function(){
+        console.log('complete');
         $(document).on('change', '#dd_owl_post_taxonomy_type', function () {
             ajax_get_terms();
         });
+        if ($('#dd_owl_thumbs').is(':checked')){
+            $('.image-options.hidden').removeClass('hidden');
+        };
     });
-    $(document).ready(function(){
+    $(function(){
 
         $('body.post-type-owl-carousel #wpwrap').before('<div id="dd-owl-loading"></div>');
         $('.dd_owl_tooltip').tooltip();
@@ -170,7 +190,7 @@ jQuery( function( $ ){
         $image_size.trigger('change');
         let dd_owl_media_upload;
 
-        $('#dd-owl-add-media').click(function (e) {
+        $('#dd-owl-add-media').on('click',function (e) {
 
             e.preventDefault();
             // If the uploader object has already been created, reopen the dialog

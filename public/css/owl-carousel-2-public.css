@@ -1,6 +1,4 @@
-/**
- * Duck Diver Owl Carousel Public
- */
+/* Duck Diver Owl Carousel Public */
 .owl-wrapper {
     width: 100%;
 }
@@ -33,4 +31,9 @@
 
 .owl-theme.nav-centered .owl-nav button.owl-prev {
     left: -2ch;
+}
+.owl-carousel.woocommerce .star-rating {
+    float: left;
+    display: block;
+    line-height: 1;
 }

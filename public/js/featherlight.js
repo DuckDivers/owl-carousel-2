@@ -1,11 +1,36 @@
 /**
  * Featherlight - ultra slim jQuery lightbox
- * Version 1.7.13 - http://noelboss.github.io/featherlight/
+ * Version 1.7.14-UMD - http://noelboss.github.io/featherlight/
  *
- * Copyright 2018, Noël Raoul Bossart (http://www.noelboss.com)
+ * Copyright 2019, Noël Raoul Bossart (http://www.noelboss.com)
  * MIT Licensed.
-**/
-(function($) {
+ **/
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(['jquery'], factory);
+	} else if (typeof module === 'object' && module.exports) {
+		// Node/CommonJS
+		module.exports = function (root, jQuery) {
+			if (jQuery === undefined) {
+				// require('jQuery') returns a factory that requires window to
+				// build a jQuery instance, we normalize how we use modules
+				// that require this pattern but the window provided is a noop
+				// if it's defined (how jquery works)
+				if (typeof window !== 'undefined') {
+					jQuery = require('jquery');
+				} else {
+					jQuery = require('jquery')(root);
+				}
+			}
+			factory(jQuery);
+			return jQuery;
+		};
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+})(function($) {
 	"use strict";
 
 	if('undefined' === typeof $) {
@@ -18,7 +43,6 @@
 	}
 	/* Featherlight is exported as $.featherlight.
 	   It is a function used to open a featherlight lightbox.
-
 	   [tech]
 	   Featherlight uses prototype inheritance.
 	   Each opened lightbox will have a corresponding object.
@@ -99,18 +123,18 @@
 			if (!event.isDefaultPrevented()) {
 				if (false === this[eventMap[event.type]](event)) {
 					event.preventDefault(); event.stopPropagation(); return false;
-			  }
+				}
 			}
 		});
 	};
 
 	var toggleGlobalEvents = function(set) {
-			if(set !== Featherlight._globalHandlerInstalled) {
-				Featherlight._globalHandlerInstalled = set;
-				var events = $.map(eventMap, function(_, name) { return name+'.'+Featherlight.prototype.namespace; } ).join(' ');
-				$(window)[set ? 'on' : 'off'](events, globalEventHandler);
-			}
-		};
+		if(set !== Featherlight._globalHandlerInstalled) {
+			Featherlight._globalHandlerInstalled = set;
+			var events = $.map(eventMap, function(_, name) { return name+'.'+Featherlight.prototype.namespace; } ).join(' ');
+			$(window)[set ? 'on' : 'off'](events, globalEventHandler);
+		}
+	};
 
 	Featherlight.prototype = {
 		constructor: Featherlight,
@@ -135,7 +159,7 @@
 		otherClose:     null,                  /* Selector for alternate close buttons (e.g. "a.close") */
 		beforeOpen:     $.noop,                /* Called before open. can return false to prevent opening of lightbox. Gets event as parameter, this contains all data */
 		beforeContent:  $.noop,                /* Called when content is loaded. Gets event as parameter, this contains all data */
-		beforeClose:    $.noop,                /* Called before close. can return false to prevent opening of lightbox. Gets event as parameter, this contains all data */
+		beforeClose:    $.noop,                /* Called before close. can return false to prevent closing of lightbox. Gets event as parameter, this contains all data */
 		afterOpen:      $.noop,                /* Called after open. Gets event as parameter, this contains all data */
 		afterContent:   $.noop,                /* Called after content is ready and has been set. Gets event as parameter, this contains all data */
 		afterClose:     $.noop,                /* Called after close. Gets event as parameter, this contains all data */
@@ -157,12 +181,12 @@
 				css = !self.resetCss ? self.namespace : self.namespace+'-reset', /* by adding -reset to the classname, we reset all the default css */
 				$background = $(self.background || [
 					'<div class="'+css+'-loading '+css+'">',
-						'<div class="'+css+'-content">',
-							'<button class="'+css+'-close-icon '+ self.namespace + '-close" aria-label="Close">',
-								self.closeIcon,
-							'</button>',
-							'<div class="'+self.namespace+'-inner">' + self.loading + '</div>',
-						'</div>',
+					'<div class="'+css+'-content">',
+					'<button class="'+css+'-close-icon '+ self.namespace + '-close" aria-label="Close">',
+					self.closeIcon,
+					'</button>',
+					'<div class="'+self.namespace+'-inner">' + self.loading + '</div>',
+					'</div>',
 					'</div>'].join('')),
 				closeButtonSelector = '.'+self.namespace+'-close' + (self.otherClose ? ',' + self.otherClose : '');
 
@@ -241,22 +265,22 @@
 
 		/* sets the content of $instance to $content */
 		setContent: function($content){
-      this.$instance.removeClass(this.namespace+'-loading');
+			this.$instance.removeClass(this.namespace+'-loading');
 
-      /* we need a special class for the iframe */
-      this.$instance.toggleClass(this.namespace+'-iframe', $content.is('iframe'));
+			/* we need a special class for the iframe */
+			this.$instance.toggleClass(this.namespace+'-iframe', $content.is('iframe'));
 
-      /* replace content by appending to existing one before it is removed
-         this insures that featherlight-inner remain at the same relative
-         position to any other items added to featherlight-content */
-      this.$instance.find('.'+this.namespace+'-inner')
-        .not($content)                /* excluded new content, important if persisted */
-        .slice(1).remove().end()      /* In the unexpected event where there are many inner elements, remove all but the first one */
-        .replaceWith($.contains(this.$instance[0], $content[0]) ? '' : $content);
+			/* replace content by appending to existing one before it is removed
+               this insures that featherlight-inner remain at the same relative
+               position to any other items added to featherlight-content */
+			this.$instance.find('.'+this.namespace+'-inner')
+				.not($content)                /* excluded new content, important if persisted */
+				.slice(1).remove().end()      /* In the unexpected event where there are many inner elements, remove all but the first one */
+				.replaceWith($.contains(this.$instance[0], $content[0]) ? '' : $content);
 
-      this.$content = $content.addClass(this.namespace+'-inner');
+			this.$content = $content.addClass(this.namespace+'-inner');
 
-      return this;
+			return this;
 		},
 
 		/* opens the lightbox. "this" contains $instance with the lightbox, and with the config.
@@ -282,9 +306,11 @@
 
 					/* Set content and show */
 					return $.when($content)
-						.always(function($content){
-							self.setContent($content);
-							self.afterContent(event);
+						.always(function($openendContent){
+							if($openendContent) {
+								self.setContent($openendContent);
+								self.afterContent(event);
+							}
 						})
 						.then(self.$instance.promise())
 						/* Call afterOpen after fadeIn is done */
@@ -327,7 +353,7 @@
 				/* Reset apparent image size first so container grows */
 				this.$content.css('width', '').css('height', '');
 				/* Calculate the worst ratio so that dimensions fit */
-				 /* Note: -1 to avoid rounding errors */
+				/* Note: -1 to avoid rounding errors */
 				var ratio = Math.max(
 					w  / (this.$content.parent().width()-1),
 					h / (this.$content.parent().height()-1));
@@ -365,7 +391,7 @@
 				process: function(elem) { return this.persist !== false ? $(elem) : $(elem).clone(true); }
 			},
 			image: {
-				regex: /\.(png|jpg|jpeg|gif|tiff?|bmp|svg)(\?\S*)?$/i,
+				regex: /\.(png|jpg|jpeg|gif|tiff?|bmp|svg|webp)(\?\S*)?$/i,
 				process: function(url)  {
 					var self = this,
 						deferred = $.Deferred(),
@@ -395,7 +421,7 @@
 						if ( status !== "error" ) {
 							deferred.resolve($container.contents());
 						}
-						deferred.fail();
+						deferred.reject();
 					});
 					return deferred.promise();
 				}
@@ -638,4 +664,4 @@
 
 	/* bind featherlight on ready if config autoBind is set */
 	$(document).ready(function(){ Featherlight._onReady(); });
-}(jQuery));
+});

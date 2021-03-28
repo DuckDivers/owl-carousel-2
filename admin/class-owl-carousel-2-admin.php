@@ -67,7 +67,7 @@ class Owl_Carousel_2_Admin {
   public function enqueue_styles() {
     // Only Enqueue Style on Edit Pages
     if ( 'owl-carousel' === get_post_type() ) {
-      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/owl-carousel-2-admin.css', array(), $this->version, 'all' );
+      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/owl-carousel-2-admin.min.css', array(), $this->version, 'all' );
       wp_enqueue_style( 'Select2-Style', plugin_dir_url( __FILE__ ) . 'css/select2.min.css', array(), '4.0.5', 'all' );
     }
 

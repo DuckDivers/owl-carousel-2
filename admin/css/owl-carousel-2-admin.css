@@ -1,6 +1,6 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * Owl Carousel Admin CSS
+ *
  */
 
 select#dd_owl_post_type {
@@ -82,6 +82,8 @@ em.dd_owl_tooltip {
 #taxterm .select2-container {
     min-width: 300px;
 }
+
+
 /* Component containers jQuery UI
 ----------------------------------*/
 .ui-widget {
@@ -148,7 +150,6 @@ em.dd_owl_tooltip {
 }
 #dd_owl_image_wrapper ul.actions li a {
     width: 1em;
-    height: 1em;
     margin: 0;
     height: 0;
     display: block;
@@ -207,6 +208,15 @@ em.dd_owl_tooltip {
 }
 #choose-postids input.select2-search__field {
     min-width: 250px;
+}
+
+.post-type-owl-carousel .side-box-label{
+    display: block;
+    margin-bottom: .4em;
+    font-weight: bold;
+}
+#carousel-functions-metabox table tr {
+    border-bottom: 1px solid #ccc;
 }
 @media (max-width: 500px){
     #choose-postids .select2-container, select#dd_owl_post_ids {

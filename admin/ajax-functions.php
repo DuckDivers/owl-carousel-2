@@ -65,7 +65,7 @@ class Owl_Carousel_2_Admin_Ajax {
 
         $term_objects = (isset($_POST['taxtype'])) ? get_terms($_POST['taxtype'], 'objects') : null;
 
-        if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_term')) $theterm = get_post_meta($_POST['postid'], 'dd_owl_post_taxonomy_term', true);
+        $theterm = get_post_meta($_POST['postid'], 'dd_owl_post_taxonomy_term', true);
 
         if (null == $tax_objects || is_wp_error($term_objects)) {
             $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
