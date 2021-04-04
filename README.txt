@@ -5,7 +5,7 @@ Tags: owl carousel 2, post slider, product slider, image carousel, post carousel
 Requires at least: 4.5
 Tested up to: 5.7
 Requires PHP: 7.0
-Stable tag: 1.3.1
+Stable tag: 1.4
 WC tested up to: 5.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -138,6 +138,9 @@ function my_filter_owl_carousel_script($script, $carousel_id){
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.4 =
+Added Lazy Loading as an option to all carousels (enabled by default). It is recommended you review your carousels to ensure settings are as you expect. Combined and minified front end styles.
 
 = 1.3.1 =
 Fix image issue on Taxonomy Carousel

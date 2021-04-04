@@ -1,6 +1,6 @@
 /**
  * Owl Carousel Admin CSS
- *
+ * @ Owl Carousel Plugin - Howard Ehrenberg
  */
 
 select#dd_owl_post_type {
@@ -125,16 +125,18 @@ em.dd_owl_tooltip {
     flex-wrap: wrap;
 }
 #dd_owl_image_wrapper .dd-owl-image-preview {
-    flex: 0 1 18.6%;
-    width: 18.6%;
+    flex: 0 1 110px;
+    width: 110px;
     padding: 5px 10px 5px 0;
     position: relative;
-    max-width: 150px;
+    max-width: 110px;
 }
 #dd_owl_image_wrapper .dd-owl-image-preview img {
     display: block;
-    width: 100%;
-    margin-right: 5px;
+    width: 100px;
+    margin-right: auto;
+    height: auto;
+    margin-left: auto;
 }
 #dd_owl_image_wrapper ul.actions {
     position: absolute;

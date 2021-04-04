@@ -129,6 +129,7 @@ class Owl_Carousel_2_Meta {
         if (empty($dd_owl_prev)) $dd_owl_prev = '&lt;';
         if (empty($dd_owl_next)) $dd_owl_next = '&gt;';
         if (empty($dd_owl_show_review_stars)) $dd_owl_show_review_stars = '';
+        if (empty($dd_owl_show_review_stars)) $dd_owl_show_review_stars = '';
         if (empty($dd_owl_show_review_product)) $dd_owl_show_review_product = '';
         if (empty($dd_owl_show_review_date)) $dd_owl_show_review_date = '';
         if (empty($dd_owl_show_review_reviewer)) $dd_owl_show_review_reviewer = '';
@@ -174,7 +175,7 @@ class Owl_Carousel_2_Meta {
         echo '<ul id="dd_owl_image_wrapper" class="ui-sortable">';
         if (!empty($dd_owl_media_items)) {
             foreach ($dd_owl_media_items as $media_item) {
-                echo '<li class="dd-owl-image-preview thumbnail" id="dd-owl-media-' . $media_item . '" data-media-id="' . $media_item . '">' . wp_get_attachment_image($media_item, 'thumbnail');
+                echo '<li class="dd-owl-image-preview thumbnail" id="dd-owl-media-' . $media_item . '" data-media-id="' . $media_item . '">' . wp_get_attachment_image($media_item, array('100', '100'));
                 echo '<input id="dd-owl-image-input-' . $media_item . '" type="hidden" name="dd_owl_media_items_array[]"  value="' . $media_item . '">';
                 echo sprintf("<ul class=\"actions\"><li><a href=\"#\" class=\"delete\">%s</a></li></ul>", esc_attr__('Delete', 'owl-carousel-2'));
                 echo '</li>';
@@ -593,12 +594,20 @@ class Owl_Carousel_2_Meta {
     }
 
     public function owl_carousel_items_functions($post){
+
         $dd_owl_autoplay = get_post_meta($post->ID, 'dd_owl_autoplay', true);
         $dd_owl_slideby = get_post_meta($post->ID, 'dd_owl_slideby', true);
         $dd_owl_mousedrag = get_post_meta($post->ID, 'dd_owl_mousedrag', true);
-        $dd_owl_touchdrag = get_post_meta($post->ID, 'dd_owl_touchDrag', true);
+        $dd_owl_touchdrag = get_post_meta($post->ID, 'dd_owl_touchdrag', true);
         $dd_owl_loop = get_post_meta($post->ID, 'dd_owl_loop', true);
+        $dd_owl_lazy = get_post_meta($post->ID, 'dd_owl_lazy', true);
         $dd_owl_stop = get_post_meta($post->ID, 'dd_owl_stop', true);
+
+        if ($post->post_status === 'auto-draft') {
+            $dd_owl_lazy = 'checked';
+            $dd_owl_mousedrag = 'checked';
+            $dd_owl_touchdrag = 'checked';
+        }
 
         if (empty($dd_owl_slideby)) $dd_owl_slideby = 1;
 
@@ -606,9 +615,14 @@ class Owl_Carousel_2_Meta {
         echo '<h4>Display Settings</h4>';
         echo '<p>These are additional settings for the carousels that are available to Owl Carousel</p>';
         echo '<table class="form-table">';
-        echo '		<tr><td><label for="dd_owl_loop" class="dd_owl_loop_label side-box-label">' . __('Continuous Loop', 'owl-carousel-2') . '</label>';
-        echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked($dd_owl_loop, 'checked', false) . '> ' . __('Check to loop', 'owl-carousel-2') . '</label>';
+        echo '		<tr><td><label for="dd_owl_loop" class="dd_owl_loop_label side-box-label">' . __('Infinite Loop', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_loop" name="dd_owl_loop" class="dd_owl_loop_field" value="checked" ' . checked($dd_owl_loop, 'checked', false) . '> ' . __('Check for infinite loop', 'owl-carousel-2') . '</label>';
         echo '      <p class="description">' . __('Create an infinite loop of with the carousel, so that it continues to play', 'owl-carousel-2') . '</p>';
+        echo '		</td></tr>';
+        echo '	<tr>';
+        echo '		<tr><td><label for="dd_owl_lazy" class="dd_owl_lazy_label side-box-label">' . __('Lazy Load', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_lazy" name="dd_owl_lazy" class="dd_owl_lazy_field" value="checked" ' . checked($dd_owl_lazy, 'checked', false) . '> ' . __('Check for Lazy Load', 'owl-carousel-2') . '</label>';
+        echo '      <p class="description">' . __('Lazy Load Carousel Images. Helps with faster page loads.', 'owl-carousel-2') . '</p>';
         echo '		</td></tr>';
         echo '	<tr>';
         echo '		<td><label for="dd_owl_stop" class="dd_owl_stop_label side-box-label">' . __('Pause on Hover', 'owl-carousel-2') . '</label>';
@@ -630,13 +644,13 @@ class Owl_Carousel_2_Meta {
         echo ' </tr>';
         echo '	<tr>';
         echo '		<td><label for="dd_owl_mousedrag" class="dd_owl_mousedrag_label side-box-label">' . __('Enable Mouse Drag', 'owl-carousel-2') . '</label>';
-        echo '			<label><input type="checkbox" id="dd_owl_mousedrag" name="dd_owl_mousedrag" class="dd_owl_mousedrag_field" value="checked" ' . checked($dd_owl_mousedrag, '', false) . '> ' . __('Check to Enable Mouse Drag', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_mousedrag" name="dd_owl_mousedrag" class="dd_owl_mousedrag_field" value="checked" ' . checked($dd_owl_mousedrag, 'checked', false) . '> ' . __('Check to Enable Mouse Drag', 'owl-carousel-2') . '</label>';
         echo '			<p class="description">' . __('Items can be dragged with a mouse click drag action.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo ' </tr>';
         echo '	<tr>';
         echo '		<td><label for="dd_owl_touchdrag" class="dd_owl_touchdrag_label side-box-label">' . __('Enable TouchDrag', 'owl-carousel-2') . '</label>';
-        echo '			<label><input type="checkbox" id="dd_owl_touchdrag" name="dd_owl_touchdrag" class="dd_owl_touchdrag_field" value="checked" ' . checked($dd_owl_touchdrag, '', false) . '> ' . __('Check to Enable TouchDrag', 'owl-carousel-2') . '</label>';
+        echo '			<label><input type="checkbox" id="dd_owl_touchdrag" name="dd_owl_touchdrag" class="dd_owl_touchdrag_field" value="checked" ' . checked($dd_owl_touchdrag, 'checked', false) . '> ' . __('Check to Enable TouchDrag', 'owl-carousel-2') . '</label>';
         echo '			<p class="description">' . __('Allows users to drag items with touch devices.', 'owl-carousel-2') . '</p>';
         echo '		</td>';
         echo ' </tr>';
@@ -645,7 +659,11 @@ class Owl_Carousel_2_Meta {
     }
 
     public function owl_carousel_shortcode_link($post) {
-        $shortcode = '[dd-owl-carousel id="' . $post->ID . '"]';
+        if ($post->post_status !== 'publish'){
+            $shortcode = 'Publish First for Shortcode';
+        } else {
+            $shortcode = '[dd-owl-carousel id="' . $post->ID . '"]';
+        }
         echo "<div id='dd_owl_shortcode'>" . esc_html($shortcode) . "</div>\n";
         echo "<div id='dd_shortcode_copy' class='button button-primary'>Copy to Clipboard</div>\n";
     }
@@ -701,8 +719,9 @@ class Owl_Carousel_2_Meta {
         $dd_owl_new_show_review_date = isset($_POST['dd_owl_show_review_date']) ? '' : 'checked';
         $dd_owl_new_show_review_reviewer = isset($_POST['dd_owl_show_review_reviewer']) ? '' : 'checked';
         $dd_owl_new_autoplay = isset($_POST['dd_owl_autoplay']) ? '' : 'checked';
-        $dd_owl_new_mousedrag = isset($_POST['dd_owl_mousedrag']) ? '' : 'checked';
-        $dd_owl_new_touchdrag = isset($_POST['dd_owl_touchdrag']) ? '' : 'checked';
+        $dd_owl_new_mousedrag = isset($_POST['dd_owl_mousedrag']) ? 'checked' : '';
+        $dd_owl_new_touchdrag = isset($_POST['dd_owl_touchdrag']) ? 'checked' : '';
+        $dd_owl_new_lazy = isset($_POST['dd_owl_lazy']) ? 'checked' : '';
         $dd_owl_new_slideby = isset($_POST['dd_owl_slideby']) ? abs(intval($_POST['dd_owl_slideby'])) : 1;
 
         $dd_owl_new_prev = isset($_POST['dd_owl_prev']) ? wp_kses_post(esc_attr($_POST['dd_owl_prev'])) : '&lt;';
@@ -721,6 +740,7 @@ class Owl_Carousel_2_Meta {
         update_post_meta($post_id, 'dd_owl_excerpt_more', $dd_owl_new_excerpt_more);
         update_post_meta($post_id, 'dd_owl_hide_excerpt_more', $dd_owl_new_hide_excerpt_more);
         update_post_meta($post_id, 'dd_owl_loop', $dd_owl_new_loop);
+        update_post_meta($post_id, 'dd_owl_lazy', $dd_owl_new_lazy);
         update_post_meta($post_id, 'dd_owl_show_cta', $dd_owl_new_show_cta);
         update_post_meta($post_id, 'dd_owl_show_title', $dd_owl_new_show_title);
         update_post_meta($post_id, 'dd_owl_title_heading', $dd_owl_title_heading);

@@ -74,11 +74,8 @@ class Owl_Carousel_2_Public {
      * @since    1.0.0
      */
     public function register_styles() {
-
-        //wp_register_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/owl-carousel-2-public.css', array(), $this->version, 'all');
         wp_register_style('owl-carousel-css', plugin_dir_url(__FILE__) . 'css/owl.carousel.min.css');
         wp_register_style('owl-theme-css', plugin_dir_url(__FILE__) . 'css/owl.theme.default.min.css');
-        wp_register_style('dd-featherlight-css', plugin_dir_url(__FILE__) . 'css/featherlight.css');
     }
 
     /**
@@ -358,6 +355,7 @@ class Owl_Carousel_2_Public {
                 'responsiveRefreshRate' : 200,
                 'slideBy' : {$this->meta['slideby']},
                 'mergeFit' : true,
+                'lazyLoad' : {$this->meta['lazy']},
                 'mouseDrag' : {$this->meta['mousedrag']},
                 'touchDrag' : {$this->meta['touchdrag']},
                 'nav' : {$this->meta['navs']},
@@ -420,10 +418,14 @@ class Owl_Carousel_2_Public {
                 $image = $my_image[0];
             }
             $output .= '<div class="item">';
-            if ($use_lightbox){
-                $output .= sprintf('<a href="%s" class="lightbox" data-featherlight="%s">', $image , $image );
+            if ($use_lightbox) {
+                $output .= sprintf('<a href="%s" class="lightbox" data-featherlight="%s">', $image, $image);
             }
-            $output .= '<img src="' . $image . '" alt="' . get_post_meta($image_id, '_wp_attachment_image_alt', TRUE) . '">';
+            if ($this->meta['lazy'] === 'true') {
+                $output .= '<img data-src="' . $image . '" alt="' . get_post_meta($image_id, '_wp_attachment_image_alt', TRUE) . '" class="owl-lazy">';
+            } else {
+                $output .= '<img src="' . $image . '" alt="' . get_post_meta($image_id, '_wp_attachment_image_alt', TRUE) . '">';
+            }
             if ($use_lightbox) $output .= '</a>';
             if ($use_caption) {
                 $the_caption = '<div class="dd-owl-image-caption">';
@@ -491,7 +493,11 @@ class Owl_Carousel_2_Public {
             $output .= '<a href="' . esc_url($link) . '" ' . $class . '>';
         }
         if (!empty($thumb)) {
-            $output .= '<img src="' . $image . '" class="carousel-image"/>';
+            if ($this->meta['lazy'] === 'true' ){
+                $output .= '<img data-src="' . $image . '" class="carousel-image owl-lazy"/>';
+            } else {
+                $output .= '<img src="' . $image . '" class="carousel-image"/>';
+            }
         } else {
             $output .= '<figure class="no-image" style="height: ' . $img_atts['height'] . 'px; max-height: ' . $img_atts['height'] . 'px; width: ' . $img_atts['width'] . 'px; background: url(' . $image . ');"></figure>';
         }
@@ -624,8 +630,9 @@ class Owl_Carousel_2_Public {
         $this->meta['next'] = (!empty( get_post_meta( $this->carousel_id, 'dd_owl_next', true ))) ? html_entity_decode(get_post_meta($this->carousel_id, 'dd_owl_next', true)) : '&gt;';
         $this->meta['autoplay'] = (get_post_meta($this->carousel_id, 'dd_owl_autoplay', true) === 'checked') ? 'false' : 'true';
         $this->meta['slideby'] = (!empty(get_post_meta($this->carousel_id, 'dd_owl_slideby', true))) ? intval(get_post_meta($this->carousel_id, 'dd_owl_slideby', true)) : 1;
-        $this->meta['mousedrag'] = (get_post_meta($this->carousel_id, 'dd_owl_mousedrag', true) === 'checked') ? 'false' : 'true';
-        $this->meta['touchdrag'] = (get_post_meta($this->carousel_id, 'dd_owl_touchdrag', true) === 'checked') ? 'false' : 'true';
+        $this->meta['mousedrag'] = (get_post_meta($this->carousel_id, 'dd_owl_mousedrag', true) === 'checked') ? 'true' : 'false';
+        $this->meta['touchdrag'] = (get_post_meta($this->carousel_id, 'dd_owl_touchdrag', true) === 'checked') ? 'true' : 'false';
+        $this->meta['lazy'] = (get_post_meta($this->carousel_id, 'dd_owl_lazy', true) === 'checked') ? 'true' : (metadata_exists('post', $this->carousel_id, 'dd_owl_lazy') ? 'false' : 'true');
 
         // Set Review Options
         $this->meta['stars'] = (get_post_meta($this->carousel_id, 'dd_owl_show_review_stars', true) === 'checked' ) ? false : true;
@@ -640,5 +647,6 @@ class Owl_Carousel_2_Public {
         $this->meta['items_width4'] = intval(get_post_meta($this->carousel_id, 'dd_owl_items_width4', true));
         $this->meta['items_width5'] = intval(get_post_meta($this->carousel_id, 'dd_owl_items_width5', true));
         $this->meta['items_width6'] = intval(get_post_meta($this->carousel_id, 'dd_owl_items_width6', true));
+
     }
 }
