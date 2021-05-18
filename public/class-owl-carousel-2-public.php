@@ -226,7 +226,7 @@ class Owl_Carousel_2_Public {
                         $query->the_post();
 
                         // Retrieve Variables
-                        $title = get_the_title();
+                        $title = apply_filters( 'dd_carousel_filter_title', get_the_title(), get_the_ID() );
                         $link = get_the_permalink();
                         $thumb = get_post_thumbnail_id();
                         $output .= '<div class="item"><div class="item-inner">';
