@@ -3,10 +3,10 @@ Contributors: thehowarde
 Donate link: https://www.duckdiverllc.com
 Tags: owl carousel 2, post slider, product slider, image carousel, post carousel, reviews carousel
 Requires at least: 4.5
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 7.0
-Stable tag: 1.4
-WC tested up to: 5.1
+Stable tag: 1.4.1
+WC tested up to: 5.2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -29,6 +29,8 @@ This plugin uses the Owl-Carousel-2 jQuery plugin to create carousels (sliders) 
 Easy to use controls allow for customization of each carousel with options to show or hide Titles, Featured Image, Call to Action buttons (links) and more.
 
 This plugin is simple and without on screen nags, promotions or upsells.
+
+Please note. There is not a lot of stylesheet attached to the layout. If you don't have basic skills, this might not be the plugin for you.
 
 == Installation ==
 
@@ -138,6 +140,9 @@ function my_filter_owl_carousel_script($script, $carousel_id){
 4. Public Large Desktop View. With Featured Image and CTA Link to item.
 
 == Changelog ==
+
+= 1.4.1 =
+Add image alt text (if added to image in media library)
 
 = 1.4 =
 Added Lazy Loading as an option to all carousels (enabled by default). It is recommended you review your carousels to ensure settings are as you expect. Combined and minified front end styles.

@@ -293,7 +293,7 @@ class Owl_Carousel_2_Public {
 
                     // Add Hook before start of Carousel Content
                     ob_start();
-                    do_action('dd-carousel-before-content', $atts['id']);
+                    do_action('dd-carousel-before-term-content', $atts['id'], $category->term_id);
                     $hooked_start = ob_get_contents();
                     ob_end_clean();
                     $output .= $hooked_start;
@@ -322,12 +322,13 @@ class Owl_Carousel_2_Public {
                     $output .= '</div>';
                     // Add Hook After End of Carousel Content
                     ob_start();
-                    do_action('dd-carousel-after-content', $atts['id']);
+                    do_action('dd-carousel-after-term-content', $atts['id'], $category->term_id);
                     $hooked_end = ob_get_contents();
                     ob_end_clean();
                     $output .= $hooked_end;
                     $output .= '</div>';
                 }
+
 
                 $output .= '</div></div>';
 
@@ -336,7 +337,6 @@ class Owl_Carousel_2_Public {
 
         $prev = apply_filters('dd_carousel_filter_prev', $this->meta['prev'], $this->carousel_id);
         $next = apply_filters('dd_carousel_filter_next', $this->meta['next'], $this->carousel_id);
-
         // Output the Script
         $output .= '<script type="text/javascript" async>';
         $owl_script = "jQuery(function($){
@@ -494,9 +494,9 @@ class Owl_Carousel_2_Public {
         }
         if (!empty($thumb)) {
             if ($this->meta['lazy'] === 'true' ){
-                $output .= '<img data-src="' . $image . '" class="carousel-image owl-lazy"/>';
+                $output .= '<img data-src="' . $image . '" class="carousel-image owl-lazy" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
             } else {
-                $output .= '<img src="' . $image . '" class="carousel-image"/>';
+                $output .= '<img src="' . $image . '" class="carousel-image" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
             }
         } else {
             $output .= '<figure class="no-image" style="height: ' . $img_atts['height'] . 'px; max-height: ' . $img_atts['height'] . 'px; width: ' . $img_atts['width'] . 'px; background: url(' . $image . ');"></figure>';

@@ -603,6 +603,8 @@ class Owl_Carousel_2_Meta {
         $dd_owl_lazy = get_post_meta($post->ID, 'dd_owl_lazy', true);
         $dd_owl_stop = get_post_meta($post->ID, 'dd_owl_stop', true);
 
+        if (!metadata_exists('post', $post->ID, 'dd_owl_lazy')) $dd_owl_lazy = 'checked';
+
         if ($post->post_status === 'auto-draft') {
             $dd_owl_lazy = 'checked';
             $dd_owl_mousedrag = 'checked';
