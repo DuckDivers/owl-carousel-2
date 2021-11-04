@@ -240,9 +240,7 @@ class Owl_Carousel_2_Public {
 
                         // Show Image if Checked
                         if ($this->meta['thumbs'] == 'true') {
-                            if (0 !== $thumb) {
-                                $output .= $this->get_post_image($this->meta['img_atts'], $thumb, $link);
-                            }
+                            $output .= $this->get_post_image($this->meta['img_atts'], $thumb, $link);
                         }
                         // Add filter to change heading type
                         $title_heading = apply_filters('dd_carousel_filter_title_heading', get_post_meta($this->carousel_id, 'dd_owl_title_heading', true));
@@ -300,12 +298,8 @@ class Owl_Carousel_2_Public {
 
                     // Show Image if Checked
                     if ($this->meta['thumbs'] == 'true') {
-
                         $thumbnail_id = get_term_meta($category->term_id, 'thumbnail_id', true);
-
-                        if (0 !== $thumbnail_id) {
-                            $output .= $this->get_post_image($this->meta['img_atts'], $thumbnail_id , $link);
-                        }
+                        $output .= $this->get_post_image($this->meta['img_atts'], $thumbnail_id , $link);
                     }
 
                     // Add filter to change heading type
@@ -338,48 +332,50 @@ class Owl_Carousel_2_Public {
         $prev = apply_filters('dd_carousel_filter_prev', $this->meta['prev'], $this->carousel_id);
         $next = apply_filters('dd_carousel_filter_next', $this->meta['next'], $this->carousel_id);
         // Output the Script
-        $output .= '<script type="text/javascript" async>';
-        $owl_script = "jQuery(function($){
-            $('#{$this->meta['css_id']}').owlCarousel({
-                'loop':{$this->meta['loop']},
-                'autoplay' : {$this->meta['autoplay']},
-                'autoplayTimeout' : {$this->meta['duration']},
-                'smartSpeed' : {$this->meta['transition']},
-                'fluidSpeed' : {$this->meta['transition']},
-                'autoplaySpeed' : {$this->meta['transition']},
-                'navSpeed' : {$this->meta['transition']},
-                'dotsSpeed' : {$this->meta['transition']},
-                'margin': {$this->meta['margin']},
-                'autoplayHoverPause' : {$this->meta['stop']},
-                'center' : {$this->meta['center']},
+        ob_start();
+        ?>
+        jQuery(function($){
+            $('#<?php echo esc_attr($this->meta['css_id']);?>').owlCarousel({
+                'loop':<?php echo esc_attr($this->meta['loop']);?>,
+                'autoplay' : <?php echo esc_attr($this->meta['autoplay']);?>,
+                'autoplayTimeout' : <?php echo esc_attr($this->meta['duration']);?>,
+                'smartSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
+                'fluidSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
+                'autoplaySpeed' : <?php echo esc_attr($this->meta['transition']);?>,
+                'navSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
+                'dotsSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
+                'margin': <?php echo esc_attr($this->meta['margin']);?>,
+                'autoplayHoverPause' : <?php echo esc_attr($this->meta['stop']);?>,
+                'center' : <?php echo esc_attr($this->meta['center']);?>,
                 'responsiveRefreshRate' : 200,
-                'slideBy' : {$this->meta['slideby']},
+                'slideBy' : <?php echo esc_attr($this->meta['slideby']);?>,
                 'mergeFit' : true,
-                'lazyLoad' : {$this->meta['lazy']},
-                'mouseDrag' : {$this->meta['mousedrag']},
-                'touchDrag' : {$this->meta['touchdrag']},
-                'nav' : {$this->meta['navs']},
-                'navText' : ['{$prev}','{$next}'],
-                'dots' : {$this->meta['dots']},
+                'lazyLoad' : <?php echo esc_attr($this->meta['lazy']);?>,
+                'mouseDrag' : <?php echo esc_attr($this->meta['mousedrag']);?>,
+                'touchDrag' : <?php echo esc_attr($this->meta['touchdrag']);?>,
+                'nav' : <?php echo esc_attr($this->meta['navs']);?>,
+                'navText' : ['<?php echo esc_attr($prev);?>','<?php echo esc_attr($next);?>'],
+                'dots' : <?php echo esc_attr($this->meta['dots']);?>,
                 'responsive':{
-                    0:{items:{$this->meta['items_width1']}},
-                    480:{items:{$this->meta['items_width2']}},
-                    768:{items:{$this->meta['items_width3']}},
-                    991:{items:{$this->meta['items_width4']}},
-                    1200:{items:{$this->meta['items_width5']}},
-                    1500:{items:{$this->meta['items_width6']}},
+                    0:{items:<?php echo esc_attr($this->meta['items_width1']);?>},
+                    480:{items:<?php echo esc_attr($this->meta['items_width2']);?>},
+                    768:{items:<?php echo esc_attr($this->meta['items_width3']);?>},
+                    991:{items:<?php echo esc_attr($this->meta['items_width4']);?>},
+                    1200:{items:<?php echo esc_attr($this->meta['items_width5']);?>},
+                    1500:{items:<?php echo esc_attr($this->meta['items_width6']);?>},
                     },
                 });
-            });";
+            });
+            <?php $owl_script = ob_get_clean();
         /**
          * Filter the Owl Carousel Output Script
          *
          * Since 1.2.6
          */
-        $output .= apply_filters('dd_filter_owl_carousel_script', $owl_script, $this->carousel_id);
-        $output .= '</script>';
+        $owl_inline_script = apply_filters('dd_filter_owl_carousel_script', $owl_script, $this->carousel_id);
         // Reset Post Data
         wp_reset_postdata();
+        wp_add_inline_script('owl-two', $owl_inline_script );
         return $output;
     }
 

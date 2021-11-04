@@ -15,21 +15,21 @@ class Owl_Carousel_2_Admin_Ajax {
     }
 
     public function owl_carousel_tax() {
-        $post_type = ($_POST['posttype'] == 'reviews') ? 'product' : $_POST['posttype'];
+        $post_type = ( sanitize_text_field($_POST['posttype'] ) == 'reviews') ? 'product' :  sanitize_text_field($_POST['posttype'] );
 
         //Terms to exclude from WooCommerce
         $wc_not = array('product_type', 'product_visibility', 'product_shipping_class');
 
         $meta = '';
 
-        if (metadata_exists('post', $_POST['postid'], 'dd_owl_post_taxonomy_type')) $meta = get_post_meta($_POST['postid'], 'dd_owl_post_taxonomy_type', true);
+        if (metadata_exists('post', sanitize_text_field($_POST['postid']), 'dd_owl_post_taxonomy_type')) $meta = get_post_meta(sanitize_text_field($_POST['postid']), 'dd_owl_post_taxonomy_type', true);
 
         $html = '';
 
         $tax_objects = get_object_taxonomies($post_type, 'objects');
 
         if (empty($tax_objects)) {
-            $html .= sprintf('<span class="no-cats">' . __('There are no matching Taxonomies', 'owl-carousel-2') . '</span>');
+            $html .= '<span class="no-cats">' . __('There are no matching Taxonomies', 'owl-carousel-2') . '</span>';
         } else {
             $html .= '<select id="dd_owl_post_taxonomy_type" name="dd_owl_post_taxonomy_type" class="dd_owl_post_taxonomy_type_field">';
 
@@ -50,28 +50,28 @@ class Owl_Carousel_2_Admin_Ajax {
             $html .= '</select>';
         }
 
-        echo $html;
+        echo esc_html($html);
 
         die();
     }
 
     public function owl_carousel_terms() {
 
-        $post_type = ($_POST['posttype'] == 'reviews') ? 'product' : $_POST['posttype'];
+        $post_type = ( sanitize_text_field($_POST['posttype']) == 'reviews') ? 'product' :  sanitize_text_field($_POST['posttype']);
 
         $html = '';
 
         $tax_objects = get_object_taxonomies($post_type, 'objects');
 
-        $term_objects = (isset($_POST['taxtype'])) ? get_terms($_POST['taxtype'], 'objects') : null;
+        $term_objects = (isset($_POST['taxtype'])) ? get_terms(sanitize_text_field($_POST['taxtype']), 'objects') : null;
 
         $theterm = get_post_meta($_POST['postid'], 'dd_owl_post_taxonomy_term', true);
 
         if (null == $tax_objects || is_wp_error($term_objects)) {
-            $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
+            $html .= '<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>';
         } else {
             if (null == $term_objects) {
-                $html .= sprintf('<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>');
+                $html .= '<span class="no-cats">' . __('There are no matching terms', 'owl-carousel-2') . '</span>';
             } else {
                 $html .= '<select id="dd_owl_post_taxonomy_term" name="dd_owl_post_taxonomy_term[]" multiple="multiple" class="dd-owl-multi-select">';
                 if (!in_array($theterm, $term_objects) || $term_objects->errors) $html .= '<option value=""> - - Choose A Term - -</option>';
@@ -94,7 +94,7 @@ class Owl_Carousel_2_Admin_Ajax {
 
     public function owl_carousel_posts() {
 
-        $post_type = ($_POST['posttype'] == 'reviews') ? 'product' : $_POST['posttype'];
+        $post_type = (sanitize_text_field($_POST['posttype']) == 'reviews') ? 'product' : sanitize_text_field($_POST['posttype']);
 
         global $post;
         $args = array(
@@ -105,12 +105,12 @@ class Owl_Carousel_2_Admin_Ajax {
         $query = new WP_Query($args);
         $html = '';
         // The Loop
-        $selectedArray = maybe_unserialize(get_post_meta($_POST['carousel_id'], 'dd_owl_post_ids', true));
+        $selectedArray = get_post_meta(sanitize_text_field($_POST['carousel_id']), 'dd_owl_post_ids', true);
 
         if ($query->have_posts()) {
             while ($query->have_posts()) {
                 $query->the_post();
-                $html .= "<option value='{$post->ID}'";
+                $html .= '<option value="'.esc_attr($post->ID).'"';
                 if (is_array($selectedArray)) {
                     if (in_array($post->ID, $selectedArray)) {
                         $html .= 'selected="selected"';
@@ -123,7 +123,7 @@ class Owl_Carousel_2_Admin_Ajax {
         } else {
             $html .= '<p>No Posts Found</p>';
         }
-        echo $html;
+        echo esc_html($html);
         die();
     }
 
