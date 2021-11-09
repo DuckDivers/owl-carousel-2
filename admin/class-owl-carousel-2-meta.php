@@ -168,7 +168,7 @@ class Owl_Carousel_2_Meta {
         echo '			<p class="description">' . __( 'Type of Post', 'owl-carousel-2' ) . '</p>';
         echo '		</td>';
         echo '	</tr>';
-        echo '<tr class="is-media' . $hide_media . '" id="choose-images">';
+        echo '<tr class="is-media' . esc_attr__( $hide_media ) . '" id="choose-images">';
         echo '<th>' . esc_html__( 'Choose Images' ) . '</th>';
         echo '<td>';
         echo '<input type="button" class="button-primary" value="' . esc_attr__( 'Choose Images', 'owl-carousel-2' ) . '" id="dd-owl-add-media"/>';
@@ -336,7 +336,7 @@ class Owl_Carousel_2_Meta {
         echo '  </tr>';
         // Show button Options
         $btn_options = ( 'checked' !== $dd_owl_show_cta || $dd_owl_post_type === 'attachment' ) ? ' hidden' : '';
-        echo '  <tr class="show-button' . $btn_options . '">';
+        echo '  <tr class="show-button' . esc_attr( $btn_options ) . '">';
         echo '		<th><label for="dd_owl_cta" class="dd_owl_cta_label">' . __( 'Button Text', 'owl-carousel-2' ) . '</label></th>';
         echo '		<td>';
         echo '			<input type="text" id="dd_owl_cta" name="dd_owl_cta" class="dd_owl_cta_field" placeholder="' . esc_attr__( 'Read More', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_cta ) . '">';
@@ -348,7 +348,7 @@ class Owl_Carousel_2_Meta {
         echo '			<p class="description">' . __( 'CSS Class for the button', 'owl-carousel-2' ) . '</p>';
         echo '		</td>';
         echo '  </tr>';
-        echo '  <tr class="show-button' . $btn_options . '">';
+        echo '  <tr class="show-button' . esc_attr( $btn_options ) . '">';
         echo '		<th><label for="dd_owl_btn_display" class="dd_owl_btn_display_label">' . __( 'Button CSS Display', 'owl-carousel-2' ) . '</label></th>';
         echo '		<td>';
         echo '			<select id="dd_owl_btn_display" name="dd_owl_btn_display" class="dd_owl_btn_display_field">';
@@ -359,14 +359,14 @@ class Owl_Carousel_2_Meta {
         echo '			<p class="description">' . __( 'CSS Display option for the link / Button ', 'owl-carousel-2' ) . '</p>';
         echo '		</td>';
         $show_margins = ( $dd_owl_btn_display === 'inline' ) ? "hidden" : "visible";
-        echo '		<th class="button-margin ' . $show_margins . '"><label for="dd_owl_btn_margin" class="dd_owl_btn_margin_label">' . __( 'Button CSS margin', 'owl-carousel-2' ) . '</label></th>';
-        echo '		<td class="button-margin ' . $show_margins . '">';
+        echo '		<th class="button-margin ' . esc_attr( $show_margins ) . '"><label for="dd_owl_btn_margin" class="dd_owl_btn_margin_label">' . __( 'Button CSS margin', 'owl-carousel-2' ) . '</label></th>';
+        echo '		<td class="button-margin ' . esc_attr( $show_margins ) . '">';
         echo '			<input type="text" id="dd_owl_btn_margin" name="dd_owl_btn_margin" class="dd_owl_btn_margin_field" placeholder="' . esc_attr__( '10px', 'owl-carousel-2' ) . '" value="' . esc_attr( $dd_owl_btn_margin ) . '">';
         echo '			<p class="description">' . __( 'Margins for Button', 'owl-carousel-2' ) . '</p>';
         echo '		</td>';
         echo '  </tr>';
         // End button display options
-        echo sprintf( '<tr data-id="display_post_options" %s>', $hidden_media );
+        echo sprintf( '<tr data-id="display_post_options" %s>', esc_attr( $hidden_media ) );
         echo '		<th><label for="dd_owl_thumbs" class="dd_owl_thumbs_label">' . __( 'Show Post Thumbnails', 'owl-carousel-2' ) . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="checkbox" id="dd_owl_thumbs" name="dd_owl_thumbs" class="dd_owl_thumbs_field" value="checked" ' . checked( $dd_owl_thumbs, 'checked', false ) . '> ' . __( 'Yes', 'owl-carousel-2' ) . '</label>';
@@ -374,7 +374,7 @@ class Owl_Carousel_2_Meta {
         echo '		</td>';
         echo '	</tr>';
         $hidden = ( 'checked' !== $dd_owl_thumbs ) ? 'hidden ' : '';
-        echo '	<tr class="' . $hidden . 'image-options is-media" id="image-options">';
+        echo '	<tr class="' . esc_attr( $hidden ) . 'image-options is-media" id="image-options">';
         echo '		<th><label for="dd_owl_image_options" class="dd_owl_image_options_label">' . __( 'Image On Click Options', 'owl-carousel-2' ) . '</label></th>';
         echo '		<td>';
         echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="null" ' . checked( $dd_owl_image_options, 'null', false ) . '> ' . __( 'None - Just show image', 'owl-carousel-2' ) . '</label><br>';
@@ -382,14 +382,14 @@ class Owl_Carousel_2_Meta {
         echo '			<label><input type="radio" name="dd_owl_image_options" class="dd_owl_image_options_field" value="link" ' . checked( $dd_owl_image_options, 'link', false ) . '> ' . __( 'Link to Post', 'owl-carousel-2' ) . '</label><br>';
         echo '		</td>';
         echo '	</tr>';
-        echo '	<tr class="' . $hidden . 'image-options is-media">';
+        echo '	<tr class="' . esc_attr( $hidden ) . 'image-options is-media">';
         echo '		<th><label for="dd_owl_image_size" class="dd_owl_image_size_label">' . __( 'Image Size Options', 'owl-carousel-2' ) . '</label></th>';
         echo '		<td>';
         echo '			<select id="dd_owl_image_size" name="dd_owl_image_size" class="dd_owl_image_size_field">';
         echo '              <option value="">- - ' . __( 'Please Choose', 'owl-carousel-2' ) . '</option>';
         echo '			    <option value="custom" ' . selected( $dd_owl_image_size, 'custom', false ) . '> ' . __( 'Custom Size', 'owl-carousel-2' ) . '</option>';
         foreach ( Owl_Carousel_2::get_all_image_sizes() as $size => $sizes ) {
-            echo '<option value="' . $size . '" ' . selected( $dd_owl_image_size, $size, false ) . '>' . $size . ' ' . $sizes['width'] . ' x ' . $sizes['height'] . '</option>';
+            echo '<option value="' . esc_attr( $size ) . '" ' . selected( $dd_owl_image_size, $size, false ) . '>' . esc_attr( $size ) . ' ' . esc_attr( $sizes['width'] ) . ' x ' . esc_attr( $sizes['height'] ) . '</option>';
         }
         echo '			</select>';
         echo '			<p class="description">' . __( 'Choose an existing image size or custom size ', 'owl-carousel-2' ) . '</p>';
