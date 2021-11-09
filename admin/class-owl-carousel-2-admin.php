@@ -167,8 +167,7 @@ class Owl_Carousel_2_Admin {
 
         // output for the 'Shortcode' column
         if ( $column == 'shortcode' ) {
-            $shortcode = sprintf( '<span class="shortcode owl-carousel-2"><input type="text" onfocus="this.select();" readonly="readonly" value="[dd-owl-carousel id=&quot;%1$s&quot;]" title="%1$s" class="large-text code"></span>', esc_attr( $post->ID ) );
-            echo( $shortcode );
+            echo sprintf( '<span class="shortcode owl-carousel-2"><input type="text" onfocus="this.select();" readonly="readonly" value="[dd-owl-carousel id=&quot;%1$s&quot;]" title="%1$s" class="large-text code"></span>', esc_attr( $post->ID ) );
         }
 
         if ( $column == 'css-id' ) {

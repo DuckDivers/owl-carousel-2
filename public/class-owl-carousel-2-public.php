@@ -93,7 +93,7 @@ class Owl_Carousel_2_Public {
      *
      * @since    1.0.0
      * @param array $atts
-     * @return mixed shortcode
+     * @return string shortcode
      */
 
     public function dd_owl_carousel_two($atts) {
@@ -245,7 +245,7 @@ class Owl_Carousel_2_Public {
                         // Add filter to change heading type
                         $title_heading = apply_filters('dd_carousel_filter_title_heading', get_post_meta($this->carousel_id, 'dd_owl_title_heading', true));
 
-                        if (null == get_post_meta($this->carousel_id, 'dd_owl_show_title', true)) $output .= "<{$title_heading}>{$title}</{$title_heading}>";
+                        if (null == get_post_meta($this->carousel_id, 'dd_owl_show_title', true)) $output .= sprintf('<%1$s>%2$s</%1$s>', esc_html($title_heading), esc_html($title) );
 
                         if (has_excerpt()) {
                             $excerpt = strip_shortcodes(get_the_excerpt());
@@ -262,11 +262,11 @@ class Owl_Carousel_2_Public {
                         } else {
                             $theContent = apply_filters('the_content', get_the_content());
                             $theContent = strip_shortcodes($theContent);
-                            $output .= apply_filters('dd_carousel_filter_excerpt', wp_trim_words($theContent, $this->meta['excerpt_length'], $this->meta['excerpt_more']), $this->carousel_id);
+                            $output .= apply_filters('dd_carousel_filter_excerpt', wp_trim_words($theContent, $this->meta['excerpt_length'], esc_attr( $this->meta['excerpt_more'] )), $this->carousel_id);
                         }
                         if ($this->meta['show_cta'] == 'true') {
                             $link = get_the_permalink();
-                            $output .= "<p class='owl-btn-wrapper'><a href='{$link}' class='carousel-button {$this->meta['btn_class']}' style='display: {$this->meta['btn_display']};{$this->meta['btn_margin']}'>{$this->meta['cta_text']}</a></p>";
+                            $output .= sprintf( '<p class="owl-btn-wrapper"><a href="%s" class="carousel-button %s" style="display: %s;%s">%s</a></p>', esc_url( $link ), esc_attr( $this->meta["btn_class"] ), esc_attr( $this->meta["btn_display"] ), esc_attr( $this->meta["btn_margin"] ), esc_html( $this->meta["cta_text"] ) );
                         }
                         $output .= '</div>';
                         // Add Hook After End of Carousel Content
@@ -281,7 +281,7 @@ class Owl_Carousel_2_Public {
                 $output .= '</div></div>';
             } else {
                 // Is term list only
-                $output = '<div class="owl-wrapper"><div id="' . $this->meta['css_id'] . '" class="owl-carousel owl-theme' . $this->meta['centered'] . '">';
+                $output = '<div class="owl-wrapper"><div id="' . esc_attr( $this->meta['css_id'] ) . '" class="owl-carousel owl-theme' .esc_attr(  $this->meta['centered'] ) . '">';
                 foreach ($this->meta['term'] as $theTerm) {
                     $category = get_term_by('slug', $theTerm, $this->meta['taxonomy']);
                     // Retrieve Variables
@@ -311,7 +311,7 @@ class Owl_Carousel_2_Public {
                         $output .= wp_trim_words($category->description, $this->meta['excerpt_length']);
                     }
                     if ($this->meta['show_cta'] == 'true') {
-                        $output .= "<p class='owl-btn-wrapper'><a href='{$link}' class='carousel-button {$this->meta['btn_class']}' style='display: {$this->meta['btn_display']};{$this->meta['btn_margin']}'>{$this->meta['cta_text']}</a></p>";
+                        $output .= sprintf( '<p class="owl-btn-wrapper"><a href="%s" class="carousel-button %s" style="display: %s;%s">%s</a></p>', esc_url( $link ), esc_attr( $this->meta["btn_class"] ), esc_attr( $this->meta["btn_display"] ), esc_attr( $this->meta["btn_margin"] ), esc_html( $this->meta["cta_text"] ) );
                     }
                     $output .= '</div>';
                     // Add Hook After End of Carousel Content
@@ -332,41 +332,37 @@ class Owl_Carousel_2_Public {
         $prev = apply_filters('dd_carousel_filter_prev', $this->meta['prev'], $this->carousel_id);
         $next = apply_filters('dd_carousel_filter_next', $this->meta['next'], $this->carousel_id);
         // Output the Script
-        ob_start();
-        ?>
-        jQuery(function($){
-            $('#<?php echo esc_attr($this->meta['css_id']);?>').owlCarousel({
-                'loop':<?php echo esc_attr($this->meta['loop']);?>,
-                'autoplay' : <?php echo esc_attr($this->meta['autoplay']);?>,
-                'autoplayTimeout' : <?php echo esc_attr($this->meta['duration']);?>,
-                'smartSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
-                'fluidSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
-                'autoplaySpeed' : <?php echo esc_attr($this->meta['transition']);?>,
-                'navSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
-                'dotsSpeed' : <?php echo esc_attr($this->meta['transition']);?>,
-                'margin': <?php echo esc_attr($this->meta['margin']);?>,
-                'autoplayHoverPause' : <?php echo esc_attr($this->meta['stop']);?>,
-                'center' : <?php echo esc_attr($this->meta['center']);?>,
-                'responsiveRefreshRate' : 200,
-                'slideBy' : <?php echo esc_attr($this->meta['slideby']);?>,
-                'mergeFit' : true,
-                'lazyLoad' : <?php echo esc_attr($this->meta['lazy']);?>,
-                'mouseDrag' : <?php echo esc_attr($this->meta['mousedrag']);?>,
-                'touchDrag' : <?php echo esc_attr($this->meta['touchdrag']);?>,
-                'nav' : <?php echo esc_attr($this->meta['navs']);?>,
-                'navText' : ['<?php echo esc_attr($prev);?>','<?php echo esc_attr($next);?>'],
-                'dots' : <?php echo esc_attr($this->meta['dots']);?>,
-                'responsive':{
-                    0:{items:<?php echo esc_attr($this->meta['items_width1']);?>},
-                    480:{items:<?php echo esc_attr($this->meta['items_width2']);?>},
-                    768:{items:<?php echo esc_attr($this->meta['items_width3']);?>},
-                    991:{items:<?php echo esc_attr($this->meta['items_width4']);?>},
-                    1200:{items:<?php echo esc_attr($this->meta['items_width5']);?>},
-                    1500:{items:<?php echo esc_attr($this->meta['items_width6']);?>},
-                    },
-                });
-            });
-            <?php $owl_script = ob_get_clean();
+        $owl_script = '
+        jQuery("#'. esc_js( $this->meta['css_id'] ) .'").owlCarousel({
+            "loop":'. esc_js( $this->meta['loop'] ) .',
+            "autoplay" : '. esc_js( $this->meta['autoplay'] ) .',
+            "autoplayTimeout" : '. esc_js( $this->meta['duration'] ) .',
+            "smartSpeed" : '. esc_js( $this->meta['transition'] ) .',
+            "fluidSpeed" : '. esc_js( $this->meta['transition'] ) .',
+            "autoplaySpeed" : '. esc_js( $this->meta['transition'] ) .',
+            "navSpeed" : '. esc_js( $this->meta['transition'] ) .',
+            "dotsSpeed" : '. esc_js( $this->meta['transition'] ) .',
+            "margin": '. esc_js( $this->meta['margin'] ) .',
+            "autoplayHoverPause" : '. esc_js( $this->meta['stop'] ) .',
+            "center" : '. esc_js( $this->meta['center'] ) .',
+            "responsiveRefreshRate" : 200,
+            "slideBy" : '. esc_js( $this->meta['slideby'] ) .',
+            "mergeFit" : true,
+            "lazyLoad" : '. esc_js( $this->meta['lazy'] ) .',
+            "mouseDrag" : '. esc_js( $this->meta['mousedrag'] ) .',
+            "touchDrag" : '. esc_js( $this->meta['touchdrag'] ) .',
+            "nav" : '. esc_js( $this->meta['navs'] ) .',
+            "navText" : ["'. esc_js( $prev ) .'","'. esc_js( $next ) .'"],
+            "dots" : '. esc_js( $this->meta['dots'] ) .',
+            "responsive":{
+                0:{items:'. esc_js( $this->meta['items_width1'] ) .'},
+                480:{items:'. esc_js( $this->meta['items_width2'] ) .'},
+                768:{items:'. esc_js( $this->meta['items_width3'] ) .'},
+                991:{items:'. esc_js( $this->meta['items_width4'] ) .'},
+                1200:{items:'. esc_js( $this->meta['items_width5'] ) .'},
+                1500:{items:'. esc_js( $this->meta['items_width6'] ) .'},
+                },
+            });';
         /**
          * Filter the Owl Carousel Output Script
          *
@@ -490,9 +486,9 @@ class Owl_Carousel_2_Public {
         }
         if (!empty($thumb)) {
             if ($this->meta['lazy'] === 'true' ){
-                $output .= '<img data-src="' . $image . '" class="carousel-image owl-lazy" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
+                $output .= '<img data-src="' . esc_url( $image ) . '" class="carousel-image owl-lazy" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
             } else {
-                $output .= '<img src="' . $image . '" class="carousel-image" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
+                $output .= '<img src="' . esc_url( $image ) . '" class="carousel-image" alt="' . get_post_meta($thumb, '_wp_attachment_image_alt', TRUE).'"/>';
             }
         } else {
             $output .= '<figure class="no-image" style="height: ' . $img_atts['height'] . 'px; max-height: ' . $img_atts['height'] . 'px; width: ' . $img_atts['width'] . 'px; background: url(' . $image . ');"></figure>';
@@ -513,7 +509,7 @@ class Owl_Carousel_2_Public {
 
         $centered = (get_post_meta($this->carousel_id, 'dd_owl_nav_position', true) == 'centered') ? ' nav-centered' : '';
 
-        $output = '<div class="owl-wrapper"><div id="' . $this->meta['css_id'] . '" class="woocommerce owl-carousel owl-theme' . $centered . '">';
+        $output = '<div class="owl-wrapper"><div id="' . esc_attr( $this->meta['css_id'] ) . '" class="woocommerce owl-carousel owl-theme' . esc_attr( $centered ) . '">';
 
         // WP_Comment_Query arguments
         $args = array(
@@ -631,10 +627,10 @@ class Owl_Carousel_2_Public {
         $this->meta['lazy'] = (get_post_meta($this->carousel_id, 'dd_owl_lazy', true) === 'checked') ? 'true' : (metadata_exists('post', $this->carousel_id, 'dd_owl_lazy') ? 'false' : 'true');
 
         // Set Review Options
-        $this->meta['stars'] = (get_post_meta($this->carousel_id, 'dd_owl_show_review_stars', true) === 'checked' ) ? false : true;
-        $this->meta['show_product'] = (get_post_meta($this->carousel_id, 'dd_owl_show_review_product', true) === 'checked' ) ? false : true;
-        $this->meta['review_date'] = (get_post_meta($this->carousel_id, 'dd_owl_show_review_date', true) === 'checked' ) ? false : true;
-        $this->meta['reviewer'] = (get_post_meta($this->carousel_id, 'dd_owl_show_review_reviewer', true) === 'checked' ) ? false : true;
+        $this->meta['stars'] = !( ( get_post_meta( $this->carousel_id, 'dd_owl_show_review_stars', true ) === 'checked' ) );
+        $this->meta['show_product'] = !( ( get_post_meta( $this->carousel_id, 'dd_owl_show_review_product', true ) === 'checked' ) );
+        $this->meta['review_date'] = !( ( get_post_meta( $this->carousel_id, 'dd_owl_show_review_date', true ) === 'checked' ) );
+        $this->meta['reviewer'] = !( ( get_post_meta( $this->carousel_id, 'dd_owl_show_review_reviewer', true ) === 'checked' ) );
 
         // Get Responsive Settings
         $this->meta['items_width1'] = intval(get_post_meta($this->carousel_id, 'dd_owl_items_width1', true));

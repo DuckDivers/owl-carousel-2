@@ -41,17 +41,16 @@ class Owl_Carousel_2_Admin_Ajax {
                 } else {
                     $label = $tax->labels->name;
                     $value = $tax->name;
-                    $html .= '<option value="' . $value . '" ';
+                    $html .= '<option value="' . esc_attr($value) . '" ';
                     $html .= ($value == $meta) ? "selected" : null;
-                    $html .= '> ' . $label . '</option>';
+                    $html .= '> ' . esc_html($label) . '</option>';
                 }
             }
 
             $html .= '</select>';
         }
 
-        echo esc_html($html);
-
+        echo $html;
         die();
     }
 
