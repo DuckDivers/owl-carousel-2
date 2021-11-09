@@ -1,3 +1,4 @@
+//phpcs:disable
 jQuery( function( $ ){
     'use strict';
     // Define Variables
@@ -107,6 +108,7 @@ jQuery( function( $ ){
                 posttype: postType,
                 action: 'owl_carousel_tax',
                 postid: postID,
+                nonce: dd_owl_admin_script.nonce,
             },
             success: function(data){
                 $('#taxonomy').html(data);
@@ -173,7 +175,6 @@ jQuery( function( $ ){
     }
     // Specific AjaxComplete Functions
     $(window).on('ajaxComplete', function(){
-        console.log('complete');
         $(document).on('change', '#dd_owl_post_taxonomy_type', function () {
             ajax_get_terms();
         });
@@ -251,6 +252,7 @@ jQuery( function( $ ){
                 taxtype: taxType,
                 postid: postID,
                 action: 'owl_carousel_terms',
+                nonce: dd_owl_admin_script.nonce,
             },
             dataType: 'json',
             success: function(data){
