@@ -29,8 +29,8 @@ class Owl_Carousel_2_Admin_Ajax {
 
 		$meta = '';
 
-		if ( metadata_exists( 'post', sanitize_text_field( $_POST['postid'] ), 'dd_owl_post_taxonomy_type' ) ) {
-			$meta = get_post_meta( sanitize_text_field( $_POST['postid'] ), 'dd_owl_post_taxonomy_type', true );
+		if ( isset( $_POST['postid'] ) && metadata_exists( 'post', sanitize_text_field( wp_unslash( $_POST['postid'] ) ), 'dd_owl_post_taxonomy_type' ) ) {
+			$meta = get_post_meta( sanitize_text_field( wp_unslash( $_POST['postid'] ) ), 'dd_owl_post_taxonomy_type', true );
 		}
 		$html = '';
 
@@ -41,18 +41,18 @@ class Owl_Carousel_2_Admin_Ajax {
 		} else {
 			$html .= '<select id="dd_owl_post_taxonomy_type" name="dd_owl_post_taxonomy_type" class="dd_owl_post_taxonomy_type_field">';
 
-			if ( ! in_array( $meta, $tax_objects ) ) {
+			if ( ! in_array( $meta, $tax_objects, true ) ) {
 				$html .= '<option value="" selected> - - Choose A Tax Type - -</option>';
 			}
 
 			foreach ( $tax_objects as $tax ) {
-				if ( $post_type === 'product' && in_array( $tax->name, $wc_not, true ) ) {
+				if ( 'product' === $post_type && in_array( $tax->name, $wc_not, true ) ) {
 					continue;
 				} else {
 					$label = $tax->labels->name;
 					$value = $tax->name;
 					$html .= '<option value="' . esc_attr( $value ) . '" ';
-					$html .= ( $value == $meta ) ? 'selected' : null;
+					$html .= ( $value === $meta ) ? 'selected' : null;
 					$html .= '> ' . esc_html( $label ) . '</option>';
 				}
 			}
@@ -60,26 +60,32 @@ class Owl_Carousel_2_Admin_Ajax {
 			$html .= '</select>';
 		}
 
-		echo $html;
+		wp_send_json( $html );
 		die();
 	}
 
+	/**
+	 * Get the Terms List.
+	 */
 	public function owl_carousel_terms() {
 		check_ajax_referer( 'dd_admin_ajax', 'nonce' );
-		$post_type = ( sanitize_text_field( $_POST['posttype'] ) == 'reviews' ) ? 'product' : sanitize_text_field( $_POST['posttype'] );
+		if ( ! isset( $_POST['postid'] ) ) {
+			exit();
+		}
+		$post_type = isset( $_POST['posttype'] ) ? ( 'reviews' === sanitize_text_field( wp_unslash( $_POST['posttype'] ) ) ) ? 'product' : sanitize_text_field( wp_unslash( $_POST['posttype'] ) ) : null;
 
 		$html = '';
 
 		$tax_objects = get_object_taxonomies( $post_type, 'objects' );
 
-		$term_objects = ( isset( $_POST['taxtype'] ) ) ? get_terms( sanitize_text_field( $_POST['taxtype'] ), 'objects' ) : null;
+		$term_objects = ( isset( $_POST['taxtype'] ) ) ? get_terms( sanitize_text_field( wp_unslash( $_POST['taxtype'] ) ), 'objects' ) : null;
 
-		$theterm = get_post_meta( $_POST['postid'], 'dd_owl_post_taxonomy_term', true );
+		$theterm = get_post_meta( sanitize_text_field( wp_unslash( $_POST['postid'] ) ), 'dd_owl_post_taxonomy_term', true );
 
-		if ( null == $tax_objects || is_wp_error( $term_objects ) ) {
+		if ( null === $tax_objects || is_wp_error( $term_objects ) ) {
 			$html .= '<span class="no-cats">' . __( 'There are no matching terms', 'owl-carousel-2' ) . '</span>';
 		} else {
-			if ( null == $term_objects ) {
+			if ( null === $term_objects ) {
 				$html .= '<span class="no-cats">' . __( 'There are no matching terms', 'owl-carousel-2' ) . '</span>';
 			} else {
 				$html .= '<select id="dd_owl_post_taxonomy_term" name="dd_owl_post_taxonomy_term[]" multiple="multiple" class="dd-owl-multi-select">';
@@ -105,9 +111,15 @@ class Owl_Carousel_2_Admin_Ajax {
 		die();
 	}
 
+	/**
+	 * Get the posts Ajax Function
+	 */
 	public function owl_carousel_posts() {
-
-		$post_type = ( sanitize_text_field( $_POST['posttype'] ) == 'reviews' ) ? 'product' : sanitize_text_field( $_POST['posttype'] );
+		check_ajax_referer( 'dd_admin_ajax', 'nonce' );
+		if ( ! isset( $_POST['posttype'] ) || ! isset( $_POST['carousel_id'] ) ) {
+			exit();
+		}
+		$post_type = ( 'reviews' === $_POST['posttype'] ) ? 'product' : sanitize_text_field( wp_unslash( $_POST['posttype'] ) );
 
 		global $post;
 		$args = array(
@@ -115,17 +127,17 @@ class Owl_Carousel_2_Admin_Ajax {
 			'posts_per_page' => '-1',
 		);
 
-		$query = new WP_Query( $args );
-		$html  = '';
-		// The Loop
-		$selectedArray = get_post_meta( sanitize_text_field( $_POST['carousel_id'] ), 'dd_owl_post_ids', true );
-
+		$query       = new WP_Query( $args );
+		$html        = '';
+		$carousel_id = sanitize_text_field( wp_unslash( $_POST['carousel_id'] ) );
+		// The Loop.
+		$selected_array = get_post_meta( $carousel_id, 'dd_owl_post_ids', true );
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$html .= '<option value="' . esc_attr( $post->ID ) . '"';
-				if ( is_array( $selectedArray ) ) {
-					if ( in_array( $post->ID, $selectedArray ) ) {
+				if ( is_array( $selected_array ) ) {
+					if ( in_array( (string) $post->ID, $selected_array, true ) ) {
 						$html .= 'selected="selected"';
 					}
 				}
@@ -136,10 +148,13 @@ class Owl_Carousel_2_Admin_Ajax {
 		} else {
 			$html .= '<p>No Posts Found</p>';
 		}
-		echo esc_html( $html );
+		wp_send_json( $html );
 		die();
 	}
 
+	/**
+	 * Get the image
+	 */
 	public function dd_owl_get_image() {
 		if ( isset( $_GET['id'] ) ) {
 			$image = wp_get_attachment_image( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ), 'medium', false, array( 'id' => 'dd-preview-image' ) );

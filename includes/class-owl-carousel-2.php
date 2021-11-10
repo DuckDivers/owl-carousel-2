@@ -1,15 +1,15 @@
 <?php /**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link       https://www.howardehrenberg.com
- * @since      1.0.0
- *
- * @package    Owl_Carousel_2
- * @subpackage Owl_Carousel_2/includes
- */
+	   * The file that defines the core plugin class
+	   *
+	   * A class definition that includes attributes and functions used across both the
+	   * public-facing side of the site and the admin area.
+	   *
+	   * @link       https://www.howardehrenberg.com
+	   * @since      1.0.0
+	   *
+	   * @package    Owl_Carousel_2
+	   * @subpackage Owl_Carousel_2/includes
+	   */
 
 /**
  * The core plugin class.
@@ -153,14 +153,14 @@ class Owl_Carousel_2 {
 
 		$plugin_admin = new Owl_Carousel_2_Admin( $this->get_plugin_name(), $this->get_version() );
 
-        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_jqueryui');
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_jqueryui' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' , 99);
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 99 );
 		$this->loader->add_action( 'init', $plugin_admin, 'add_carousel_cpt' );
-        $this->loader->add_filter( 'manage_owl-carousel_posts_columns', $plugin_admin, 'owl_carousel_modify_columns');
-        $this->loader->add_filter( 'manage_owl-carousel_posts_custom_column', $plugin_admin, 'owl_carousel_custom_column_content');
-        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'only_admin_page');
-        
+		$this->loader->add_filter( 'manage_owl-carousel_posts_columns', $plugin_admin, 'owl_carousel_modify_columns' );
+		$this->loader->add_filter( 'manage_owl-carousel_posts_custom_column', $plugin_admin, 'owl_carousel_custom_column_content' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'only_admin_page' );
+
 	}
 
 	/**
@@ -176,8 +176,8 @@ class Owl_Carousel_2 {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_scripts' );
-        $this->loader->add_shortcode ('dd-owl-carousel', $plugin_public, 'dd_owl_carousel_two');
-    
+		$this->loader->add_shortcode( 'dd-owl-carousel', $plugin_public, 'dd_owl_carousel_two' );
+
 	}
 
 	/**
@@ -220,26 +220,27 @@ class Owl_Carousel_2 {
 		return $this->version;
 	}
 
-    /**
-     * Retrieve all image sizes in WP
-     *
-     * @return array $image_sizes['size_name'] = array ('width' , 'height' , 'crop')
-     */
+	/**
+	 * Retrieve all image sizes in WP
+	 *
+	 * @return array $image_sizes['size_name'] = array ('width' , 'height' , 'crop')
+	 */
 	public static function get_all_image_sizes() {
-        global $_wp_additional_image_sizes;
+		global $_wp_additional_image_sizes;
 
-        $default_image_sizes = array( 'thumbnail', 'medium', 'large' );
-        $image_sizes = array();
-        foreach ( $default_image_sizes as $size ) {
-            $image_sizes[$size]['width']	= intval( get_option( "{$size}_size_w") );
-            $image_sizes[$size]['height'] = intval( get_option( "{$size}_size_h") );
-            $image_sizes[$size]['crop']	= get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
-        }
+		$default_image_sizes = array( 'thumbnail', 'medium', 'large' );
+		$image_sizes         = array();
+		foreach ( $default_image_sizes as $size ) {
+			$image_sizes[ $size ]['width']  = intval( get_option( "{$size}_size_w" ) );
+			$image_sizes[ $size ]['height'] = intval( get_option( "{$size}_size_h" ) );
+			$image_sizes[ $size ]['crop']   = get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
+		}
 
-        if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) )
-            $image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
+		if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) ) {
+			$image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
+		}
 
-        return $image_sizes;
-    }
+		return $image_sizes;
+	}
 
 }

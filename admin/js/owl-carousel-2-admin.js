@@ -104,6 +104,7 @@ jQuery( function( $ ){
         $.ajax({
             url: ajaxurl,
             type: "POST",
+            dataType: 'json',
             data: {
                 posttype: postType,
                 action: 'owl_carousel_tax',
@@ -285,10 +286,12 @@ jQuery( function( $ ){
         $.ajax({
             url: ajaxurl,
             type: "POST",
+            dataType: 'json',
             data: {
                 posttype: postType,
                 carousel_id: carouselID,
-                action : 'owl_carousel_posts'
+                action : 'owl_carousel_posts',
+                nonce: dd_owl_admin_script.nonce,
             },
             success: function(data){
                 let ddOwlPostIds = $('#dd_owl_post_ids');
