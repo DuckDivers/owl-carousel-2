@@ -141,6 +141,9 @@ function my_filter_owl_carousel_script($script, $carousel_id){
 
 == Changelog ==
 
+= 1.4.4 =
+Allow SVG in Prev / Next buttons
+
 = 1.4.2 =
 Security fixes
 

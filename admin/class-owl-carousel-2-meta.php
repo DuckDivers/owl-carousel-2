@@ -839,8 +839,32 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_new_lazy                 = isset( $_POST['dd_owl_lazy'] ) ? 'checked' : '';
 		$dd_owl_new_slideby              = isset( $_POST['dd_owl_slideby'] ) ? abs( sanitize_text_field( wp_unslash( $_POST['dd_owl_slideby'] ) ) ) : 1;
 
-		$dd_owl_new_prev = isset( $_POST['dd_owl_prev'] ) ? wp_kses_post( wp_unslash( $_POST['dd_owl_prev'] ) ) : '&lt;';
-		$dd_owl_new_next = isset( $_POST['dd_owl_next'] ) ? wp_kses_post( wp_unslash( $_POST['dd_owl_next'] ) ) : '&gt;';
+		// Allow SVG in WP_KSES.
+		$kses_defaults = wp_kses_allowed_html( 'post' );
+
+		$svg_args = array(
+			'svg'   => array(
+				'class'           => true,
+				'aria-hidden'     => true,
+				'aria-labelledby' => true,
+				'role'            => true,
+				'xmlns'           => true,
+				'width'           => true,
+				'height'          => true,
+				'viewbox'         => true, // <= Must be lower case!
+			),
+			'g'     => array( 'fill' => true ),
+			'title' => array( 'title' => true ),
+			'path'  => array(
+				'd'    => true,
+				'fill' => true,
+			),
+		);
+
+		$allowed_tags = array_merge( $kses_defaults, $svg_args );
+
+		$dd_owl_new_prev = isset( $_POST['dd_owl_prev'] ) ? wp_kses( wp_unslash( $_POST['dd_owl_prev'] ), $allowed_tags ) : '&lt;';
+		$dd_owl_new_next = isset( $_POST['dd_owl_next'] ) ? wp_kses( wp_unslash( $_POST['dd_owl_next'] ), $allowed_tags ) : '&gt;';
 		// Owl Carousel Settings.
 		$dd_owl_new_items_width1 = isset( $_POST['dd_owl_items_width1'] ) ? abs( intval( sanitize_text_field( wp_unslash( $_POST['dd_owl_items_width1'] ) ) ) ) : '';
 		$dd_owl_new_items_width2 = isset( $_POST['dd_owl_items_width2'] ) ? abs( intval( sanitize_text_field( wp_unslash( $_POST['dd_owl_items_width2'] ) ) ) ) : '';
