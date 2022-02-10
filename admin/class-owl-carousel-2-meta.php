@@ -826,7 +826,7 @@ class Owl_Carousel_2_Meta {
 		$dd_owl_new_img_height           = isset( $_POST['dd_owl_img_height'] ) ? floatval( $_POST['dd_owl_img_height'] ) : '';
 		$dd_owl_new_img_crop             = isset( $_POST['dd_owl_img_crop'] ) ? 'checked' : '';
 		$dd_owl_new_img_upscale          = isset( $_POST['dd_owl_img_upscale'] ) ? 'checked' : '';
-		$dd_owl_new_media_items          = isset( $_POST['dd_owl_media_items_array'] ) ? sanitize_text_field( wp_unslash( $_POST['dd_owl_media_items_array'] ) ) : '';
+		$dd_owl_new_media_items          = isset( $_POST['dd_owl_media_items_array'] ) ? ( $_POST['dd_owl_media_items_array'] )  : ''; //phpcs:ignore
 		$dd_owl_new_image_size           = isset( $_POST['dd_owl_image_size'] ) ? sanitize_text_field( wp_unslash( $_POST['dd_owl_image_size'] ) ) : '';
 		$dd_owl_new_use_image_caption    = isset( $_POST['dd_owl_use_image_caption'] ) ? 'checked' : '';
 		$dd_owl_new_show_review_stars    = isset( $_POST['dd_owl_show_review_stars'] ) ? '' : 'checked';
